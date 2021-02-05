@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-02-05T10:36:13.814Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36" etag="taLc0oJs2zysAVLbUW5u" version="14.2.9" type="github">
+<mxfile host="app.diagrams.net" modified="2021-02-05T10:47:32.004Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36" etag="nbfi9bXVKp1uGA6_BTZJ" version="14.2.9" type="github">
   <diagram id="-_4meJ-QTRiHQKgL3pZK" name="Page-1">
     <mxGraphModel dx="1888" dy="548" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -26,8 +26,8 @@
         <mxCell id="HxBrVdzeioOdmuwfr2gc-4" value="Intra-cellular" style="html=1;" vertex="1" parent="1">
           <mxGeometry x="610" y="346" width="110" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="HxBrVdzeioOdmuwfr2gc-7" value="Concentration" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="1">
-          <mxGeometry x="377.5" y="230" width="100" height="26" as="geometry" />
+        <mxCell id="HxBrVdzeioOdmuwfr2gc-7" value="get(Concentration)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="1">
+          <mxGeometry x="377.5" y="230" width="122.5" height="26" as="geometry" />
         </mxCell>
         <mxCell id="HxBrVdzeioOdmuwfr2gc-12" value="Velocity vectors" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="1">
           <mxGeometry x="140" y="450" width="95" height="26" as="geometry" />
@@ -79,8 +79,8 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="HxBrVdzeioOdmuwfr2gc-72" value="Concentration(t)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="1">
-          <mxGeometry x="480" y="450" width="100" height="26" as="geometry" />
+        <mxCell id="HxBrVdzeioOdmuwfr2gc-72" value="set(Concentration(t))" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="1">
+          <mxGeometry x="480" y="450" width="120" height="26" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
