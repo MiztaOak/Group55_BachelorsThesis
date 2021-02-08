@@ -6,6 +6,7 @@ public class NewMovement : MonoBehaviour
 {
 
     private Cell cell;
+    private BasicEnvironment basicEnviroment = new BasicEnvironment(1, 0.1f,0,0);
     private bool run;
 
     // Start is called before the first frame update
@@ -31,7 +32,8 @@ public class NewMovement : MonoBehaviour
     {
         while (true)
         {
-            float c = Random.Range(0.0f,1.0f);
+            Vector3 pos = transform.position;
+            float c = basicEnviroment.getConcentration(pos.x, pos.y);
             print(c);
             yield return new WaitForSeconds(1);
             cell.SetConcentration(c);

@@ -12,6 +12,6 @@ public abstract class AbstractEnvironment
     public AbstractEnvironment() : this(0, 0) { } //defaul constructor
     //TODO change to better base case
 
-    public abstract float getConsentration(float x, float y);
+    public abstract float getConcentration(float x, float y);
 
 }

@@ -12,10 +12,10 @@ namespace Tests
 
         // A Test behaves as an ordinary method
         [Test]
-        public void ConsentationDecreasesAsDistIncreasesTest()
+        public void ConcentationDecreasesAsDistIncreasesTest()
         {
-            float c1 = basicEnviroment.getConsentration(0,0);
-            float c2 = basicEnviroment.getConsentration(5, 5);
+            float c1 = basicEnviroment.getConcentration(0,0);
+            float c2 = basicEnviroment.getConcentration(5, 5);
             Assert.Greater(c1, c2);
             // Use the Assert class to test conditions
         }
@@ -23,7 +23,7 @@ namespace Tests
         [Test]
         public void MaxCIsOneTest()
         {
-            float c = basicEnviroment.getConsentration(0, 0);
+            float c = basicEnviroment.getConcentration(0, 0);
             Assert.AreEqual(1f, c);
         }
     }
