@@ -6,7 +6,7 @@ public class NewMovement : MonoBehaviour
 {
 
     private Cell cell;
-    private BasicEnvironment basicEnviroment = new BasicEnvironment(1, 0.1f,0,0);
+    private AbstractEnvironment env = new BasicEnvironment(1, 0.1f,0,0);
     private bool run;
 
     // Start is called before the first frame update
@@ -18,9 +18,11 @@ public class NewMovement : MonoBehaviour
     void Update()
     {
         if(run)
-            transform.Translate(Vector3.right * Time.deltaTime);
-        else
-            transform.Rotate(0.0f, 1.0f, 0.0f, Space.World);
+            transform.Translate(Vector3.right * 2 * Time.deltaTime);
+        else {
+            float angle = Random.Range(-180.0f,180.0f);
+            transform.Rotate(0.0f, angle, 0.0f, Space.World);
+        }
     }
 
     private void Awake ()
@@ -33,11 +35,11 @@ public class NewMovement : MonoBehaviour
         while (true)
         {
             Vector3 pos = transform.position;
-            float c = basicEnviroment.getConcentration(pos.x, pos.y);
+            float c = env.getConcentration(pos.x, pos.z);
             print(c);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.1f);
             cell.SetConcentration(c);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
             this.run = cell.IsRun();
         }
     }

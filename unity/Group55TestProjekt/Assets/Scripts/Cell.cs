@@ -5,7 +5,7 @@ using UnityEngine;
 public class Cell : MonoBehaviour
 {
     private bool run = true;
-    private float c = 0.0f;
+    private float c;
 
     // Start is called before the first frame update
     void Start()
@@ -30,10 +30,14 @@ public class Cell : MonoBehaviour
 
     private void DecideState()
     {
-        int rand = Random.Range(0,10);
-        if(rand <= 10*this.c)
+        if(!this.run){
             this.run = true;
-        else 
-            this.run = false;
+        } else {
+            float rand = Random.Range(0.0f,1.0f);
+            if(rand <= this.c)
+                this.run = true;
+            else 
+                this.run = false;
+        }
     }
 }
