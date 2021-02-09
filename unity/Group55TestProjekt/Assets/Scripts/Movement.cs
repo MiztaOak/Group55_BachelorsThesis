@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour {
-
+    public bool isIdle;
     public float speed;
     public float rotSpeed; 
    // public GameObject GameObject;
@@ -16,14 +16,15 @@ public class Movement : MonoBehaviour {
     {
         //walkdest = transform.position;
         // StartCoroutine("nextDest");
-        newDestReq();
+        if (!isIdle) newDestReq();
     }
 
     void Update() {
-        StartCoroutine(Go(walkdest, speed));
+        if (!isIdle)  StartCoroutine(Go(walkdest, speed));
     }
     IEnumerator Go(Vector3 destination, float speed) {
-        while (transform.position != destination) {
+  
+        while (Vector3.Magnitude(transform.position - destination) > 0.001) {
             // First step, angle the cell towards the destination
 
             // Create a test destination
