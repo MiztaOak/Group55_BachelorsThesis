@@ -1,11 +1,26 @@
 fileFormatVersion: 2
-guid: bfdbf9dfb9c68bc4586239486095e2a7
+guid: d2f8e5c3716705547bb968af025a7924
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable:
   - first:
-      74: -623603649343465320
-    second: WillThisWork
+      74: 7709686125681325085
+    second: Armature|Armature.001Action
+  - first:
+      74: 4781951162920444690
+    second: Armature|ArmatureAction
+  - first:
+      74: -1422011007694221501
+    second: Armature|ArmatureAction.001
+  - first:
+      74: 6093225430303232669
+    second: Flagella_Idle
+  - first:
+      74: 271997525282036724
+    second: Armature|CylinderAction
+  - first:
+      74: 6093225430303232669
+    second: Armature|ArmatureAction.002
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -35,11 +50,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: WillThisWork
-      takeName: Scene
+      name: Armature|ArmatureAction.002
+      takeName: Armature|ArmatureAction.002
       internalID: 0
-      firstFrame: 3
-      lastFrame: 108
+      firstFrame: 0
+      lastFrame: 110
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -62,7 +77,7 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 3
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -114,7 +129,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: Armature
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
@@ -122,7 +137,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
