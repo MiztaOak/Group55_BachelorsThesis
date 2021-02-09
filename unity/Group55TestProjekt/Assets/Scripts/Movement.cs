@@ -35,9 +35,9 @@ public class Movement : MonoBehaviour {
             // Second, wait for the cell to rotate and move in a straight line towards the destination
             
             yield return null; // Wait until next frame to execute again
-            print("MOVING");
+            // print("MOVING");
         }
-        print("DONE");
+        // print("DONE");
         newDestReq();
     }
     void tumble(Vector3 dest) {
@@ -53,7 +53,7 @@ public class Movement : MonoBehaviour {
     }
     void walk(Vector3 dest) {
         transform.position = Vector3.MoveTowards(transform.position, dest, speed * Time.deltaTime);
-        print(transform.position);
+        // print(transform.position);
     }
 
     
