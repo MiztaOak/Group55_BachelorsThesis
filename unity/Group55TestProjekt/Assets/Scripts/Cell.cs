@@ -16,16 +16,17 @@ public class Cell
     public bool IsRun()
     {
         bool state = this.run;
-        if(!state){ // Will reverse from tumble when accessed
-            this.run = true;
-        }
+        //if(!state){ // Will reverse from tumble when accessed
+        //    this.run = true;
+        //}
+        DecideState();
         return state;
     }
 
     private void DecideState()
     {
         float rand = Random.Range(0.0f,1.0f);
-        if(rand <= this.c)
+        if(rand >= this.c)
             this.run = true;
         else 
             this.run = false;      
