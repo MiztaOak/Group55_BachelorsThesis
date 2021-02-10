@@ -46,7 +46,7 @@ public class CombinedMovement : MonoBehaviour
         {
             Vector3 pos = transform.position;
             float c = model.environment.getConcentration(pos.x, pos.z);
-            print(c);
+            print(cell.deltaC);
             yield return new WaitForSeconds(0.5f);
             cell.SetConcentration(c);
             yield return new WaitForSeconds(0.1f);
