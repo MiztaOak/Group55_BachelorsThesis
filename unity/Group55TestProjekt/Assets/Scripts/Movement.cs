@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class Movement : MonoBehaviour {
     public bool isIdle;
@@ -20,6 +23,11 @@ public class Movement : MonoBehaviour {
     void Update() {
         if (!isIdle) StartCoroutine(Go(walkdest, moveSpeed));
         if (req) newDestReq();
+        if (Input.GetKey("escape"))
+        {
+            SceneManager.LoadScene(0);
+        }
+        
     }
     IEnumerator Go(Vector3 destination, float speed) {
   
@@ -80,5 +88,20 @@ public class Movement : MonoBehaviour {
 
         walkdest = transform.position + vector3;
         req = false;
+    }
+
+
+
+
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.layer == 8)
+        {
+            Destroy(other.gameObject);
+            Debug.Log("dfddfdf");
+        }
+        Debug.Log("aaaaaaaaaaaa");
+    
     }
 }

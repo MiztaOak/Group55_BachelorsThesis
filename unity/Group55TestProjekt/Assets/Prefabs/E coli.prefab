@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 156371432369560349}
   - component: {fileID: 156371432369560350}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: E coli
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,8 +299,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 0.55
+  m_Height: 2.2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &156371431633447272
