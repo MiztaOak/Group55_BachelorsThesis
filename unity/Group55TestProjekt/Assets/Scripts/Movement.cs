@@ -40,6 +40,8 @@ public class Movement : MonoBehaviour {
             yield return null; // Wait until next frame to execute again
         }
         req = true; 
+        //newDestReq();
+
     }
     void tumble(Vector3 dest,float speed) {
         req = false;
