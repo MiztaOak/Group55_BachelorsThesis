@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class BasicStartUpScript : MonoBehaviour
 {
-    public float d, i_0, x, y;
+    public float d, i_0;
     // Start is called before the first frame update
     void Start()
     {
-        EnvironmentFactory.CreateEnvironment(EnvironmentType.Basic, d, i_0, x, y, 0, 0);
+        EnvironmentFactory.CreateEnvironment(EnvironmentType.Basic, d, i_0, transform.position.x, transform.position.z, 0, 0);
     }
 
     // Update is called once per frame
