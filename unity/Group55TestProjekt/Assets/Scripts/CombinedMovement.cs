@@ -46,17 +46,18 @@ public class CombinedMovement : MonoBehaviour
         {
             Vector3 pos = transform.position;
             float c = model.environment.getConcentration(pos.x, pos.z);
-            print(cell.deltaC);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
             cell.SetConcentration(c);
             yield return new WaitForSeconds(0.1f);
             bool tmp = cell.IsRun();
             if(tmp && !run)
             {
+                print("Run");
                 myAnimator.SetBool("Rotating", false);
             }
             else if(!tmp && run)
             {
+                print("Tumble");
                 myAnimator.SetBool("Rotating", true);
                 if (Random.value <= 0.5)
                     rotDir = -1;

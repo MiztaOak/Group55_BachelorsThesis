@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class Cell
 {
-    private bool run = true;
-    private float c = 0;
-    public float deltaC { get; set; }
-    
-    //calculated values of energy and phosphorylated concentrations
-    private float m; //methylation
-    private float energy; // F
-    private float phi; //receptor activity
-    //phosphorylated concentrations
-    private float ap;
-    private float bp;
-    private float yp;
 
     //Static values of total concentrations and chemical properties
     //Taken from table 1 in ODEs in Chemotaxis.pdf
@@ -33,42 +21,92 @@ public class Cell
     private static float k6 = 0.085f; //per second
     private static float gr = 0.0375f; //per uM per second
     private static float gb = 3.14f; //per uM^2 per second
-    private static float kaOn = 0.5f; //mM
-    private static float kaOff = 0.02f; //mM
+    private static float kOn = 0.5f; //mM
+    private static float kOff = 0.02f; //mM
+
+    private bool run = true;
+    private float c = 0;
+    // public float deltaC { get; set; }
+    
+    //calculated values of energy and phosphorylated concentrations
+    private float m; //methylation
+    private float energy; // F
+    private float phi; //receptor activity
+    //phosphorylated concentrations
+    private float ap = a/3;
+    private float bp = b/3;
+    private float yp = y/3;
 
     public void SetConcentration(float c)
     {
-        deltaC = c - this.c;
+        // deltaC = c - this.c;
         this.c = c;
     }
 
     private void CalculatePhi(){
         float dm;
-        dm = gr*r*(1-phi)-gb*Mathf.pow(bp,2)*phi;
+        dm = gr*r*(1-phi)-gb*Mathf.Pow(bp,2)*phi;
         m = m + dm;
         float x = (1 + c/kOff) / (1 + c/kOn);
         energy = n * (1 - m/2 + Mathf.Log(x));
+        Debug.Log("F: " + energy);
         phi = 1 / (1 + Mathf.Exp(energy));
+    }
+
+    private void CalculateA(){
+        float dA;
+        dA = phi*k1*(a-ap)-k2*ap*(y-yp)-k3*ap*(b-bp);
+        ap = ap + dA;
+    }
+
+    private void CalculateY(){
+        float dY;
+        dY = k2*ap*(y-yp)-k4*yp*z-k6*yp;
+        yp = yp + dY;
+    }
+
+    private void CalculateB(){
+        float dB;
+        dB = k3*ap*(b-bp)-k5*bp;
+        bp = bp + dB;
     }
 
     public bool IsRun()
     {
+        Debug.Log("IsRun");
         DecideState();
         bool state = this.run;
-        //if(!state){ // Will reverse from tumble when accessed
-        //    this.run = true;
-        //}
-        
+        if(!state){ // Will reverse from tumble when accessed
+           this.run = true;
+        }
         return state;
     }
 
     private void DecideState()
     {
+        Debug.Log("DecideState");
+        Debug.Log("Ap: " + ap);
+        Debug.Log("Bp: " + bp);
+        Debug.Log("Yp: " + yp);
+        Debug.Log("Phi: " + phi);
         CalculatePhi();
+        CalculateA();
+        CalculateY();
+        CalculateB();
+        Debug.Log("Ap: " + ap);
+        Debug.Log("Bp: " + bp);
+        Debug.Log("Yp: " + yp);
+        Debug.Log("Phi: " + phi);
+        float tumbleBias = yp/y;
         float rand = Random.Range(0.0f,1.0f);
-        if(rand >= this.c && deltaC >= 0)
+        if(tumbleBias > rand)
+            this.run = false;
+        else
             this.run = true;
-        else 
-            this.run = false;      
+        // float rand = Random.Range(0.0f,1.0f);
+        // if(rand >= this.c && deltaC >= 0)
+        //     this.run = true;
+        // else 
+        //     this.run = false;      
     }
 }
