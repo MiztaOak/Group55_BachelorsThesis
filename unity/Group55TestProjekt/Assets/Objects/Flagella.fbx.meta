@@ -21,7 +21,12 @@ ModelImporter:
   - first:
       74: 6093225430303232669
     second: Armature|ArmatureAction.002
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: d4dd2c72423cf4849ad0eb9e33ea6b37, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
