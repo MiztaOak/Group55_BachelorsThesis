@@ -21,8 +21,22 @@ public class Cell
     private static float k6 = 0.085f; //per second
     private static float gr = 0.0375f; //per uM per second
     private static float gb = 3.14f; //per uM^2 per second
+
+
     private static float kOn = 0.5f; //mM
     private static float kOff = 0.02f; //mM
+
+    private static float kbar1 = 48.571f;
+    private static float kbar2 = 1385.0f;
+    private static float kbar3 = 6.0f;
+    private static float kbar4 = 8.686f;
+    private static float kbar5 = 1.0f;
+    private static float kbar6 = 0.121f; 
+    private static float alpha1 = 0.814f;
+    private static float alpha2 = 28.214f;
+    private static float gammaR = 0.00857f;
+    private static float gammaB = 0.352f;
+
 
     private bool run = true;
     private float c = 0;
@@ -33,9 +47,9 @@ public class Cell
     private float energy; // F
     private float phi; //receptor activity
     //phosphorylated concentrations
-    private float ap = a/3;
-    private float bp = b/3;
-    private float yp = y/3;
+    private float ap = 0;
+    private float bp = 0;
+    private float yp = 0;
 
     public void SetConcentration(float c)
     {
@@ -43,37 +57,38 @@ public class Cell
         this.c = c;
     }
 
+    //Values run away or become NaN very quickly without bounding.
+
     private void CalculatePhi(){
         float dm;
-        dm = gr*r*(1-phi)-gb*Mathf.Pow(bp,2)*phi;
+        dm = (gammaR*(1-phi)-gammaB*Mathf.Pow(bp,2)*phi)*k5;
         m = m + dm;
-        float x = (1 + c/kOff) / (1 + c/kOn);
+        float l = c * 0.0000001f; //Absolute concentration? mM
+        float x = (1 + l/kOff) / (1 + l/kOn);
         energy = n * (1 - m/2 + Mathf.Log(x));
-        Debug.Log("F: " + energy);
         phi = 1 / (1 + Mathf.Exp(energy));
     }
 
     private void CalculateA(){
-        float dA;
-        dA = phi*k1*(a-ap)-k2*ap*(y-yp)-k3*ap*(b-bp);
-        ap = ap + dA;
+        float da;
+        da = (phi*kbar1*(1-ap)-kbar2*ap*(1-yp)-kbar3*ap*(1-bp))*k5;
+        ap = Mathf.Min(Mathf.Max(ap + da, 0), a); //Should be balanced without
     }
 
     private void CalculateY(){
-        float dY;
-        dY = k2*ap*(y-yp)-k4*yp*z-k6*yp;
-        yp = yp + dY;
+        float dy;
+        dy = (alpha1*kbar2*ap*(1-yp)-(kbar4+kbar6)*yp)*k5;
+        yp = Mathf.Min(Mathf.Max(yp + dy, 0), y);
     }
 
     private void CalculateB(){
-        float dB;
-        dB = k3*ap*(b-bp)-k5*bp;
-        bp = bp + dB;
+        float db;
+        db = (alpha2*kbar3*ap*(1-bp)-kbar5*bp)*k5;
+        bp = Mathf.Min(Mathf.Max(bp + db, 0), b);
     }
 
     public bool IsRun()
     {
-        Debug.Log("IsRun");
         DecideState();
         bool state = this.run;
         if(!state){ // Will reverse from tumble when accessed
@@ -84,22 +99,16 @@ public class Cell
 
     private void DecideState()
     {
-        Debug.Log("DecideState");
-        Debug.Log("Ap: " + ap);
-        Debug.Log("Bp: " + bp);
-        Debug.Log("Yp: " + yp);
-        Debug.Log("Phi: " + phi);
+        //Try solving diff. equations sequentially and produce output.
+        //Only either maxed out phosphorylated, or 0. Completely unbalanced, probably
+        //completely incorrectly handled.
+
         CalculatePhi();
         CalculateA();
         CalculateY();
         CalculateB();
-        Debug.Log("Ap: " + ap);
-        Debug.Log("Bp: " + bp);
-        Debug.Log("Yp: " + yp);
-        Debug.Log("Phi: " + phi);
-        float tumbleBias = yp/y;
-        float rand = Random.Range(0.0f,1.0f);
-        if(tumbleBias > rand)
+        float tumbleBias = yp/y; //Always 1 or 0.
+        if(tumbleBias > 0.5f)
             this.run = false;
         else
             this.run = true;

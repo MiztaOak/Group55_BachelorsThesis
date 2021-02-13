@@ -52,12 +52,10 @@ public class CombinedMovement : MonoBehaviour
             bool tmp = cell.IsRun();
             if(tmp && !run)
             {
-                print("Run");
                 myAnimator.SetBool("Rotating", false);
             }
             else if(!tmp && run)
             {
-                print("Tumble");
                 myAnimator.SetBool("Rotating", true);
                 if (Random.value <= 0.5)
                     rotDir = -1;
