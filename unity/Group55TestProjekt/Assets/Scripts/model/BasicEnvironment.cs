@@ -27,7 +27,7 @@ public class BasicEnvironment : AbstractEnvironment
     public float getConcentration(float x, float y) //"based" on the model from the article that Gustav sent us
     {
         float distPow2 = Mathf.Pow(x - xCord, 2) + Mathf.Pow(y - yCord, 2); //calculates the dist^2 just to make the next row more readable
-        float c = i_0 + Mathf.Exp(-Mathf.Sqrt(distPow2/d)); //calculatates c
+        float c = i_0 + Mathf.Exp(-distPow2*d); //calculatates c
         return c <= 1 ? c : 1; //makes sure that c is not greater than 1
     }
 }
