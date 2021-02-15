@@ -8,7 +8,7 @@ public class BasicStartUpScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        EnvironmentFactory.CreateEnvironment(EnvironmentType.Basic, d, i_0, transform.position.x, transform.position.z, 0, 0);
+        EnvironmentFactory.CreateBasicEnvionment(d, i_0, transform.position.x, transform.position.z);
     }
 
     // Update is called once per frame
