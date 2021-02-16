@@ -47,11 +47,16 @@ public class Cell
     //Probabilistic
 
     //Probabilities of reactions
-    private float pA = 0.5f;
-    private float pY = 0.5f;
-    private float pB = 0.5f;
-    private float pZ = 0.4f;
-    private float pR = 0.3f;
+    private float pA = 0.34f; //Autophosphorylation by A
+    private float pY = 0.00085f; //Auto dephosphorylation by Y-P
+    private float pB = 0.007f; //Auto dephosphorylation by B-P
+    private float pAY = 0.9f; //Phosphotransfer from A-P to Y
+    private float pAB = 0.15f; //Phosphotransfer from A-P to B
+    private float pZ = 0.016f; //Dephosphorylation of Y-P by Z
+    private float pMR = 0.000375f; //Methylation by R
+    private float pMB = 0.0314f; //Demethylation by B-P
+    private float pFlagella = 0.8f; //Binding of Y-P to flagella
+    private float phi; //Activity of receptor
 
     //Total concentrations
     private int cheA = 100;
@@ -126,45 +131,64 @@ public class Cell
     private void MCP()
     { //Determine 'activity' of A based on ligands, cheR and cheB
         //c and cheB decrease activity, cheR increases (methylation)
-        int nR = Binomial.Sample(pR, cheR);
-        int nB = Binomial.Sample(pB, cheBP);
+        int nR = Binomial.Sample(pMR, cheR);
+        int nB = Binomial.Sample(pMB, cheBP);
         float r = (float) nR / cheR;
         float b = (float) nB / cheBP;
-        pA = (1-c)*(1-b)*r; 
-        Debug.Log("nR: " + r);
-        Debug.Log("nB: " + b);
-        Debug.Log("pA: " + pA);
+        phi = (1-c)*(1-b)*r; 
+        int nA = Binomial.Sample(pA, (cheA-cheAP));
+        cheAP += nA;
     }
 
     private void CheA()
     { //Phosphorylation from A to B and Y
-        if(pA > 0 && cheAP > 0)
-        {
-            int nB = cheB - cheBP;
-            int nY = cheY-cheYP;
-            int n = Mathf.Min(cheAP, nY + nB); //Available particles
-            int nP = Binomial.Sample(pA,n); //transfers
-            Debug.Log("nP: " + nP);
-            int shareB = (int) (nB / (nB+nY)) * nP;
-            cheBP += shareB; //portion to B
-            cheYP += nP-shareB; //portion to Y
-            cheAP -= nP; //Subtract from A
-        }
+
+        int nB = cheB-cheBP;
+        int nY = cheY-cheYP;
+        int n = Mathf.Min(cheAP, nB); //Available particles
+        int nP = Binomial.Sample(pAB,n); //transfers to B
+        cheBP += nP;
+        cheAP -= nP; //Subtract from A
+        n = Mathf.Min(cheAP, nY); //Available particles
+        nP = Binomial.Sample(pAY,n); //transfers to B
+        cheYP += nP; //portion to Y
+        cheAP -= nP; //Subtract from A
     }
 
     private void Flagella()
     {
-        int nP = Binomial.Sample(pY,cheYP);
-        if(nP > 20)
+        int nP = Binomial.Sample(pFlagella,cheYP);
+        if(nP > 10)
             this.run = false;
         else
             this.run = true;
     }
 
+    private void CheY()
+    { //Phosphorylated Y are auto dephosphorylated
+        if(cheYP > 0)
+        {
+            int nP = Binomial.Sample(pY,cheYP);
+            cheYP -= nP;
+        }
+    }
+
     private void CheZ()
     { //Phosphorylated Y are dephosphorylated by Z
-        int nP = Binomial.Sample(pZ,cheYP);
-        cheY -= nP;
+        if(cheYP > 0)
+        {
+            int nP = Binomial.Sample(pZ,cheYP);
+            cheYP -= nP;
+        }
+    }
+
+    private void CheB()
+    { //Phosphorylated B are auto dephosphorylated
+        if(cheBP > 0)
+        {
+            int nP = Binomial.Sample(pB,cheBP);
+            cheYP -= nP;
+        }
     }
 
     public bool IsRun()
@@ -187,6 +211,8 @@ public class Cell
         MCP();
         CheA();
         Flagella();
+        CheY();
+        CheB();
         CheZ();
         Debug.Log("CheY-P: " + cheYP);
         //Try solving diff. equations sequentially and produce output.
