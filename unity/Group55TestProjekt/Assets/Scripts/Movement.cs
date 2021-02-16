@@ -1,59 +1,62 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class Movement : MonoBehaviour {
-
-    public float speed;
-    public float rotSpeed; 
-   // public GameObject GameObject;
+    public bool isIdle;
+    public float moveSpeed;
+    public float rotSpeed;
+    private Animator myAnimator;
     private Vector3 walkdest;
-    bool rotated = false;
-    Vector3 testDest = new Vector3(0, 1, 1);
+    bool rotating = false;
+    bool req = true;
 
     void Start()
     {
-        //walkdest = transform.position;
-        // StartCoroutine("nextDest");
-        newDestReq();
+        myAnimator = GetComponent<Animator>();
     }
 
     void Update() {
-        StartCoroutine(Go(walkdest, speed));
+        if (!isIdle) StartCoroutine(Go(walkdest, moveSpeed));
+        if (req) newDestReq();
+        if (Input.GetKey("escape"))
+        {
+            SceneManager.LoadScene(0);
+        }
+        
     }
     IEnumerator Go(Vector3 destination, float speed) {
+  
         while (transform.position != destination) {
             // First step, angle the cell towards the destination
-
-            // Create a test destination
-
-            
-            tumble(destination);
+            tumble(destination,rotSpeed);
             //tumble(destination);
-            if (rotated) walk(destination);
+            if (!rotating) walk(destination, speed);
             // Second, wait for the cell to rotate and move in a straight line towards the destination
-            
             yield return null; // Wait until next frame to execute again
-            print("MOVING");
         }
-        print("DONE");
-        newDestReq();
+        req = true; 
+        //newDestReq();
+
     }
-    void tumble(Vector3 dest) {
+    void tumble(Vector3 dest,float speed) {
+        req = false;
         Quaternion newRot = Quaternion.LookRotation(dest - transform.position);
         newRot = Quaternion.Euler(0, newRot.eulerAngles.y+90,0);
         Debug.DrawLine(transform.position, dest, Color.red);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, newRot, rotSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, newRot, speed * Time.deltaTime);
         if (transform.rotation == newRot) {
-            rotated = true;
-        } else {
-            rotated = false;
+            rotating = false;
+            myAnimator.SetBool("Rotating", false);
+           // print("ROT FALSE");
         }
     }
-    void walk(Vector3 dest) {
+    void walk(Vector3 dest, float speed) {
         transform.position = Vector3.MoveTowards(transform.position, dest, speed * Time.deltaTime);
-        print(transform.position);
     }
 
     
@@ -75,6 +78,10 @@ public class Movement : MonoBehaviour {
 
     // Generates a new destination 
     void newDestReq() {
+         // Make sure only to request once
+        rotating = true;
+        myAnimator.SetBool("Rotating", true);
+        print("REQUESTING");
         // Generate random walk distance 
         float randDist = Random.Range(-5, 5);
          // Generate new angle for tumbling
@@ -82,5 +89,21 @@ public class Movement : MonoBehaviour {
         Vector3 vector3 = new Vector3(Mathf.Cos(randAngle) * randDist, 0, Mathf.Sin(randAngle) * randDist);
 
         walkdest = transform.position + vector3;
+        req = false;
+    }
+
+
+
+
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.layer == 8)
+        {
+            Destroy(other.gameObject);
+            Debug.Log("dfddfdf");
+        }
+        Debug.Log("aaaaaaaaaaaa");
+    
     }
 }
