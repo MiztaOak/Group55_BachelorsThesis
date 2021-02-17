@@ -8,7 +8,7 @@ public static class EnvironmentFactory
     //Abstracing the actual creation and lessening the impact of any possible changes to the environmental models
     public static void CreateBasicEnvionment(float d, float i_0, float x, float z)
     {
-        Model.GetInstance().environment = new BasicEnvironment(d, i_0, x, z);
+        Model.GetInstance().environment = new Environment(d, i_0, x, z);
     }
 
     public static void CreateBasicEnvionment(float d, float i_0)
