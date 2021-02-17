@@ -4,18 +4,25 @@ using UnityEngine;
 
 public static class EnvironmentFactory
 {
-    //Method used to inject a new environment into the model
-    //To be used by the ui of the program based on the user inserted values for the different parameters (this is just a temp solution that should work in the begining)
-    public static void CreateEnvironment(EnvironmentType type, float d, float i_0, float x, float y, float maxTime, float k)
+    //These methods will be used to set/create the environment based on the input data in the ui they serve as a interface between the view and the model
+    //Abstracing the actual creation and lessening the impact of any possible changes to the environmental models
+    public static void CreateBasicEnvionment(float d, float i_0, float x, float z)
     {
-        switch (type)
-        {
-            case EnvironmentType.Basic:
-                Model.GetInstance().environment = new BasicEnvironment(d, i_0, x, y);
-                break;
-            case EnvironmentType.Time:
-                Model.GetInstance().environment = new TimeDependentEnvironment(d, i_0, x, y, maxTime, k);
-                break;
-        }
+        Model.GetInstance().environment = new BasicEnvironment(d, i_0, x, z);
+    }
+
+    public static void CreateBasicEnvionment(float d, float i_0)
+    {
+        CreateBasicEnvionment(d, i_0, 0, 0);
+    }
+
+    public static void CreateTimeDependentEnvionment(float d, float i_0, float maxTime, float k, float x, float z)
+    {
+        Model.GetInstance().environment = new TimeDependentEnvironment(d, i_0,maxTime, k, x, z);
+    }
+
+    public static void CreateTimeDependentEnvionment(float d, float i_0, float maxTime, float k)
+    {
+        CreateTimeDependentEnvionment(d, i_0, maxTime, k, 0, 0);
     }
 }
