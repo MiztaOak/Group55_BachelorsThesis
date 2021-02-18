@@ -9,7 +9,7 @@ public class Cell
 {
 
     private Model model;
-    private float x,z;
+    private float x, z;
     private bool run = true;
     private float c = 0;
 
@@ -74,7 +74,7 @@ public class Cell
     // private int cheAP = 30;
     // private int cheYP = 30;
     // private int cheBP = 30;
-    
+
     // //calculated values of energy and phosphorylated concentrations
     // private float m; //methylation
     // private float energy; // F
@@ -189,12 +189,12 @@ public class Cell
     private void CompareAndDecide()
     { //Basic approach of just seeing if current position is better than last
         int x = 5;
-        if( ( this.c / this.dc ) < 1 ) //Shift likelihood of tumbling
+        if ((this.c / this.dc) < 1) //Shift likelihood of tumbling
             x += 2;
         else
             x -= 2;
-        float rand = Random.Range(0.0f,1.0f);
-        if( rand* 10 > x )
+        float rand = Random.Range(0.0f, 1.0f);
+        if (rand * 10 > x)
             this.run = true;
         else
             this.run = false;

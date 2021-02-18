@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CombinedMovement : MonoBehaviour
+public class Movement : MonoBehaviour
 {
     private Cell cell;
     private bool run;
@@ -47,7 +47,7 @@ public class CombinedMovement : MonoBehaviour
             cell.SetPos(pos.x, pos.z);
             yield return new WaitForSeconds(0.1f);
             bool tmp = cell.IsRun();
-            if(tmp && !run)
+            if (tmp && !run)
             {
                 myAnimator.SetBool("Rotating", false);
             }

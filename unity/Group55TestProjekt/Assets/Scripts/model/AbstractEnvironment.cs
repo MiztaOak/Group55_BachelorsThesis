@@ -1,12 +1,12 @@
 ﻿
 public abstract class AbstractEnvironment
 {
-    protected float xCord, yCord; //postion of the source
+    protected float xCord, zCord; //postion of the source
     
-    public AbstractEnvironment(float xCord, float yCord)
+    public AbstractEnvironment(float xCord, float zCord)
     {
         this.xCord = xCord;
-        this.yCord = yCord;
+        this.zCord = zCord;
     }
 
     public AbstractEnvironment() : this(0, 0) { } //defaul constructor
@@ -14,7 +14,7 @@ public abstract class AbstractEnvironment
 
 
     //method that returns the concentration for a given postion to be implemnted by the specific sub class
-    public abstract float getConcentration(float x, float y);
+    public abstract float getConcentration(float x, float z);
 
 
 }
