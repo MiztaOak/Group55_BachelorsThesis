@@ -44,7 +44,7 @@ public class CombinedMovement : MonoBehaviour
         {
             Vector3 pos = transform.position;
             yield return new WaitForSeconds(1.0f);
-            cell.setPos(pos.x, pos.z);
+            cell.SetPos(pos.x, pos.z);
             yield return new WaitForSeconds(0.1f);
             bool tmp = cell.IsRun();
             if(tmp && !run)

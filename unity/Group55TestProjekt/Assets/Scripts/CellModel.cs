@@ -8,8 +8,13 @@ using MathNet.Numerics.Random;
 public class Cell
 {
 
-    private float x,z;
     private Model model;
+    private float x,z;
+    private bool run = true;
+    private float c = 0;
+
+    //Basic comparison approach
+    private float dc = 0;
 
 
     //Static values of total concentrations and chemical properties
@@ -47,32 +52,28 @@ public class Cell
     //Probabilistic
 
     //Probabilities of reactions
-    private float pA = 0.34f; //Autophosphorylation by A
-    private float pY = 0.00085f; //Auto dephosphorylation by Y-P
-    private float pB = 0.007f; //Auto dephosphorylation by B-P
-    private float pAY = 0.9f; //Phosphotransfer from A-P to Y
-    private float pAB = 0.15f; //Phosphotransfer from A-P to B
-    private float pZ = 0.016f; //Dephosphorylation of Y-P by Z
-    private float pMR = 0.000375f; //Methylation by R
-    private float pMB = 0.0314f; //Demethylation by B-P
-    private float pFlagella = 0.8f; //Binding of Y-P to flagella
-    private float phi; //Activity of receptor
+    // private float pA = 0.34f; //Autophosphorylation by A
+    // private float pY = 0.00085f; //Auto dephosphorylation by Y-P
+    // private float pB = 0.007f; //Auto dephosphorylation by B-P
+    // private float pAY = 0.9f; //Phosphotransfer from A-P to Y
+    // private float pAB = 0.15f; //Phosphotransfer from A-P to B
+    // private float pZ = 0.016f; //Dephosphorylation of Y-P by Z
+    // private float pMR = 0.000375f; //Methylation by R
+    // private float pMB = 0.0314f; //Demethylation by B-P
+    // private float pFlagella = 0.8f; //Binding of Y-P to flagella
+    // private float phi; //Activity of receptor
 
     //Total concentrations
-    private int cheA = 100;
-    private int cheY = 100;
-    private int cheB = 100;
-    private int cheZ = 100;
-    private int cheR = 100;
+    // private int cheA = 100;
+    // private int cheY = 100;
+    // private int cheB = 100;
+    // private int cheZ = 100;
+    // private int cheR = 100;
 
     //Phosphorylated concentrations
-    private int cheAP = 30;
-    private int cheYP = 30;
-    private int cheBP = 30;
-
-    private bool run = true;
-    private float c = 0;
-    // public float deltaC { get; set; }
+    // private int cheAP = 30;
+    // private int cheYP = 30;
+    // private int cheBP = 30;
     
     // //calculated values of energy and phosphorylated concentrations
     // private float m; //methylation
@@ -86,12 +87,6 @@ public class Cell
     public Cell()
     {
         this.model = Model.GetInstance();
-    }
-
-    public void SetConcentration(float c)
-    {
-        // deltaC = c - this.c;
-        this.c = c;
     }
 
     //Values run away or become NaN very quickly without bounding.
@@ -128,78 +123,93 @@ public class Cell
     //     bp = Mathf.Min(Mathf.Max(bp + db, 0), b);
     // }
 
-    private void MCP()
-    { //Determine 'activity' of A based on ligands, cheR and cheB
-        //c and cheB decrease activity, cheR increases (methylation)
-        int nR = Binomial.Sample(pMR, cheR);
-        int nB = Binomial.Sample(pMB, cheBP);
-        float r = (float) nR / cheR;
-        float b = (float) nB / cheBP;
-        phi = (1-c)*(1-b)*r; 
-        int nA = Binomial.Sample(pA, (cheA-cheAP));
-        cheAP += nA;
-    }
+    // private void MCP()
+    // { //Determine 'activity' of A based on ligands, cheR and cheB
+    //     //c and cheB decrease activity, cheR increases (methylation)
+    //     int nR = Binomial.Sample(pMR, cheR);
+    //     int nB = Binomial.Sample(pMB, cheBP);
+    //     float r = (float) nR / cheR;
+    //     float b = (float) nB / cheBP;
+    //     phi = (1-c)*(1-b)*r; 
+    //     int nA = Binomial.Sample(pA, (cheA-cheAP));
+    //     cheAP += nA;
+    // }
 
-    private void CheA()
-    { //Phosphorylation from A to B and Y
+    // private void CheA()
+    // { //Phosphorylation from A to B and Y
 
-        int nB = cheB-cheBP;
-        int nY = cheY-cheYP;
-        int n = Mathf.Min(cheAP, nB); //Available particles
-        int nP = Binomial.Sample(pAB,n); //transfers to B
-        cheBP += nP;
-        cheAP -= nP; //Subtract from A
-        n = Mathf.Min(cheAP, nY); //Available particles
-        nP = Binomial.Sample(pAY,n); //transfers to B
-        cheYP += nP; //portion to Y
-        cheAP -= nP; //Subtract from A
-    }
+    //     int nB = cheB-cheBP;
+    //     int nY = cheY-cheYP;
+    //     int n = Mathf.Min(cheAP, nB); //Available particles
+    //     int nP = Binomial.Sample(pAB,n); //transfers to B
+    //     cheBP += nP;
+    //     cheAP -= nP; //Subtract from A
+    //     n = Mathf.Min(cheAP, nY); //Available particles
+    //     nP = Binomial.Sample(pAY,n); //transfers to B
+    //     cheYP += nP; //portion to Y
+    //     cheAP -= nP; //Subtract from A
+    // }
 
-    private void Flagella()
-    {
-        int nP = Binomial.Sample(pFlagella,cheYP);
-        if(nP > 10)
-            this.run = false;
+    // private void Flagella()
+    // {
+    //     int nP = Binomial.Sample(pFlagella,cheYP);
+    //     if(nP > 10)
+    //         this.run = false;
+    //     else
+    //         this.run = true;
+    // }
+
+    // private void CheY()
+    // { //Phosphorylated Y are auto dephosphorylated
+    //     if(cheYP > 0)
+    //     {
+    //         int nP = Binomial.Sample(pY,cheYP);
+    //         cheYP -= nP;
+    //     }
+    // }
+
+    // private void CheZ()
+    // { //Phosphorylated Y are dephosphorylated by Z
+    //     if(cheYP > 0)
+    //     {
+    //         int nP = Binomial.Sample(pZ,cheYP);
+    //         cheYP -= nP;
+    //     }
+    // }
+
+    // private void CheB()
+    // { //Phosphorylated B are auto dephosphorylated
+    //     if(cheBP > 0)
+    //     {
+    //         int nP = Binomial.Sample(pB,cheBP);
+    //         cheYP -= nP;
+    //     }
+    // }
+
+    private void CompareAndDecide()
+    { //Basic approach of just seeing if current position is better than last
+        int x = 5;
+        if( ( this.c / this.dc ) < 1 ) //Shift likelihood of tumbling
+            x += 2;
         else
+            x -= 2;
+        float rand = Random.Range(0.0f,1.0f);
+        if( rand* 10 > x )
             this.run = true;
-    }
-
-    private void CheY()
-    { //Phosphorylated Y are auto dephosphorylated
-        if(cheYP > 0)
-        {
-            int nP = Binomial.Sample(pY,cheYP);
-            cheYP -= nP;
-        }
-    }
-
-    private void CheZ()
-    { //Phosphorylated Y are dephosphorylated by Z
-        if(cheYP > 0)
-        {
-            int nP = Binomial.Sample(pZ,cheYP);
-            cheYP -= nP;
-        }
-    }
-
-    private void CheB()
-    { //Phosphorylated B are auto dephosphorylated
-        if(cheBP > 0)
-        {
-            int nP = Binomial.Sample(pB,cheBP);
-            cheYP -= nP;
-        }
+        else
+            this.run = false;
     }
 
     public bool IsRun()
     {
+        this.dc = this.c;
         this.c = model.environment.getConcentration(x, z);
         DecideState();
         bool state = this.run;
         return state;
     }
 
-    public void setPos(float x, float z)
+    public void SetPos(float x, float z)
     {
         this.x = x;
         this.z = z;
@@ -207,14 +217,20 @@ public class Cell
 
     private void DecideState()
     {
+
+        //Delta-c approach
+        CompareAndDecide();
+
         //Probabilistic approach:
-        MCP();
-        CheA();
-        Flagella();
-        CheY();
-        CheB();
-        CheZ();
-        Debug.Log("CheY-P: " + cheYP);
+        // MCP();
+        // CheA();
+        // Flagella();
+        // CheY();
+        // CheB();
+        // CheZ();
+        // Debug.Log("CheY-P: " + cheYP);
+
+
         //Try solving diff. equations sequentially and produce output.
         //Only either maxed out phosphorylated, or 0. Completely unbalanced, probably
         //completely incorrectly handled.
