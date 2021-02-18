@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class Movement : MonoBehaviour
 {
     private Cell cell;
-    private Model model;
     private bool run;
 
     public float moveSpeed;
@@ -18,7 +17,6 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        model = Model.GetInstance();
         cell = new Cell();
         myAnimator = GetComponent<Animator>();
         StartCoroutine(UpdateState());
@@ -45,13 +43,11 @@ public class Movement : MonoBehaviour
         while (true)
         {
             Vector3 pos = transform.position;
-            float c = model.environment.getConcentration(pos.x, pos.z);
-            print(cell.deltaC);
-            yield return new WaitForSeconds(0.5f);
-            cell.SetConcentration(c);
+            yield return new WaitForSeconds(1.0f);
+            cell.SetPos(pos.x, pos.z);
             yield return new WaitForSeconds(0.1f);
             bool tmp = cell.IsRun();
-            if(tmp && !run)
+            if (tmp && !run)
             {
                 myAnimator.SetBool("Rotating", false);
             }

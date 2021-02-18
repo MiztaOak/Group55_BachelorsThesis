@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 156371432369560348}
   - component: {fileID: 156371432369560349}
   - component: {fileID: 156371432369560350}
-  - component: {fileID: -1136974348182807735}
+  - component: {fileID: 5091576473555167573}
   m_Layer: 0
   m_Name: E coli
   m_TagString: Untagged
@@ -126,7 +126,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 156371432369560344}
   m_CullTransparentMesh: 0
---- !u!114 &-1136974348182807735
+--- !u!114 &5091576473555167573
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 156371432369560344}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3f82caa06a076f499700df395d191df, type: 3}
+  m_Script: {fileID: 11500000, guid: efc863fc3afee3746bb916cea78fad85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 1.2
