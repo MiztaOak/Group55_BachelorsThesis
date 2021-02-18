@@ -44,9 +44,7 @@ public class Movement : MonoBehaviour
         {
             Vector3 pos = transform.position;
             yield return new WaitForSeconds(1.0f);
-            cell.SetPos(pos.x, pos.z);
-            yield return new WaitForSeconds(0.1f);
-            bool tmp = cell.IsRun();
+            bool tmp = cell.GetRunningState(pos.x, pos.z);
             if (tmp && !run)
             {
                 myAnimator.SetBool("Rotating", false);
