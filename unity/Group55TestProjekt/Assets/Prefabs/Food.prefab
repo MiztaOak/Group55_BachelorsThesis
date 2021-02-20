@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4426331137064021257}
   - component: {fileID: 405811108139718423}
   - component: {fileID: 6355192246608243579}
-  - component: {fileID: 5060294906494384472}
+  - component: {fileID: 5541462066730813249}
   m_Layer: 8
   m_Name: Food
   m_TagString: Untagged
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c30934de0ccd74c87fd9555a681a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5060294906494384472
+--- !u!114 &5541462066730813249
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,8 +116,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4215132232215556443}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54ff8b54d9f1ea145ae06cf0c3cc1c94, type: 3}
+  m_Script: {fileID: 11500000, guid: f7e797ed434e3bc479870b94147dada9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  d: 2
-  i_0: 0.2
+  heatmapVisual: {fileID: 0}
+  width: 120
+  height: 120
+  cellSize: 0.25
+  d: 50
+  i_0: 0
