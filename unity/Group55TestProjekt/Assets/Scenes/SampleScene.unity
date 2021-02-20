@@ -307,30 +307,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &714910454 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4215132232215556443, guid: 7caadb38b9bb310498ce5beb7cf86ef4,
-    type: 3}
-  m_PrefabInstance: {fileID: 715518703935485179}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &714910461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 714910454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7e797ed434e3bc479870b94147dada9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  heatmapVisual: {fileID: 1839562868}
-  width: 120
-  height: 120
-  cellSize: 0.25
-  d: 50
-  i_0: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,6 +596,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5541462066730813249, guid: 7caadb38b9bb310498ce5beb7cf86ef4,
+        type: 3}
+      propertyPath: heatmapVisual
+      value: 
+      objectReference: {fileID: 1839562868}
     - target: {fileID: 7084722389979217868, guid: 7caadb38b9bb310498ce5beb7cf86ef4,
         type: 3}
       propertyPath: m_RootOrder
