@@ -17,10 +17,10 @@ public class Heatmap : MonoBehaviour
     {
         EnvironmentFactory.CreateBasicEnvionment(d, i_0, transform.position.x, transform.position.z);
 
-        Vector3 heatmapPosition = transform.position - new Vector3(width*cellSize*.5f, transform.position.y+1, height*cellSize* .5f);
+        Vector3 heatmapPosition = transform.position - new Vector3(width*cellSize*.5f, transform.position.y+1, height*cellSize* .5f); //calculates the position based on the pos of the food object
         grid = new Grid(width,height,cellSize,heatmapPosition);
 
-        heatmapVisual.SetGrid(grid);
+        heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class
     }
     
 }

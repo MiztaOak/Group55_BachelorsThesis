@@ -12,7 +12,7 @@ public class Grid
     private float cellSize;
     private Vector3 origin;
 
-    private List<GridListeners> listeners = new List<GridListeners>();
+    private List<GridListeners> listeners = new List<GridListeners>();  //list of objects to notify when stuff changes will have to be used when the c changes over time
 
     public Grid(int width, int height, float cellSize, Vector3 origin)
     {
@@ -30,7 +30,7 @@ public class Grid
 
     public Grid(int widht, int height) : this(widht, height, 1, Vector3.zero) { }
 
-    private void PopulateGrid()
+    private void PopulateGrid() //populates the grid with the consentrations for the different "squares"
     {
         Model model = Model.GetInstance();
         for (int x = 0; x < gridArray.GetLength(0); x++)
@@ -38,26 +38,25 @@ public class Grid
             for (int z = 0; z < gridArray.GetLength(1); z++)
             {
                 Vector3 pos = GetPostion(x, z);
-                //gridArray[x, z] = model.environment.getConcentration(pos.x, pos.z);
-                gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); //problem here prob
+                gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); 
             }
         }
 
-        notify();
+        
     }
 
-    public Vector3 GetPostion(int x, int z)
+    public Vector3 GetPostion(int x, int z)     //gets the world position for index x and z
     {
         return new Vector3(x,0,z) * cellSize + origin;
     }
 
-    private void GetXZ(Vector3 pos, out int x, out int z)
+    private void GetXZ(Vector3 pos, out int x, out int z)   //gets the indexes x and z for the given world position
     {
         x = Mathf.FloorToInt((pos - origin).x / cellSize);
         z = Mathf.FloorToInt((pos - origin).z / cellSize);
     }
 
-    public float GetValue(int x, int z)
+    public float GetValue(int x, int z)     //gets the value for the indexes x and z
     {
         if (x >= 0 && z >= 0 && x < width && z < height)
         {
@@ -70,7 +69,7 @@ public class Grid
            
     }
 
-    public float GetValue(Vector3 pos)
+    public float GetValue(Vector3 pos)      //gets the value for the given world position
     {
         int x, z;
         GetXZ(pos, out x, out z);
@@ -97,7 +96,7 @@ public class Grid
         listeners.Add(listener);
     }
 
-    public void notify()
+    public void Notify()
     {
         foreach(GridListeners listener in listeners)
         {
