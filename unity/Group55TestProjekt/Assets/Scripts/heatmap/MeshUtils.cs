@@ -39,14 +39,6 @@ public static class MeshUtils {
         return cachedQuaternionEulerArr[rot];
     }
 
-    public static Mesh CreateEmptyMesh() {
-        Mesh mesh = new Mesh();
-        mesh.vertices = new Vector3[0];
-        mesh.uv = new Vector2[0];
-        mesh.triangles = new int[0];
-        return mesh;
-    }
-
     public static void CreateEmptyMeshArrays(int quadCount, out Vector3[] vertices, out Vector2[] uvs, out int[] triangles) {
 		vertices = new Vector3[4 * quadCount];
 		uvs = new Vector2[4 * quadCount];

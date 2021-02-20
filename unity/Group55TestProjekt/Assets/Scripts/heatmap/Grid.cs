@@ -12,23 +12,28 @@ public class Grid
     private float cellSize;
     private Vector3 origin;
 
+    private float minX, minZ, maxX, maxZ;
+
     private List<GridListeners> listeners = new List<GridListeners>();  //list of objects to notify when stuff changes will have to be used when the c changes over time
 
-    public Grid(int width, int height, float cellSize, Vector3 origin)
+    public Grid(int width, int height, float cellSize, Vector3 origin, float minX, float maxX, float minZ, float maxZ)
     {
         this.width = width;
         this.height = height;
         this.origin = origin;
         this.cellSize = cellSize;
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minZ = minZ;
+        this.maxZ = maxZ;
 
         gridArray = new float[width, height];
 
         PopulateGrid();
     }
 
-    public Grid(int widht, int height, float cellSize) : this(widht, height, cellSize, Vector3.zero) { }
-
-    public Grid(int widht, int height) : this(widht, height, 1, Vector3.zero) { }
+    //simple standard constructor to be used for the current setup
+    public Grid(int width, int height, float cellSize) : this(width, height, cellSize, new Vector3(-width * cellSize * .5f,1,-height*cellSize*.5f), -20f, 20f, -20f, 20f) { } 
 
     private void PopulateGrid() //populates the grid with the consentrations for the different "squares"
     {
@@ -38,7 +43,8 @@ public class Grid
             for (int z = 0; z < gridArray.GetLength(1); z++)
             {
                 Vector3 pos = GetPostion(x, z);
-                gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); 
+               if(pos.x < maxX && pos.x > minX && pos.z < maxZ && pos.z > minZ)
+                    gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); 
             }
         }
 
