@@ -48,6 +48,16 @@ public class HeatmapVisual : MonoBehaviour, GridListeners
         mesh.triangles = triangels;
     }
 
+    public void DisableHeatmap()
+    {
+        GetComponent<MeshFilter>().mesh = new Mesh();
+    }
+
+    public void EnableHeatmap()
+    {
+        GetComponent<MeshFilter>().mesh = mesh;
+    }
+
     public void OnGridUpdate()
     {
         UpdateHeatMapVisual();
