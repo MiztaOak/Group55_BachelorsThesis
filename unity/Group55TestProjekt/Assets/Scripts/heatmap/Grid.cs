@@ -38,7 +38,8 @@ public class Grid
             for (int z = 0; z < gridArray.GetLength(1); z++)
             {
                 Vector3 pos = GetPostion(x, z);
-                gridArray[x,z] = Mathf.Pow(10,10)*model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); //problem here prob
+                //gridArray[x, z] = model.environment.getConcentration(pos.x, pos.z);
+                gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); //problem here prob
             }
         }
 

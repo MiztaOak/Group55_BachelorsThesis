@@ -114,8 +114,6 @@ public static class MeshUtils {
 		mesh.triangles = triangles;
 		mesh.uv = uvs;
 
-        //mesh.bounds = bounds;
-
         return mesh;
     }
 
