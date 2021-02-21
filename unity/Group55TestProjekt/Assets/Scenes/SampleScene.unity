@@ -456,11 +456,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -1136974348182807735, guid: 75e4d3f392396914bae1a1d59a0edad5,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 156371432369560344, guid: 75e4d3f392396914bae1a1d59a0edad5,
         type: 3}
       propertyPath: m_Name
@@ -549,7 +544,7 @@ PrefabInstance:
     - target: {fileID: 156371432369560348, guid: 75e4d3f392396914bae1a1d59a0edad5,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 3.69
+      value: 3.63
       objectReference: {fileID: 0}
     - target: {fileID: 156371432369560348, guid: 75e4d3f392396914bae1a1d59a0edad5,
         type: 3}
@@ -571,13 +566,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 156371432369560351, guid: 75e4d3f392396914bae1a1d59a0edad5,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 0}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 75e4d3f392396914bae1a1d59a0edad5, type: 3}
 --- !u!1001 &715518703935485179
 PrefabInstance:
@@ -666,11 +655,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1416363412514867175, guid: 9e517308e4338034fac46ba4cb88b19d,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7273540963012839093, guid: 9e517308e4338034fac46ba4cb88b19d,
         type: 3}
       propertyPath: m_Name
@@ -689,7 +673,7 @@ PrefabInstance:
     - target: {fileID: 7273540963012839094, guid: 9e517308e4338034fac46ba4cb88b19d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 7273540963012839094, guid: 9e517308e4338034fac46ba4cb88b19d,
         type: 3}
