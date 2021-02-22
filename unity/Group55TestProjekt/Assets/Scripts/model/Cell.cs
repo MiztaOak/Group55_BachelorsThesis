@@ -14,7 +14,7 @@ public class Cell
     public Cell()
     {
         this.model = Model.GetInstance();
-        this.regulator = new BasicRegulation();
+        this.regulator = new HazardRegulation();
     }
 
     public bool GetRunningState(float x, float z)
