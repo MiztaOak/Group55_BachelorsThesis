@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour {
     private float rotX = 0.0f;
     private float rotY = 55f; // REALLY BAD, SHOULD COME FROM transform.eulerAngle.x
 
-    private Vector3 overView = new Vector3(0, 15, 0);
+    private Vector3 overView = new Vector3(0, 25, 0);
     Quaternion currentRotation;
     Vector3 currentEulerAngles = new Vector3(90, 0, 0);
     // Start is called before the first frame update
@@ -20,12 +20,29 @@ public class CameraController : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
+        Vector3 p = Vector3.zero;
+
+        p = GetBaseInput() * cameraSpeed * Time.deltaTime;
+
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            p *= 5.0f; // LeftShift for 5 times faster movement
+        }
+            
         // For movement, WASDEQ
-        Vector3 p = GetBaseInput() * cameraSpeed * Time.deltaTime;
         transform.Translate(p);
 
         // For camera view
+        if (Input.GetMouseButtonDown(0)) {
+            Cursor.lockState = CursorLockMode.Locked; // Hide & lock the cursor
+        }
+        if (Input.GetMouseButtonUp(0)) {
+            // Show & unluck the cursor again
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
         if (Input.GetMouseButton(0)) {
+            
             rotX += sensitivity * Input.GetAxis("Mouse X");
             rotY -= sensitivity * Input.GetAxis("Mouse Y");
             transform.eulerAngles = new Vector3(rotY, rotX, 0.0f);
@@ -36,24 +53,26 @@ public class CameraController : MonoBehaviour {
         }
     }
     private Vector3 GetBaseInput() {
+        Vector3 direction = new Vector3();
         if (Input.GetKey(KeyCode.W)) {
-            return Vector3.forward;
+            direction += Vector3.forward;
         }
         if (Input.GetKey(KeyCode.S)) {
-            return Vector3.back;
+            direction += Vector3.back;
         }
         if (Input.GetKey(KeyCode.A)) {
-            return Vector3.left;
+            direction += Vector3.left;
         }
         if (Input.GetKey(KeyCode.D)) {
-            return Vector3.right;
+            direction += Vector3.right;
         }
         if (Input.GetKey(KeyCode.Q)) {
-            return Vector3.down;
+            direction += Vector3.down;
         }
         if (Input.GetKey(KeyCode.E)) {
-            return Vector3.up;
-        } else return Vector3.zero;
+            direction += Vector3.up;
+        }
+        return direction;
     }
     IEnumerator animCamera(Vector3 dest) {
         while (transform.position != overView || transform.rotation != currentRotation) {
