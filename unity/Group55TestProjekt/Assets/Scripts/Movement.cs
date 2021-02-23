@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class Movement : MonoBehaviour
 {
@@ -16,6 +18,11 @@ public class Movement : MonoBehaviour
 
     private int rotDir;
 
+    private Vector3 originalScale;
+
+    
+    [SerializeField] GameObject cellInfoCanvas;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +30,8 @@ public class Movement : MonoBehaviour
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>(); //might have to be used later
         StartCoroutine(UpdateState());
+        originalScale = transform.localScale;
+
     }
 
     void Update()
@@ -39,6 +48,7 @@ public class Movement : MonoBehaviour
             float angle = Random.Range(-180.0f, 180.0f);
             transform.Rotate(0.0f, rotDir*rotSpeed, 0.0f, Space.World);
         }*/
+
     }
 
     IEnumerator UpdateState()
@@ -64,6 +74,24 @@ public class Movement : MonoBehaviour
             run = tmp;
         }
     }
+
+
+    private void OnMouseEnter()
+    {
+        cellInfoCanvas.SetActive(true);
+        transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
+
+    }
+
+    private void OnMouseExit()
+    {
+        
+        cellInfoCanvas.SetActive(false);
+        transform.localScale = originalScale;
+        
+
+    }
+    
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
@@ -97,4 +125,5 @@ public class Movement : MonoBehaviour
         }
         
     }
+
 }
