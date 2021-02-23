@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class Movement : MonoBehaviour
 {
@@ -14,12 +16,19 @@ public class Movement : MonoBehaviour
 
     private int rotDir;
 
+    private Vector3 originalScale;
+
+    
+    [SerializeField] GameObject cellInfoCanvas;
+
     // Start is called before the first frame update
     void Start()
     {
         cell = new Cell();
         myAnimator = GetComponent<Animator>();
         StartCoroutine(UpdateState());
+        originalScale = transform.localScale;
+
     }
 
     void Update()
@@ -36,6 +45,7 @@ public class Movement : MonoBehaviour
             float angle = Random.Range(-180.0f, 180.0f);
             transform.Rotate(0.0f, rotDir*rotSpeed, 0.0f, Space.World);
         }
+        
     }
 
     IEnumerator UpdateState()
@@ -61,4 +71,20 @@ public class Movement : MonoBehaviour
         }
     }
 
+    private void OnMouseEnter()
+    {
+        cellInfoCanvas.SetActive(true);
+        transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
+
+    }
+
+    private void OnMouseExit()
+    {
+        
+        cellInfoCanvas.SetActive(false);
+        transform.localScale = originalScale;
+        
+
+    }
+    
 }
