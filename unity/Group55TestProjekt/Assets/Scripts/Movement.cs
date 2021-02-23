@@ -25,7 +25,7 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.eulerAngles.y);
+        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.y);
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
         originalScale = transform.localScale;
@@ -63,14 +63,14 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
-        Vector3 currentLocation = transform.position;
+        Vector3 currentLocation = cellRigidBody.position;
 
         if (currentLocation == nextLocation) //if at new location request the next location
         {
             nextLocation = TranslateToVector3(cell.GetNextLocation());
             myAnimator.SetBool("Rotating", true);
             run = false;
-            print("New location calculated");
+            print("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
         }
 
         //Rotates the cell towards the next location
@@ -81,7 +81,7 @@ public class Movement : MonoBehaviour
         Debug.DrawLine(transform.position, nextLocation, Color.red);
 
         //if the cell has rotated to a close enought angle begin moving and remove the rotation animation
-        if (Mathf.Abs(newRot.eulerAngles.y - cellRigidBody.rotation.eulerAngles.y) < 1f && !run)
+        if (Mathf.Abs(newRot.eulerAngles.y - cellRigidBody.rotation.eulerAngles.y) < 5f && !run)
         {
             run = true;
             myAnimator.SetBool("Rotating", false);

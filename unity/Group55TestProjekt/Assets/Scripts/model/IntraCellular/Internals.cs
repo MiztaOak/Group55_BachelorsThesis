@@ -44,9 +44,11 @@ public class Internals : IInternals
 
     private float CalculateTumbleAngle()
     {
-        float correctAngle = 0;
-        float errorAngle = Random.Range(0f, 90f) * (Random.value <= 0.5 ? 1 : -1);
-        return angle + correctAngle + errorAngle;
+        float dZ = location.GetZ() - model.environment.GetZ(), dX = location.GetX() - model.environment.GetX();
+
+        float correctAngle = Mathf.Atan2(dZ,dX)+Mathf.PI;
+        float errorAngle = Random.Range(0f, Mathf.PI/2) * (Random.value <= 0.5 ? 1 : -1);
+        return correctAngle + errorAngle;
     }
 
     private bool GetRunningState(float x, float z)
