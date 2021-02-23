@@ -16,5 +16,13 @@ public abstract class AbstractEnvironment
     //method that returns the concentration for a given postion to be implemnted by the specific sub class
     public abstract float getConcentration(float x, float z);
 
+    public float GetX()
+    {
+        return xCord;
+    }
 
+    public float GetZ()
+    {
+        return zCord;
+    }
 }

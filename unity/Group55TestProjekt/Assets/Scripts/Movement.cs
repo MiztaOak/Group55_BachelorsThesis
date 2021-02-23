@@ -16,21 +16,22 @@ public class Movement : MonoBehaviour
 
     private Rigidbody cellRigidBody;
 
-    private int rotDir;
-
     private Vector3 originalScale;
 
+    private Vector3 nextLocation;
     
     [SerializeField] GameObject cellInfoCanvas;
 
     // Start is called before the first frame update
     void Start()
     {
-        cell = new Cell();
+        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.y);
         myAnimator = GetComponent<Animator>();
-        cellRigidBody = GetComponent<Rigidbody>(); //might have to be used later
-        StartCoroutine(UpdateState());
+        cellRigidBody = GetComponent<Rigidbody>();
         originalScale = transform.localScale;
+
+        nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
+        run = false; // set run to false so that it begins by rotating towards the first location
 
     }
 
@@ -41,40 +42,7 @@ public class Movement : MonoBehaviour
             SceneManager.LoadScene(0);
         }
 
-        /*if (run)
-            transform.Translate(Vector3.right * moveSpeed * Time.deltaTime*-1);
-        else
-        {
-            float angle = Random.Range(-180.0f, 180.0f);
-            transform.Rotate(0.0f, rotDir*rotSpeed, 0.0f, Space.World);
-        }*/
-
     }
-
-    IEnumerator UpdateState()
-    {
-        Debug.Log("test");
-        while (true)
-        {
-            Vector3 pos = transform.position;
-            yield return new WaitForSeconds(1.0f);
-            bool tmp = cell.GetRunningState(pos.x, pos.z);
-            if (tmp && !run)
-            {
-                myAnimator.SetBool("Rotating", false);
-            }
-            else if(!tmp && run)
-            {
-                myAnimator.SetBool("Rotating", true);
-                if (Random.value <= 0.5)
-                    rotDir = -1;
-                else
-                    rotDir = 1;
-            }
-            run = tmp;
-        }
-    }
-
 
     private void OnMouseEnter()
     {
@@ -95,15 +63,35 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
-        if (run)
+        Vector3 currentLocation = cellRigidBody.position;
 
-            transform.Translate(Vector3.right * moveSpeed * Time.deltaTime * -1);
-            //cellRigidBody.MovePosition(transform.position + Vector3.right * moveSpeed * Time.deltaTime * -1);
-        else
+        if (currentLocation == nextLocation) //if at new location request the next location
         {
-            float angle = Random.Range(-180.0f, 180.0f);
-            transform.Rotate(0.0f, rotDir * rotSpeed, 0.0f, Space.World);
+            nextLocation = TranslateToVector3(cell.GetNextLocation());
+            myAnimator.SetBool("Rotating", true);
+            run = false;
+            print("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
         }
+
+        //Rotates the cell towards the next location
+        Quaternion newRot = Quaternion.LookRotation(nextLocation - currentLocation);
+        newRot = Quaternion.Euler(0, newRot.eulerAngles.y + 90, 0);
+        Quaternion moveRot = Quaternion.Slerp(transform.rotation, newRot, rotSpeed * Time.deltaTime);
+        cellRigidBody.MoveRotation(moveRot);
+        Debug.DrawLine(transform.position, nextLocation, Color.red);
+
+        //if the cell has rotated to a close enought angle begin moving and remove the rotation animation
+        if (Mathf.Abs(newRot.eulerAngles.y - cellRigidBody.rotation.eulerAngles.y) < 5f && !run)
+        {
+            run = true;
+            myAnimator.SetBool("Rotating", false);
+        }
+
+        if (run) //move towards the location
+        {
+            cellRigidBody.MovePosition(Vector3.MoveTowards(currentLocation, nextLocation, moveSpeed * Time.deltaTime));
+        }
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -116,7 +104,7 @@ public class Movement : MonoBehaviour
         HandleCollision(other);
     }
 
-    private void HandleCollision(Collider other)
+    private void HandleCollision(Collider other) //this should not be needed since the cell should not hit the walls but who knows
     {
         if (other.gameObject.name.Substring(0, 4) == "Wall")
         {
@@ -126,4 +114,5 @@ public class Movement : MonoBehaviour
         
     }
 
+    private Vector3 TranslateToVector3(IPointAdapter pointToTranslate) => new Vector3(pointToTranslate.GetX(), transform.position.y, pointToTranslate.GetZ());
 }
