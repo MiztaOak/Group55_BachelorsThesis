@@ -32,16 +32,16 @@ public class CameraController : MonoBehaviour {
         transform.Translate(p);
 
         // For camera view
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(1)) {
             Cursor.lockState = CursorLockMode.Locked; // Hide & lock the cursor
         }
-        if (Input.GetMouseButtonUp(0)) {
+        if (Input.GetMouseButtonUp(1)) {
             // Show & unluck the cursor again
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
 
-        if (Input.GetMouseButton(0)) {
+        if (Input.GetMouseButton(1)) {
             
             rotX += sensitivity * Input.GetAxis("Mouse X");
             rotY -= sensitivity * Input.GetAxis("Mouse Y");
