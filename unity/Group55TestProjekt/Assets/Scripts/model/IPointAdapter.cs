@@ -9,4 +9,6 @@ public interface IPointAdapter
     void SetX(float x);
     void SetZ(float z);
     void Add(float x, float z);
+
+    IPointAdapter Copy();
 }

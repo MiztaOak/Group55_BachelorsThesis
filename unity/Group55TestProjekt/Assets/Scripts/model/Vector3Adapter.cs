@@ -35,4 +35,9 @@ public class Vector3Adapter : IPointAdapter
     {
         point.z = z;
     }
+
+    public IPointAdapter Copy()
+    {
+        return new Vector3Adapter(point.x, point.z);
+    }
 }

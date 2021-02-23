@@ -5,46 +5,21 @@ using UnityEngine;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Random;
 
+//class for the entire cell might be kind of point less not to sure
 public class Cell
 {
+    private IInternals cellInternals;
 
-    private Model model;
-    private ICellRegulation regulator;
-    private IPointAdapter location, nextlocation;
-
-    private float v; //velocity
-    private float dT; //time step
-    private float angle;
-
-    public Cell(float x, float z, float v, float dT)
+    public Cell(float x, float z, float v, float dT, float angle)
     {
-        this.model = Model.GetInstance();
-        this.regulator = new HazardRegulation();
-
-        location = new Vector3Adapter(x,z);
-
-        this.v = v;
-        this.dT = dT;
-        angle = 0;
+        cellInternals = new Internals(x, z, v, dT, angle);
     }
 
-    public Cell()
+    public Cell() : this(0, 0, 1.2f, 1, 0) { }
+   
+    //gets the next location that the cell should move to should only be called when a new location is needed
+    public IPointAdapter GetNextLocation()
     {
-        this.model = Model.GetInstance();
-        this.regulator = new HazardRegulation();
-
-        location = new Vector3Adapter(0, 0);
-    }
-
-    public void CalculateNextPosition()
-    {
-
-    }
-
-    public bool GetRunningState(float x, float z)
-    {
-        float c = model.environment.getConcentration(x, z);
-        bool run = regulator.DecideState(c);
-        return run;
+        return cellInternals.getNextLocation();
     }
 }
