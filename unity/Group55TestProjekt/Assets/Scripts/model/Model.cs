@@ -11,7 +11,7 @@ public class Model
     private Model()
     {
         //add code as it is needed
-        environment = new BasicEnvironment(); //super base case just to prevent any scary null pointers
+        environment = new Environment(); //super base case just to prevent any scary null pointers
     }
 
     public static Model GetInstance()
@@ -26,7 +26,7 @@ public class Model
     //creates a basic enironment
     public void SetEnvironment(float d, float i_0, float x, float y)
     {
-        environment = new BasicEnvironment(d, i_0, x, y);
+        environment = new Environment(d, i_0, x, y);
     }
 
     //creates a time dependent environment

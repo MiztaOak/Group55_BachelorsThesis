@@ -8,7 +8,7 @@ namespace Tests
 {
     public class BasicEnvironmentTests
     {
-        private BasicEnvironment basicEnviroment = new BasicEnvironment(1, 0.1f,0,0);
+        private Environment basicEnviroment = new Environment(1, 0.1f,0,0);
 
         // A Test behaves as an ordinary method
         [Test]
