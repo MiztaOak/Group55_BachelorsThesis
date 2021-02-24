@@ -1,27 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Button = UnityEngine.UI.Button;
 
 public class HeatmapVisual : MonoBehaviour, GridListeners
 {
     //based on the turorial located at: https://www.youtube.com/watch?v=mZzZXfySeFQ
     private Grid grid;
     private Mesh mesh;
+    public Button heatMapButton;
+
 
     private void Awake()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        heatMapButton.onClick.AddListener(OnHeatMapButtonClick);
     }
 
     public void SetGrid(Grid grid)
     {
         this.grid = grid;
         UpdateHeatMapVisual();
-
-        //Color color = this.GetComponent<MeshRenderer>().material.color;
-        //color.a = 0.5f;
-        //this.GetComponent<MeshRenderer>().material.color = color;
     }
 
     private void UpdateHeatMapVisual()
@@ -46,6 +46,22 @@ public class HeatmapVisual : MonoBehaviour, GridListeners
         mesh.vertices = verticies;
         mesh.uv = uv;
         mesh.triangles = triangels;
+    }
+
+    void OnHeatMapButtonClick()
+    {
+        if (isActiveAndEnabled)
+        {
+            DisableHeatmap();
+            enabled = false;
+
+        }
+        else
+        {
+            enabled = true;
+            EnableHeatmap();
+        }
+
     }
 
     public void DisableHeatmap()

@@ -3250,7 +3250,7 @@ PrefabInstance:
     - target: {fileID: 5541462066730813249, guid: 7caadb38b9bb310498ce5beb7cf86ef4,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5541462066730813249, guid: 7caadb38b9bb310498ce5beb7cf86ef4,
         type: 3}
@@ -3327,6 +3327,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1416363412514867175, guid: 9e517308e4338034fac46ba4cb88b19d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7273540963012839093, guid: 9e517308e4338034fac46ba4cb88b19d,
         type: 3}
       propertyPath: m_Name
@@ -3387,5 +3392,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9192417300938449588, guid: 9e517308e4338034fac46ba4cb88b19d,
+        type: 3}
+      propertyPath: heatMapButton
+      value: 
+      objectReference: {fileID: 1289986765}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e517308e4338034fac46ba4cb88b19d, type: 3}

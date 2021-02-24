@@ -8,7 +8,7 @@ using Button = UnityEngine.UI.Button;
 
 public class Food : MonoBehaviour
 {
-    public Button test;
+    
     [SerializeField] private HeatmapVisual heatmapVisual;
     public int width;
     public int height;
@@ -31,27 +31,10 @@ public class Food : MonoBehaviour
 
         grid = new Grid(width, height, cellSize);
 
-        heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class
-        test.onClick.AddListener(HeatMapAdapter);
-
+        heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class     
     }
 
-    void HeatMapAdapter()
-    {
-        if (heatmapVisual.isActiveAndEnabled)
-        {
-            heatmapVisual.DisableHeatmap();
-            heatmapVisual.enabled = false;
-
-        }
-        else
-        {
-            heatmapVisual.enabled = true;
-            heatmapVisual.EnableHeatmap();
-            
-        }
-        
-    }
+    
     
 
 }
