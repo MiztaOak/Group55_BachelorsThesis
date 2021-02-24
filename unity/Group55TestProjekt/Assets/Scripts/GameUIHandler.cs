@@ -19,6 +19,8 @@ public class GameUIHandler : MonoBehaviour
     Ray ray;
     RaycastHit hit;
 
+    private Model model;
+
     
 
     [SerializeField] private Image countImage;
@@ -55,6 +57,7 @@ public class GameUIHandler : MonoBehaviour
 
         addButton.onClick.AddListener(SpawnEColi);
         removeButton.onClick.AddListener(deleteECoi);
+        model = Model.GetInstance();
 
 
 
@@ -71,17 +74,22 @@ public class GameUIHandler : MonoBehaviour
         timeTMP.text = String.Format(minutes + ":" + Mathf.RoundToInt(seconds));
         countTMP.text = EColiList.Count.ToString();
         environmentTMP.text = "Basic";
-        
+
+        float x_coord = Mathf.Floor(EColi.transform.position.x);
+        float z_coord = Mathf.Floor(EColi.transform.position.z);
+
 
 
 
 
         if (cellInfoCanvas.isActiveAndEnabled)
         {
-            XTMP.text = Mathf.Floor(EColi.transform.position.x).ToString();
-            ZTMP.text = Mathf.Floor(EColi.transform.position.z).ToString();
-            CTMP.text = "Concentration";
+            XTMP.text = x_coord.ToString();
+            ZTMP.text = z_coord.ToString();
+            CTMP.text = model.environment.getConcentration(x_coord, z_coord).ToString();
         }
+
+        
 
         if (EColiList.Count <= 1)
         {
