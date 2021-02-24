@@ -14,14 +14,13 @@ public class Cell
     public Cell()
     {
         this.model = Model.GetInstance();
-        this.regulator = new ODERegulation();
+        this.regulator = new HazardRegulation();
     }
 
     public bool GetRunningState(float x, float z)
     {
         float c = model.environment.getConcentration(x, z);
         bool run = regulator.DecideState(c);
-        Debug.Log("Running: " + run);
         return run;
     }
 }
