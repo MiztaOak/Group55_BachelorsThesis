@@ -18,7 +18,7 @@ public class Internals : IInternals
     public Internals(float x, float z, float v, float dT, float angle)
     {
         this.model = Model.GetInstance();
-        this.regulator = new HazardRegulation();
+        this.regulator = new ODERegulation();
 
         location = new Vector3Adapter(x, z);
 
@@ -32,12 +32,10 @@ public class Internals : IInternals
         angle = CalculateTumbleAngle();
 
         float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
-
         while(GetRunningState(location.GetX(), location.GetZ()))
         {
             location.Add(dX, dZ);
-
-            if (location.GetX() + dX > 14 || location.GetX() + dX < 14 || location.GetZ() + dZ > 14 || location.GetZ() + dZ < 14)
+            if (location.GetX() + dX > 14 || location.GetX() - dX < -14 || location.GetZ() + dZ > 14 || location.GetZ() - dZ < -14)
                 break;
         }
     }

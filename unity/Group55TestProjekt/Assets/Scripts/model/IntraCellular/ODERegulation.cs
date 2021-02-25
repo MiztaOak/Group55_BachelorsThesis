@@ -71,16 +71,14 @@ public class ODERegulation : ICellRegulation
     {
         var odeFunc = new Func<double, Vector<double>, Vector<double>>( ODE );
         L = 0.09 + ( (double) c * 0.01 ); //Only values between 0.09 and 0.1 have effect 
-        Vector<double> V1 = RungeKutta.FourthOrder(V0, 0, 1, 1000, odeFunc)[900];
+        Vector<double> V1 = RungeKutta.FourthOrder(V0, 0, 0.1, 1000, odeFunc)[900];
         Ap = V1[0];
         Yp = V1[1];
         Bp = V1[2];
         m = V1[3];
-        Debug.Log("YP conc: " + Yp);
         V0 = V.DenseOfArray(new double[] {Ap,Yp,Bp,m});
         // double bias = 1 / (1 + (3/7)*Math.Pow((Yp/YStarved), 5.5)); //Taken from article, always 1??
         double bias = Yp / Yt;
-        Debug.Log("Bias: " + bias);
         double r = rand.NextDouble();
         if( bias > r )
             return false; //Tumbling
