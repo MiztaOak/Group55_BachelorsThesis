@@ -1690,6 +1690,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1392844140815323567, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
+      propertyPath: moveSpeed
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1392844140815323567, guid: 2faa2234823b3234b8ca404b33e78c19,
+        type: 3}
       propertyPath: cellInfoCanvas
       value: 
       objectReference: {fileID: 731632303}
@@ -1756,7 +1761,7 @@ PrefabInstance:
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 10.93
       objectReference: {fileID: 0}
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
@@ -1781,7 +1786,7 @@ PrefabInstance:
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -8
+      value: -10.54
       objectReference: {fileID: 0}
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}

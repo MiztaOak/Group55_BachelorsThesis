@@ -72,7 +72,7 @@ public class Movement : MonoBehaviour
             nextLocation = TranslateToVector3(cell.GetNextLocation());
             myAnimator.SetBool("Rotating", true);
             run = false;
-            Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
+            //Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
         }
 
         //Rotates the cell towards the next location

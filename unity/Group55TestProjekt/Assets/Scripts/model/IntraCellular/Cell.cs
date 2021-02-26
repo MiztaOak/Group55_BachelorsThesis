@@ -13,7 +13,7 @@ public class Cell
     public Cell(float x, float z, float v, float dT, float angle, bool smart)
     {
         if (smart)
-            cellInternals = new SmartInternals(x, z, 500, 0.25f, dT);
+            cellInternals = new SmartInternals(x, z, v, dT*2);
         else
             cellInternals = new Internals(x, z, v, dT, angle);
     }

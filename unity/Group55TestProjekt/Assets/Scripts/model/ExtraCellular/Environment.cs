@@ -38,6 +38,20 @@ public class Environment : AbstractEnvironment
         return 4 * Mathf.Exp(dist / d) * (x - xCord) * (z - zCord) / (d * d);
     }
 
+    override
+    public float GradX(float x, float z)
+    {
+        float dist = -Mathf.Pow(x - xCord, 2) - Mathf.Pow(z - zCord, 2);
+        return -2 * Mathf.Exp(dist / d) * (x - xCord) / d;
+    }
+
+    override
+    public float GradZ(float x, float z)
+    {
+        float dist = -Mathf.Pow(x - xCord, 2) - Mathf.Pow(z - zCord, 2);
+        return -2 * Mathf.Exp(dist / d) * (z - zCord) / d;
+    }
+
     //Method that returns the distances for a number of consentrations 
     public float[] GetCDists(float[] consentrations)
     {
