@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour
 
     public float moveSpeed;
     public float rotSpeed;
+    [SerializeField] bool smart;
+
     private Animator myAnimator;
 
     private Rigidbody cellRigidBody;
@@ -25,7 +27,7 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.y);
+        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.y,smart);
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
         originalScale = transform.localScale;
