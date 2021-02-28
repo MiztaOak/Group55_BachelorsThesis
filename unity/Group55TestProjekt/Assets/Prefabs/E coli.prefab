@@ -1192,8 +1192,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efc863fc3afee3746bb916cea78fad85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1.2
+  moveSpeed: 0.6
   rotSpeed: 0.9
+  smart: 0
+  smartnessFactor: 0
   cellInfoCanvas: {fileID: 0}
 --- !u!54 &8872421074434192036
 Rigidbody:
@@ -1221,8 +1223,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.6
-  m_Height: 2.1699514
+  m_Radius: 0.06
+  m_Height: 0.22
   m_Direction: 0
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &8872421075094155532
@@ -1613,7 +1615,7 @@ Transform:
   m_GameObject: {fileID: 8872421075522622754}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children:
   - {fileID: 8872421075419112834}
   - {fileID: 8872421074545182201}

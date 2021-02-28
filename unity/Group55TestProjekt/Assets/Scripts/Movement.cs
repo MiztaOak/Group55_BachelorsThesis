@@ -47,22 +47,19 @@ public class Movement : MonoBehaviour
 
     }
 
-    private void OnMouseEnter()
+    private void OnMouseEnter() 
     {
         cellInfoCanvas.SetActive(true);
         transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
-
     }
-
-    private void OnMouseExit()
+    private void OnMouseExit() 
     {
-        
+
         cellInfoCanvas.SetActive(false);
         transform.localScale = originalScale;
-        
 
     }
-    
+
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
