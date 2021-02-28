@@ -1698,6 +1698,11 @@ PrefabInstance:
       propertyPath: cellInfoCanvas
       value: 
       objectReference: {fileID: 731632303}
+    - target: {fileID: 1392844140815323567, guid: 2faa2234823b3234b8ca404b33e78c19,
+        type: 3}
+      propertyPath: smartnessFactor
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6329531595415741410, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
       propertyPath: m_Name
@@ -1761,7 +1766,7 @@ PrefabInstance:
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 10.93
+      value: 9.85
       objectReference: {fileID: 0}
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
@@ -1786,7 +1791,7 @@ PrefabInstance:
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -10.54
+      value: -5.23
       objectReference: {fileID: 0}
     - target: {fileID: 6329531595415741414, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}

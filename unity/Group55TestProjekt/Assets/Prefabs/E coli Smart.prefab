@@ -1787,6 +1787,7 @@ MonoBehaviour:
   moveSpeed: 1.2
   rotSpeed: 0.9
   smart: 1
+  smartnessFactor: 1
   cellInfoCanvas: {fileID: 0}
 --- !u!54 &6329531594984847010
 Rigidbody:
