@@ -27,7 +27,7 @@ public class SmartInternals : IInternals
 
     private Vector3Adapter CalculateNextPoint(float x, float z, AbstractEnvironment environment)
     {
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 10; i++)
         {
             float dx = environment.GradX(x, z) * dT * v + smartnessFactor*(float)Normal.Sample(0.0, v * dT * 0.25);
             float dz = environment.GradZ(x, z) * dT * v + smartnessFactor*(float)Normal.Sample(0.0, v * dT * 0.25);

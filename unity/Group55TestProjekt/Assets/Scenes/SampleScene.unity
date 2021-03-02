@@ -1718,6 +1718,11 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 6329531594984847011, guid: 2faa2234823b3234b8ca404b33e78c19,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6329531595415741410, guid: 2faa2234823b3234b8ca404b33e78c19,
         type: 3}
       propertyPath: m_Name
@@ -2576,6 +2581,11 @@ PrefabInstance:
       propertyPath: cellInfoCanvas
       value: 
       objectReference: {fileID: 731632303}
+    - target: {fileID: 8872421074434192037, guid: 75e4d3f392396914bae1a1d59a0edad5,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8872421075076900832, guid: 75e4d3f392396914bae1a1d59a0edad5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -3381,6 +3391,11 @@ PrefabInstance:
       propertyPath: cellInfoCanvas
       value: 
       objectReference: {fileID: 731632303}
+    - target: {fileID: 8872421074434192037, guid: 75e4d3f392396914bae1a1d59a0edad5,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8872421075076900832, guid: 75e4d3f392396914bae1a1d59a0edad5,
         type: 3}
       propertyPath: m_Pivot.x
