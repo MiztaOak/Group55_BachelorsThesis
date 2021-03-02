@@ -15,10 +15,10 @@ public class Internals : IInternals
     private readonly float dT; //time step
     private float angle; //current angle
 
-    public Internals(float x, float z, float v, float dT, float angle)
+    public Internals(float x, float z, float v, float dT, float angle, ICellRegulation regulator)
     {
         this.model = Model.GetInstance();
-        this.regulator = new ODERegulation();
+        this.regulator = regulator;
 
         location = new Vector3Adapter(x, z);
 

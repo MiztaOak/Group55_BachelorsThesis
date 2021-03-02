@@ -12,6 +12,9 @@ public class Movement : MonoBehaviour
 
     public float moveSpeed;
     public float rotSpeed;
+    [SerializeField] bool smart;
+    public float smartnessFactor;
+
     private Animator myAnimator;
 
     private Rigidbody cellRigidBody;
@@ -25,7 +28,7 @@ public class Movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.y);
+        cell = BacteriaFactory.CreateNewCell(transform.position.x,transform.position.z, transform.rotation.y,smart);
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
         originalScale = transform.localScale;
@@ -67,7 +70,7 @@ public class Movement : MonoBehaviour
             nextLocation = TranslateToVector3(cell.GetNextLocation());
             myAnimator.SetBool("Rotating", true);
             run = false;
-            Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
+            //Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
         }
 
         //Rotates the cell towards the next location
