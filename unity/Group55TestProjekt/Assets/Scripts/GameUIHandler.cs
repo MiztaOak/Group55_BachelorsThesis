@@ -75,8 +75,8 @@ public class GameUIHandler : MonoBehaviour
         countTMP.text = EColiList.Count.ToString();
         environmentTMP.text = "Basic";
 
-        float x_coord = Mathf.Floor(EColi.transform.position.x);
-        float z_coord = Mathf.Floor(EColi.transform.position.z);
+        float x_coord = EColi.transform.position.x;
+        float z_coord = EColi.transform.position.z;
 
 
 
