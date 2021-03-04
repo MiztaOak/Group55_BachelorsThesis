@@ -17,6 +17,8 @@ public class Movement : MonoBehaviour
 
     private Animator myAnimator;
 
+    private Material cellmaterial; 
+
     private Rigidbody cellRigidBody;
 
     private Vector3 originalScale;
@@ -29,8 +31,8 @@ public class Movement : MonoBehaviour
         cell = BacteriaFactory.CreateNewCell(transform.position.x,transform.position.z, transform.rotation.y,smart);
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
+        
         originalScale = transform.localScale;
-
         nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         run = false; // set run to false so that it begins by rotating towards the first location
 
@@ -47,16 +49,20 @@ public class Movement : MonoBehaviour
 
     private void OnMouseOver() 
     {
-        if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged")) {
+        // Only allow one cell to be selected at once
+        if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged") && !GameObject.FindGameObjectWithTag("Player")) {
             gameObject.tag = "Player";
+            // Change color
+            cellmaterial = transform.Find("Cell").GetComponent<Renderer>().material;
+            cellmaterial.SetFloat("Boolean_E606F07D", 1); 
+            // Make a bit bigger 
             transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
         } else if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Player")) {
             gameObject.tag = "Untagged";
+            cellmaterial.SetFloat("Boolean_E606F07D", 0);
+            cellmaterial = null;
             transform.localScale = originalScale;
         }
-
-
-            
     }
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
