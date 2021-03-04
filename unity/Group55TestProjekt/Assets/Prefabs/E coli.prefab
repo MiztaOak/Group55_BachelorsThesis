@@ -1128,7 +1128,7 @@ GameObject:
   - component: {fileID: 8872421074434192037}
   m_Layer: 0
   m_Name: E coli
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1196,6 +1196,7 @@ MonoBehaviour:
   rotSpeed: 0.9
   smart: 0
   smartnessFactor: 0
+  selected: 0
   cellInfoCanvas: {fileID: 0}
 --- !u!54 &8872421074434192036
 Rigidbody:

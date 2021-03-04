@@ -50,7 +50,7 @@ public class GameUIHandler : MonoBehaviour
         environmentTMP = GameObject.Find("environmentTMP").GetComponent<TextMeshProUGUI>();
         countTMP = GameObject.Find("countTMP").GetComponent<TextMeshProUGUI>();
         EColi = GameObject.FindGameObjectWithTag("Player");
-        
+
 
         EColiList = new List<GameObject>();
         EColiList.Add(EColi);
@@ -67,6 +67,7 @@ public class GameUIHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        EColi = GameObject.FindGameObjectWithTag("Player");
         float elpasedTime = Time.timeSinceLevelLoad;
         float minutes = Mathf.Floor(elpasedTime / 60);
         float seconds = elpasedTime % 60;
@@ -74,21 +75,16 @@ public class GameUIHandler : MonoBehaviour
         timeTMP.text = String.Format(minutes + ":" + Mathf.RoundToInt(seconds));
         countTMP.text = EColiList.Count.ToString();
         environmentTMP.text = "Basic";
-
-        float x_coord = EColi.transform.position.x;
-        float z_coord = EColi.transform.position.z;
-
-
-
-
-
-        if (cellInfoCanvas.isActiveAndEnabled)
-        {
+        if (EColi != null) {
+            cellInfoCanvas.gameObject.SetActive(true);
+            float x_coord = EColi.transform.position.x;
+            float z_coord = EColi.transform.position.z;
             XTMP.text = x_coord.ToString();
             ZTMP.text = z_coord.ToString();
             CTMP.text = model.environment.getConcentration(x_coord, z_coord).ToString();
+        } else {
+            cellInfoCanvas.gameObject.SetActive(false);
         }
-
         
 
         if (EColiList.Count <= 1)

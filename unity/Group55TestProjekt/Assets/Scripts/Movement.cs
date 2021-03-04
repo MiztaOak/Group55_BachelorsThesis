@@ -22,8 +22,6 @@ public class Movement : MonoBehaviour
     private Vector3 originalScale;
 
     private Vector3 nextLocation;
-    
-    [SerializeField] GameObject cellInfoCanvas;
 
     // Start is called before the first frame update
     void Start()
@@ -47,19 +45,19 @@ public class Movement : MonoBehaviour
 
     }
 
-    private void OnMouseEnter() 
+    private void OnMouseOver() 
     {
-        cellInfoCanvas.SetActive(true);
-        transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
+        if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged")) {
+            gameObject.tag = "Player";
+            transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
+        } else if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Player")) {
+            gameObject.tag = "Untagged";
+            transform.localScale = originalScale;
+        }
+
+
+            
     }
-    private void OnMouseExit() 
-    {
-
-        cellInfoCanvas.SetActive(false);
-        transform.localScale = originalScale;
-
-    }
-
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
