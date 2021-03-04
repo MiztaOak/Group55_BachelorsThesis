@@ -42,11 +42,20 @@ public class Internals : IInternals
 
     private float CalculateTumbleAngle()
     {
-        float dZ = location.GetZ() - model.environment.GetZ(), dX = location.GetX() - model.environment.GetX();
+        //Help bacteria tumble in general direction of food
+        // float dZ = location.GetZ() - model.environment.GetZ(), dX = location.GetX() - model.environment.GetX();
 
-        float correctAngle = Mathf.Atan2(dZ,dX)+Mathf.PI;
-        float errorAngle = Random.Range(0f, Mathf.PI/2) * (Random.value <= 0.5 ? 1 : -1);
-        return correctAngle + errorAngle;
+        // float correctAngle = Mathf.Atan2(dZ,dX)+Mathf.PI;
+        // float errorAngle = Random.Range(0f, Mathf.PI/2) * (Random.value <= 0.5 ? 1 : -1);
+        // return correctAngle + errorAngle;
+
+        //Tumble angle based on article (Edgington)
+        float angle = Random.Range(18f, 98f);
+        float rand = Random.Range(0.0f, 1.0f);
+        if( rand > 0.5 )
+            angle *= -1;
+        angle *= Mathf.PI/180;
+        return angle;
     }
 
     private bool GetRunningState(float x, float z)

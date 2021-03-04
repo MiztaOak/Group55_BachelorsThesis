@@ -6,6 +6,8 @@ using System;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.OdeSolvers;
 
+using Microsoft.Research.Oslo;
+
 public class ODERegulation : ICellRegulation
 {
 
