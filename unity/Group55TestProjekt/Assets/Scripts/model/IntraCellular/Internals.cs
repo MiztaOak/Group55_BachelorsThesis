@@ -51,9 +51,9 @@ public class Internals : IInternals
 
         //Tumble angle based on article (Edgington)
         float angle = Random.Range(18f, 98f);
-        float rand = Random.Range(0.0f, 1.0f);
-        if( rand > 0.5 )
-            angle *= -1;
+        // float rand = Random.Range(0.0f, 1.0f);
+        // if( rand > 0.5 )
+        //     angle *= -1;
         angle *= Mathf.PI/180;
         return angle;
     }

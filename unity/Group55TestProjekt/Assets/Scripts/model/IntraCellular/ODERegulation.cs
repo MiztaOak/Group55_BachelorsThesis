@@ -87,26 +87,26 @@ public class ODERegulation : ICellRegulation
 
     private double h(double y)
     {
-        return 0.02+0.5*y;
+        return y;
     }
 
     private void SolveStiff(float c)
     {
-        // L = (double) 0.001 + 9.99 * c;
-        L = (double) 10* c;
+        L = (double) 0.01 + 9.99 * c;
+        // L = (double) 10* c;
         var sol = Ode.GearBDF(
             0,
             new Vector(Ap2, Yp2, Bp2, m2, S),
             (t,x) => new Vector(
-                (1/(1+Math.Exp(N*(1-x[3]/2+Math.Log((1+L/Kaoff)/(1+L/Kaon))))))*kbar1*(1-x[0])-kbar2*x[0]*(1-x[1])-k3*x[0]*(1-x[2]), //a
+                (1/(1+Math.Exp(N*(1-x[3]/2+Math.Log((1+L/Kaoff)/(1+L/Kaon))))))*kbar1*(1-x[0])-kbar2*x[0]*(1-x[1])-kbar3*x[0]*(1-x[2]), //a
                 alpha1*kbar2*x[0]*(1-x[1])-(kbar4+kbar6)*x[1], //y
                 alpha2*kbar3*x[0]*(1-x[2])-kbar5*x[2], //b
                 (gammaR*(1-(1/(1+Math.Exp(N*(1-x[3]/2+Math.Log((1+L/Kaoff)/(1+L/Kaon)))))))-
                  gammaB*Math.Pow(x[2],2)*(1/(1+Math.Exp(N*(1-x[3]/2+Math.Log((1+L/Kaoff)/(1+L/Kaon))))))), //m
-                h(x[1])*(1-x[4])  
+                h(x[1])*(1-x[4])   //S
             )
         );
-        var points = sol.SolveFromTo(0, 1).ToArray();
+        var points = sol.SolveFromTo(0, 0.5).ToArray();
         var result = points[points.Length-1];
         Ap2 = result.X[0];
         Yp2 = result.X[1];
@@ -134,7 +134,7 @@ public class ODERegulation : ICellRegulation
         // m = V1[3];
         // V0 = V.DenseOfArray(new double[] {Ap,Yp,Bp,m});
         // double bias = Yp / Yt;
-        // double r = rand.NextDouble();
+        double r = rand.NextDouble();
         if( S > U )
         {
             S = 0.0f;
