@@ -52,7 +52,7 @@ public class ODERegulation : ICellRegulation
     private double Ap2;
     private double Yp2;
     private double Bp2;
-    private double m2 = 5;
+    private double m2 = 10;
     private double S;
     private double U;
     
@@ -87,12 +87,12 @@ public class ODERegulation : ICellRegulation
 
     private double h(double y)
     {
-        return y;
+        return 0.02 + 0.5*y;
     }
 
     private void SolveStiff(float c)
     {
-        L = (double) 0.01 + 9.99 * c;
+        L = (double) 0.01 + 6.99 * c;
         // L = (double) 10* c;
         var sol = Ode.GearBDF(
             0,
@@ -106,7 +106,7 @@ public class ODERegulation : ICellRegulation
                 h(x[1])*(1-x[4])   //S
             )
         );
-        var points = sol.SolveFromTo(0, 0.5).ToArray();
+        var points = sol.SolveFromTo(0, 1).ToArray();
         var result = points[points.Length-1];
         Ap2 = result.X[0];
         Yp2 = result.X[1];
@@ -116,8 +116,8 @@ public class ODERegulation : ICellRegulation
         Debug.Log("Conc.: " + L);
         // Debug.Log("Ap: " + Ap2);
         Debug.Log("Yp: " + Yp2);
-        Debug.Log("S: " + S);
-        Debug.Log("U: " + U);
+        // Debug.Log("S: " + S);
+        // Debug.Log("U: " + U);
         // Debug.Log("Bp: " + Bp2);
         // Debug.Log("m: " + m2);
     }
