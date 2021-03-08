@@ -40,6 +40,7 @@ public class Internals : IInternals
         }
     }
 
+    //Returns absolute tumble angle in radians
     private float CalculateTumbleAngle()
     {
         //Help bacteria tumble in general direction of food
@@ -50,12 +51,13 @@ public class Internals : IInternals
         // return correctAngle + errorAngle;
 
         //Tumble angle based on article (Edgington)
-        float angle = Random.Range(18f, 98f);
-        // float rand = Random.Range(0.0f, 1.0f);
-        // if( rand > 0.5 )
-        //     angle *= -1;
-        angle *= Mathf.PI/180;
-        return angle;
+        float newAngle = Random.Range(18f, 98f);
+        float rand = Random.Range(0.0f, 1.0f);
+        if( rand > 0.5 )
+            newAngle *= -1;
+        newAngle *= Mathf.PI/180;
+        newAngle += this.angle;
+        return newAngle;
     }
 
     private bool GetRunningState(float x, float z)
