@@ -10,10 +10,12 @@ public class Cell
 {
     private IInternals cellInternals;
 
-    public Cell(IInternals cellInternals)
+    public Cell(float x, float z, float v, float dT, float angle)
     {
-        this.cellInternals = cellInternals;
+        cellInternals = new Internals(x, z, v, dT, angle);
     }
+
+    public Cell() : this(0, 0, 1.2f, 1, 0) { }
    
     //gets the next location that the cell should move to should only be called when a new location is needed
     public IPointAdapter GetNextLocation()

@@ -12,9 +12,6 @@ public class Movement : MonoBehaviour
 
     public float moveSpeed;
     public float rotSpeed;
-    [SerializeField] bool smart;
-    public float smartnessFactor;
-
     private Animator myAnimator;
 
     private Rigidbody cellRigidBody;
@@ -22,11 +19,13 @@ public class Movement : MonoBehaviour
     private Vector3 originalScale;
 
     private Vector3 nextLocation;
+    
+    [SerializeField] GameObject cellInfoCanvas;
 
     // Start is called before the first frame update
     void Start()
     {
-        cell = BacteriaFactory.CreateNewCell(transform.position.x,transform.position.z, transform.rotation.y,smart);
+        cell = new Cell(transform.position.x,transform.position.z,moveSpeed,2f, transform.rotation.y);
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
         originalScale = transform.localScale;
@@ -45,19 +44,22 @@ public class Movement : MonoBehaviour
 
     }
 
-    private void OnMouseOver() 
+    private void OnMouseEnter()
     {
-        if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged")) {
-            gameObject.tag = "Player";
-            transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
-        } else if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Player")) {
-            gameObject.tag = "Untagged";
-            transform.localScale = originalScale;
-        }
+        cellInfoCanvas.SetActive(true);
+        transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
 
-
-            
     }
+
+    private void OnMouseExit()
+    {
+        
+        cellInfoCanvas.SetActive(false);
+        transform.localScale = originalScale;
+        
+
+    }
+    
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
@@ -68,7 +70,7 @@ public class Movement : MonoBehaviour
             nextLocation = TranslateToVector3(cell.GetNextLocation());
             myAnimator.SetBool("Rotating", true);
             run = false;
-            //Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
+            Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
         }
 
         //Rotates the cell towards the next location

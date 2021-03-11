@@ -29,7 +29,6 @@ public class Environment : AbstractEnvironment
         float distPow2 = Mathf.Pow(x - xCord, 2) + Mathf.Pow(z - zCord, 2); //calculates the dist^2 just to make the next row more readable
         float c = i_0 + Mathf.Exp(-distPow2/d); //calculatates c
         return c <= 1 ? c : 1; //makes sure that c is not greater than 1
-        // return (7 * ( 0.001f + Mathf.Exp(-Mathf.Sqrt(Mathf.Pow(xCord+x,2)+Mathf.Pow(z,2))) ));
     }
 
     //get the derivatative for the c for a given position formula might be incorrect since I got it from mathematica but it might work..
@@ -37,20 +36,6 @@ public class Environment : AbstractEnvironment
     {
         float dist = -Mathf.Pow(x - xCord, 2) - Mathf.Pow(z - zCord, 2);
         return 4 * Mathf.Exp(dist / d) * (x - xCord) * (z - zCord) / (d * d);
-    }
-
-    override
-    public float GradX(float x, float z)
-    {
-        float dist = -Mathf.Pow(x - xCord, 2) - Mathf.Pow(z - zCord, 2);
-        return -2 * Mathf.Exp(dist / d) * (x - xCord) / d;
-    }
-
-    override
-    public float GradZ(float x, float z)
-    {
-        float dist = -Mathf.Pow(x - xCord, 2) - Mathf.Pow(z - zCord, 2);
-        return -2 * Mathf.Exp(dist / d) * (z - zCord) / d;
     }
 
     //Method that returns the distances for a number of consentrations 

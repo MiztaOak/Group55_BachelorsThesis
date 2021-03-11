@@ -21,14 +21,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FlagellaTexture
-  m_Shader: {fileID: -6465566751694194690, guid: 8c5f882ff61085749910f00e449c6c8a,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 2050
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -57,25 +57,11 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_6B65A2EA_Texture_1:
-        m_Texture: {fileID: 2800000, guid: dd2045113e6ec5a4880012bad30b10e0, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_B69FF666_Texture_1:
-        m_Texture: {fileID: 2800000, guid: 81017f7d8f00cf24aa585d3c211908f9, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_2D200884: 0.5
-    - Vector1_6AD25783: 1
-    - Vector1_845A8DBB: 0
-    - Vector1_A97CF559: 1
-    - Vector1_EA020D6C: 0
-    - Vector1_EE2491F9: -0.39
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -98,12 +84,6 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_15851970: {r: 1.4980392, g: 1.4980392, b: 1.4980392, a: 0}
-    - Color_C5A3621A: {r: 0, g: 0.5805984, b: 1, a: 0}
-    - Color_D37241EC: {r: 1, g: 1, b: 1, a: 0}
-    - Color_DBC94C1F: {r: 0, g: 0.8698499, b: 1, a: 0}
-    - Vector2_970A4E53: {r: 10.41, g: 44.16, b: 0, a: 0}
-    - Vector2_F1674082: {r: -3.21, g: -2.17, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
