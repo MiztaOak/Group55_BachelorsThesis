@@ -13,7 +13,7 @@ public class BacteriaFactory
 
     private BacteriaFactory() //sets the default values
     {
-        v = 0.7f;
+        v = 1.0f;
         dT = 0.05f;
         smartnessFactor = .75f;
 
