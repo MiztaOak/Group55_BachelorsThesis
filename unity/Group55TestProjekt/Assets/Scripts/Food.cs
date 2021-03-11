@@ -23,7 +23,7 @@ public class Food : MonoBehaviour
     private void Start()
     {
         Vector3 position = transform.position;
-        EnvironmentFactory.CreateBasicEnvionment(d, i_0, position.x, position.z);
+       // EnvironmentFactory.CreateBasicEnvionment(d, i_0, position.x, position.z);
 
         //Vector3 heatmapPosition = transform.position - new Vector3(width*cellSize*.5f, position.y+1, height*cellSize* .5f); //calculates the position based on the pos of the food object
         //float minX = position.x - areaWidth / 2, maxX = position.x + areaWidth / 2, minZ = position.z - areaHight / 2, maxZ = position.z + areaHight / 2;
