@@ -18,6 +18,11 @@ public class Cell
     //gets the next location that the cell should move to should only be called when a new location is needed
     public IPointAdapter GetNextLocation()
     {
-        return cellInternals.getNextLocation();
+        return cellInternals.GetNextLocation();
+    }
+
+    public State GetInternalState()
+    {
+        return cellInternals.GetInternalState();
     }
 }

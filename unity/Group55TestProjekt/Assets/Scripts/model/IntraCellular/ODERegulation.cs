@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-
 using Microsoft.Research.Oslo;
 
 public class ODERegulation : ICellRegulation
@@ -43,6 +42,12 @@ public class ODERegulation : ICellRegulation
 
     private static System.Random rand = new System.Random();
 
+    public double GetYP() { return this.Yp; }
+    public double GetAP() { return this.Ap; }
+    public double GetBP() { return this.Bp; }
+    public double GetM() { return this.m; }
+    public double GetL() { return this.L; }
+
     private static double h(double y)
     {
         return 0.02 + 0.5*y;
@@ -69,15 +74,7 @@ public class ODERegulation : ICellRegulation
         Yp = result.X[1];
         Bp = result.X[2];
         m  = result.X[3];
-        S   = result.X[4];
-        Debug.Log("Conc.: " + L);
-        // Debug.Log("Ap: " + Ap2);
-        Debug.Log("Yp: " + Yp);
-        Debug.Log("m: " + m);
-        // Debug.Log("S: " + S);
-        // Debug.Log("U: " + U);
-        // Debug.Log("Bp: " + Bp2);
-        // Debug.Log("m: " + m2);
+        S  = result.X[4];
     }
 
     public bool DecideState(float c)

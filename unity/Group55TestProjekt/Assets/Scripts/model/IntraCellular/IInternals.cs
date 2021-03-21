@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IInternals
 {
-    IPointAdapter getNextLocation();
+    IPointAdapter GetNextLocation();
+    State GetInternalState();
 }

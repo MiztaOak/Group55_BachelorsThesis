@@ -44,9 +44,11 @@ public class SmartInternals : IInternals
         return new Vector3Adapter(x, z);
     }
 
-    public IPointAdapter getNextLocation()
+    public IPointAdapter GetNextLocation()
     {
         location = CalculateNextPoint(location.GetX(), location.GetZ(), model.environment);
         return location;
     }
+
+    public State GetInternalState() { State s = new State(); return s; }
 }
