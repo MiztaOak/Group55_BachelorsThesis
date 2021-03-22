@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UIElements.Image;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 public class GameUIHandler : MonoBehaviour
 {
@@ -21,8 +22,6 @@ public class GameUIHandler : MonoBehaviour
 
     private Model model;
 
-    
-
     [SerializeField] private Image countImage;
     [SerializeField] private Image timeImage;
     [SerializeField] private Image environmentImage;
@@ -35,16 +34,16 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI CTMP;
     [SerializeField] private TextMeshProUGUI timeScaleFactorTMP;
 
-    [SerializeField] private Canvas cellInfoCanvas;
+    //[SerializeField] private Canvas cellInfoCanvas;
     [SerializeField] private Canvas largeCellInfoCanvas;
+    [SerializeField] private Canvas endSimScreen;
 
     [SerializeField] private Button addButton;
     [SerializeField] private Button removeButton;
+    [SerializeField] private Button endSimButton;
 
     private List<GameObject> EColiList;
     
-    
-
     // Start is called before the first frame update
     void Start()
     {
@@ -134,5 +133,22 @@ public class GameUIHandler : MonoBehaviour
     {
         model.SetTimeScaleFactor(slider.value);
         timeScaleFactorTMP.SetText(slider.value.ToString());
+    }
+
+    public void OnEndSimClick() //called when the user clicks the end sim button to open the stat page
+    {
+        endSimButton.gameObject.SetActive(false);
+        endSimScreen.gameObject.SetActive(true);
+    }
+
+    public void OnCloseEndSimClick() //called when the stat page is closed
+    {
+        endSimButton.gameObject.SetActive(true);
+        endSimScreen.gameObject.SetActive(false);
+    }
+
+    public void OnEndSim() //called when the user confirms that they wish to end the simulation
+    {
+        SceneManager.LoadScene(0);
     }
 }

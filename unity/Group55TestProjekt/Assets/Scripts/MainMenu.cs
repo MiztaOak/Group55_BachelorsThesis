@@ -65,7 +65,11 @@ public class MainMenu : MonoBehaviour
         
        startButton.onClick.AddListener(StartSimulation);
        quitButton.onClick.AddListener(Quit);
-       model = Model.GetInstance(); 
+       model = Model.GetInstance();
+
+        //added just to make the program a lot less anoying to use
+        d = 25;
+        createBasicEnv(i0, d);
     }
 
     private void Update()
