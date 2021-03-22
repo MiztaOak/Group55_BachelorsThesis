@@ -36,8 +36,8 @@ public class Environment : AbstractEnvironment
     public float getConcentration(float x, float z) //"based" on the model from the article that Gustav sent us
     {
         float distPow2 = Mathf.Pow(x - xCord, 2) + Mathf.Pow(z - zCord, 2); //calculates the dist^2 just to make the next row more readable
-        float c = i_0 + Mathf.Exp(-distPow2/d); //calculatates c
-        return c <= 1 ? c : 1; //makes sure that c is not greater than 1
+        float c = i_0 + max*Mathf.Exp(-distPow2/d); //calculatates c
+        return c <= max ? c : max; //makes sure that c is not greater than 1
         // return (7 * ( 0.001f + Mathf.Exp(-Mathf.Sqrt(Mathf.Pow(xCord+x,2)+Mathf.Pow(z,2))) ));
     }
 
