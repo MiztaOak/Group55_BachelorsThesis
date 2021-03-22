@@ -33,6 +33,7 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI XTMP;
     [SerializeField] private TextMeshProUGUI ZTMP;
     [SerializeField] private TextMeshProUGUI CTMP;
+    [SerializeField] private TextMeshProUGUI timeScaleFactorTMP;
 
     [SerializeField] private Canvas cellInfoCanvas;
 
@@ -119,5 +120,10 @@ public class GameUIHandler : MonoBehaviour
         }
         
     }
-    
+
+    public void OnTimeScaleChanged(Slider slider)
+    {
+        model.SetTimeScaleFactor(slider.value);
+        timeScaleFactorTMP.SetText(slider.value.ToString());
+    }
 }

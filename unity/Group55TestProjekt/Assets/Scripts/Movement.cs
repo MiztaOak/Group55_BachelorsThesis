@@ -25,6 +25,8 @@ public class Movement : MonoBehaviour
 
     private Vector3 nextLocation;
 
+    private Model model;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +38,7 @@ public class Movement : MonoBehaviour
         nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         run = false; // set run to false so that it begins by rotating towards the first location
 
+        model = Model.GetInstance();
     }
 
     void Update()
@@ -80,7 +83,7 @@ public class Movement : MonoBehaviour
         //Rotates the cell towards the next location
         Quaternion newRot = Quaternion.LookRotation(nextLocation - currentLocation);
         newRot = Quaternion.Euler(0, newRot.eulerAngles.y + 90, 0);
-        Quaternion moveRot = Quaternion.Slerp(transform.rotation, newRot, rotSpeed * Time.deltaTime);
+        Quaternion moveRot = Quaternion.Slerp(transform.rotation, newRot, rotSpeed * Time.deltaTime * model.GetTimeScaleFactor());
         cellRigidBody.MoveRotation(moveRot);
         Debug.DrawLine(transform.position, nextLocation, Color.red);
 
@@ -93,7 +96,7 @@ public class Movement : MonoBehaviour
 
         if (run) //move towards the location
         {
-            cellRigidBody.MovePosition(Vector3.MoveTowards(currentLocation, nextLocation, moveSpeed * Time.deltaTime));
+            cellRigidBody.MovePosition(Vector3.MoveTowards(currentLocation, nextLocation, moveSpeed * Time.deltaTime * model.GetTimeScaleFactor()));
         }
         
     }
