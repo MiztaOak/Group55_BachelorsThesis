@@ -7,11 +7,13 @@ public class Model
 {
     private static Model instance;
     public AbstractEnvironment environment { get; set; } //allows for the environment to be changed by the program if needed
+    private float timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
 
     private Model()
     {
         //add code as it is needed
         environment = new Environment(); //super base case just to prevent any scary null pointers
+        timeScaleFactor = 1;
     }
 
     public static Model GetInstance()
@@ -33,5 +35,15 @@ public class Model
     public void SetEnvironment(float d, float i_0, float x, float y, float maxTime, float k)
     {
         environment = new TimeDependentEnvironment(d, i_0, x, y, maxTime, k);
+    }
+
+    public void SetTimeScaleFactor(float timeScaleFactor)
+    {
+        this.timeScaleFactor = timeScaleFactor;
+    }
+
+    public float GetTimeScaleFactor()
+    {
+        return timeScaleFactor;
     }
 }
