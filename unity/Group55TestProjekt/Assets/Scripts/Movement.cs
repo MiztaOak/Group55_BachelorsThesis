@@ -46,12 +46,15 @@ public class Movement : MonoBehaviour
         }
 
     }
-
+    /*
     private void OnMouseOver() 
     {
         // Only allow one cell to be selected at once
         if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged") && !GameObject.FindGameObjectWithTag("Player")) {
             gameObject.tag = "Player";
+
+            CellInfo.focusedCell = cell; // send info the info panel
+
             // Change color
             cellmaterial = transform.Find("Cell").GetComponent<Renderer>().material;
             cellmaterial.SetFloat("Boolean_E606F07D", 1); 
@@ -63,6 +66,12 @@ public class Movement : MonoBehaviour
             cellmaterial = null;
             transform.localScale = originalScale;
         }
+    }*/
+
+    private void OnMouseUp()
+    {
+        gameObject.tag = "Player";
+        CellInfo.focusedCell = cell;
     }
 
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work

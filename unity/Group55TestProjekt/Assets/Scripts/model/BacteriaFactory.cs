@@ -30,7 +30,7 @@ public class BacteriaFactory
     public Cell CreateCell(float x, float z, float angle, bool smart)
     {
         if (smart)
-            return new Cell(new SmartInternals(x, z, dT, v, smartnessFactor));
+            return new Cell(new SmartInternals(x, z, 1, v, smartnessFactor));
         ICellRegulation regulator;
         switch (regulatorType)
         {

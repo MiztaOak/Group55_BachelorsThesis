@@ -12,7 +12,16 @@ public class Environment : AbstractEnvironment
     
     private float i_0; //governs the min value of the consentation;
 
-    public Environment(float d, float i_0, float x, float z) : base(x,z) 
+    private float max; //max value for the consentration
+
+    public Environment(float d, float i_0, float x, float z, float max)
+    {
+        this.d = d == 0 ? 0.00001f : d;
+        this.i_0 = i_0;
+        this.max = max;
+    }
+
+    public Environment(float d, float i_0, float x, float z) : this(d, i_0, x, z, 6.99f)
     {
         this.d = d == 0 ? 0.00001f : d;
         this.i_0 = i_0;
@@ -70,5 +79,10 @@ public class Environment : AbstractEnvironment
     {
         float dist = -Mathf.Log(c - i_0) * d;
         return Mathf.Sqrt(dist);
+    }
+
+    public override float GetMaxVal()
+    {
+        return max;
     }
 }

@@ -54,5 +54,10 @@ public class TimeDependentEnvironment: AbstractEnvironment
     {
         throw new System.NotImplementedException();
     }
+
+    public override float GetMaxVal()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 

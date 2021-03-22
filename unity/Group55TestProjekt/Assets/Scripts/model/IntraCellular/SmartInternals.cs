@@ -50,5 +50,11 @@ public class SmartInternals : IInternals
         return location;
     }
 
-    public State GetInternalState() { State s = new State(); return s; }
+    public State GetInternalState() {
+        State s = new State
+        {
+            l = model.environment.getConcentration(location.GetX(), location.GetZ())
+        };
+        return s;
+    }
 }

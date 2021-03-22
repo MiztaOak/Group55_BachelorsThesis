@@ -35,6 +35,7 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI CTMP;
 
     [SerializeField] private Canvas cellInfoCanvas;
+    [SerializeField] private Canvas largeCellInfoCanvas;
 
     [SerializeField] private Button addButton;
     [SerializeField] private Button removeButton;
@@ -58,16 +59,12 @@ public class GameUIHandler : MonoBehaviour
         addButton.onClick.AddListener(SpawnEColi);
         removeButton.onClick.AddListener(deleteECoi);
         model = Model.GetInstance();
-
-
-
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        EColi = GameObject.FindGameObjectWithTag("Player");
+       // EColi = GameObject.FindGameObjectWithTag("Player");
         float elpasedTime = Time.timeSinceLevelLoad;
         float minutes = Mathf.Floor(elpasedTime / 60);
         float seconds = elpasedTime % 60;
@@ -75,7 +72,7 @@ public class GameUIHandler : MonoBehaviour
         timeTMP.text = String.Format(minutes + ":" + Mathf.RoundToInt(seconds));
         countTMP.text = EColiList.Count.ToString();
         environmentTMP.text = "Basic";
-        if (EColi != null) {
+        /*if (EColi != null) {
             cellInfoCanvas.gameObject.SetActive(true);
             float x_coord = EColi.transform.position.x;
             float z_coord = EColi.transform.position.z;
@@ -84,8 +81,13 @@ public class GameUIHandler : MonoBehaviour
             CTMP.text = model.environment.getConcentration(x_coord, z_coord).ToString();
         } else {
             cellInfoCanvas.gameObject.SetActive(false);
+        }*/
+
+        if (CellInfo.focusedCell != null)
+        {
+            largeCellInfoCanvas.gameObject.SetActive(true);
         }
-        
+
 
         if (EColiList.Count <= 1)
         {
@@ -120,4 +122,11 @@ public class GameUIHandler : MonoBehaviour
         
     }
     
+    public void OnCloseClick()
+    {
+        CellInfo.focusedCell = null;
+        largeCellInfoCanvas.gameObject.SetActive(false);
+       // largeCellInfoCanvas.enabled = false;
+        
+    }
 }
