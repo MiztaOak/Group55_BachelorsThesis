@@ -55,7 +55,7 @@ public class ODERegulation : ICellRegulation
 
     private void SolveStiff(float c)
     {
-        L = (double) 0.01 + 6.99 * c;
+        L = (double) c;//0.01 + 6.99 * c;
         var sol = Ode.GearBDF(
             0,
             new Vector(Ap, Yp, Bp, m, S),
