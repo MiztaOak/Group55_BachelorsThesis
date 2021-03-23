@@ -29,17 +29,17 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countTMP;
     [SerializeField] private TextMeshProUGUI timeTMP;
     [SerializeField] private TextMeshProUGUI environmentTMP;
-    [SerializeField] private TextMeshProUGUI XTMP;
-    [SerializeField] private TextMeshProUGUI ZTMP;
-    [SerializeField] private TextMeshProUGUI CTMP;
+    //[SerializeField] private TextMeshProUGUI XTMP;
+    //[SerializeField] private TextMeshProUGUI ZTMP;
+    //[SerializeField] private TextMeshProUGUI CTMP;
     [SerializeField] private TextMeshProUGUI timeScaleFactorTMP;
 
     //[SerializeField] private Canvas cellInfoCanvas;
     [SerializeField] private Canvas largeCellInfoCanvas;
     [SerializeField] private Canvas endSimScreen;
 
-    [SerializeField] private Button addButton;
-    [SerializeField] private Button removeButton;
+    //[SerializeField] private Button addButton;
+    //[SerializeField] private Button removeButton;
     [SerializeField] private Button endSimButton;
 
     private List<GameObject> EColiList;
@@ -56,8 +56,8 @@ public class GameUIHandler : MonoBehaviour
         EColiList = new List<GameObject>();
         EColiList.Add(EColi);
 
-        addButton.onClick.AddListener(SpawnEColi);
-        removeButton.onClick.AddListener(deleteECoi);
+        //addButton.onClick.AddListener(SpawnEColi);
+        //removeButton.onClick.AddListener(deleteECoi);
         model = Model.GetInstance();
     }
 
@@ -88,7 +88,7 @@ public class GameUIHandler : MonoBehaviour
             largeCellInfoCanvas.gameObject.SetActive(true);
         }
 
-
+        /*
         if (EColiList.Count <= 1)
         {
             removeButton.enabled = false;
@@ -97,7 +97,7 @@ public class GameUIHandler : MonoBehaviour
         {
             removeButton.enabled = true;
         }
-    
+        */
 
 }
 
