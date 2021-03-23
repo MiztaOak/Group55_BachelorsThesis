@@ -57,4 +57,9 @@ public class SmartInternals : IInternals
         };
         return s;
     }
+
+    public float GetAngle()
+    {
+        throw new System.NotImplementedException();
+    }
 }

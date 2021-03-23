@@ -87,4 +87,9 @@ public class Internals : IInternals
         } 
         return state;
     }
+
+    public float GetAngle()
+    {
+        return angle;
+    }
 }

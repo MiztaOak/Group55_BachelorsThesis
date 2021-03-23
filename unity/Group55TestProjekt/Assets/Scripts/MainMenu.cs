@@ -66,6 +66,7 @@ public class MainMenu : MonoBehaviour
        startButton.onClick.AddListener(StartSimulation);
        quitButton.onClick.AddListener(Quit);
        model = Model.GetInstance();
+       BacteriaFactory.SetCellIterations(500);
 
         //added just to make the program a lot less anoying to use
         d = 25;
@@ -116,7 +117,10 @@ public class MainMenu : MonoBehaviour
 
     public  void StartSimulation()
     {
-        SceneManager.LoadScene("SampleScene");
+        if(BacteriaFactory.IsForwardSimulation())
+            SceneManager.LoadScene("Loading");
+        else
+            SceneManager.LoadScene("SampleScene");
         
         //better way
         // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);

@@ -116,4 +116,9 @@ public class BacteriaFactory
     {
         GetInstance().SetIterations(iterations);
     }
+
+    public static bool IsForwardSimulation()
+    {
+        return GetInstance().iterations != 0;
+    }
 }

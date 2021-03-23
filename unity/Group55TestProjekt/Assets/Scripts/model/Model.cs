@@ -10,6 +10,9 @@ public class Model
     private float timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
     private Cell[] cells;
 
+    private int cellIndex = 0;
+    private int numCells;
+
     private Model()
     {
         //add code as it is needed
@@ -52,10 +55,23 @@ public class Model
     {
         cells = new Cell[numCells];
         BacteriaFactory.SetCellIterations(iterations);
+        this.numCells = numCells;
         
         for(int i = 0; i < numCells; i++)
         {
             cells[i] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F), Random.Range(0, 2 * Mathf.PI),false);
         }
+    }
+
+    public Cell[] GetCells()
+    {
+        return cells;
+    }
+
+    public Cell GetCell()
+    {
+        Cell cell = cells [cellIndex];
+        cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
+        return cell;
     }
 }

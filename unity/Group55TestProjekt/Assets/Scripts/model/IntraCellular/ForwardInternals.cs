@@ -16,6 +16,7 @@ public class ForwardInternals : IInternals
     private readonly float v; //velocity
     private readonly float dT; //time step
     private float angle; //current angle
+    private float initalAngel;
 
     public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations)
     {
@@ -28,20 +29,26 @@ public class ForwardInternals : IInternals
 
         //add the initial values to the arrays
         positions[0] = new Vector3Adapter(x, z);
-        AddState();
+        AddState(0);
 
         this.v = v;
         this.dT = dT;
         this.angle = angle;
+        initalAngel = angle;
         this.iterations = iterations;
 
         //Run the forward simulation
         SimulateMovement();
     }
 
+    public bool IsDone()
+    {
+        return currentIteration == iterations;
+    }
+
     private void SimulateMovement()
     {
-        for(int i = 1; i < iterations; i++)
+        for(int i = 1; i < iterations+1; i++)
         {
             positions[i] = new Vector3Adapter(positions[i - 1].GetX(), positions[i - 1].GetZ());
             angle = CalculateTumbleAngle();
@@ -54,7 +61,7 @@ public class ForwardInternals : IInternals
                     break;
             }
 
-            AddState();
+            AddState(i);
         }
     }
 
@@ -78,7 +85,7 @@ public class ForwardInternals : IInternals
         return run;
     }
 
-    private void AddState()
+    private void AddState(int i)
     {
         State state = new State();
         if (this.regulator is ODERegulation)
@@ -90,7 +97,7 @@ public class ForwardInternals : IInternals
             state.m = r.GetM();
             state.l = r.GetL();
         }
-        states[currentIteration] = state;
+        states[i] = state;
     }
 
     public State GetInternalState()
@@ -100,9 +107,14 @@ public class ForwardInternals : IInternals
 
     public IPointAdapter GetNextLocation()
     {
-        currentIteration++;
-        if (currentIteration > iterations + 1)
-            currentIteration = iterations + 1;
-        return positions[currentIteration];
+        IPointAdapter point = positions[currentIteration];
+        currentIteration = currentIteration+1 > iterations ? iterations : currentIteration+1;
+       
+        return point;
+    }
+
+    public float GetAngle()
+    {
+        return initalAngel;
     }
 }
