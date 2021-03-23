@@ -8,6 +8,7 @@ public class Model
     private static Model instance;
     public AbstractEnvironment environment { get; set; } //allows for the environment to be changed by the program if needed
     private float timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
+    private Cell[] cells;
 
     private Model()
     {
@@ -45,5 +46,16 @@ public class Model
     public float GetTimeScaleFactor()
     {
         return timeScaleFactor;
+    }
+
+    public void SimulateCells(int numCells, int iterations)
+    {
+        cells = new Cell[numCells];
+        BacteriaFactory.SetCellIterations(iterations);
+        
+        for(int i = 0; i < numCells; i++)
+        {
+            cells[i] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F), Random.Range(0, 2 * Mathf.PI),false);
+        }
     }
 }
