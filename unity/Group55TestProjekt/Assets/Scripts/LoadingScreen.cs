@@ -13,8 +13,8 @@ public class LoadingScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Model.GetInstance().SetupCells(50, 1000);
-        StartCoroutine(Load(50));
+        Model.GetInstance().SetupCells(2, 1000);
+        StartCoroutine(Load(2));
     }
 
     IEnumerator Load(int numOfCells)

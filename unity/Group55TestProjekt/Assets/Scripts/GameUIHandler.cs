@@ -43,6 +43,7 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private Button endSimButton;
 
     private List<GameObject> EColiList;
+    private float elpasedTime;
     
     // Start is called before the first frame update
     void Start()
@@ -64,8 +65,8 @@ public class GameUIHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       // EColi = GameObject.FindGameObjectWithTag("Player");
-        float elpasedTime = Time.timeSinceLevelLoad;
+        // EColi = GameObject.FindGameObjectWithTag("Player");
+        elpasedTime = elpasedTime + Time.deltaTime * model.GetTimeScaleFactor();
         float minutes = Mathf.Floor(elpasedTime / 60);
         float seconds = elpasedTime % 60;
         
