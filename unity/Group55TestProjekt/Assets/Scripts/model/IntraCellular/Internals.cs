@@ -58,9 +58,29 @@ public class Internals : IInternals
         return run;
     }
 
-    public IPointAdapter getNextLocation()
+    public IPointAdapter GetNextLocation()
     {
         CalculateNextLocation();
         return location;
+    }
+
+    public State GetInternalState()
+    {
+        State state = new State();
+        if( this.regulator is ODERegulation )
+        {
+            ODERegulation r = (ODERegulation) this.regulator;
+            state.yp = r.GetYP();
+            state.ap = r.GetAP();
+            state.bp = r.GetBP();
+            state.m  = r.GetM();
+            state.l  = r.GetL();
+        } 
+        return state;
+    }
+
+    public float GetAngle()
+    {
+        return angle;
     }
 }

@@ -25,4 +25,11 @@ public abstract class AbstractEnvironment
     {
         return zCord;
     }
+
+    public abstract float GradX(float x, float z);
+
+
+    public abstract float GradZ(float x, float z);
+
+    public abstract float GetMaxVal();
 }

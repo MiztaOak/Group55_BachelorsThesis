@@ -44,5 +44,20 @@ public class TimeDependentEnvironment: AbstractEnvironment
     {
         this.time = time;
     }
+
+    public override float GradX(float x, float z)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override float GradZ(float x, float z)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override float GetMaxVal()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 

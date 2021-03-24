@@ -43,8 +43,8 @@ public class Grid
             for (int z = 0; z < gridArray.GetLength(1); z++)
             {
                 Vector3 pos = GetPostion(x, z);
-               if(pos.x < maxX && pos.x > minX && pos.z < maxZ && pos.z > minZ)
-                    gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f); 
+                if(pos.x < maxX && pos.x > minX && pos.z < maxZ && pos.z > minZ)
+                    gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f)/model.environment.GetMaxVal(); 
             }
         }
 
