@@ -46,6 +46,7 @@ public class CellInfo : MonoBehaviour
         }
     }
 
+    //code not used atm size you cant disable the hud right now
    /* private void OnEnable()
     {
         State cellState = focusedCell.GetInternalState();
@@ -67,8 +68,6 @@ public class CellInfo : MonoBehaviour
     {
         bar.rectTransform.sizeDelta = new Vector2(200*q, 20);
         bar.rectTransform.anchoredPosition = new Vector2(-200 * (1 - q) / 2, 0);
-        //bar.rectTransform.position = new Vector2(bar.rectTransform.position.x - 200*(1-q) / 2, bar.rectTransform.position.y);
-
     }
 
   

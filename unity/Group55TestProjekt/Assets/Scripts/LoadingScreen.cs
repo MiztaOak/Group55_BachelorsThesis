@@ -8,27 +8,34 @@ using TMPro;
 public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI loadingText;
+    [SerializeField] private TextMeshProUGUI progressText;
+
     // Start is called before the first frame update
     void Start()
     {
-
-        StartCoroutine(Load());
+        Model.GetInstance().SetupCells(50, 1000);
+        StartCoroutine(Load(50));
     }
 
-    private void Update()
+    IEnumerator Load(int numOfCells)
     {
-        //do something cool here
-        loadingText.color = new Color(loadingText.color.r, loadingText.color.g, loadingText.color.b, Mathf.PingPong(Time.time, 1));
-    }
+        yield return null;
 
-    IEnumerator Load()
-    {
-        yield return new WaitForSeconds(3);
+        Model model = Model.GetInstance();
 
-        AsyncOperation async = SceneManager.LoadSceneAsync(2);
+        for(int i = 0; i < numOfCells; i++)
+        {
+            model.SimulateNextCell(i);
+            progressText.text = "Loading progress: " + ((float)(i+1)/numOfCells * 100) + "%";
+            yield return null;
+        }
+
+        AsyncOperation async = SceneManager.LoadSceneAsync(2); 
 
         while (!async.isDone)
         {
+            loadingText.color = new Color(loadingText.color.r, loadingText.color.g, loadingText.color.b, Mathf.PingPong(Time.time, 1));          
+
             yield return null;
         }
     }
