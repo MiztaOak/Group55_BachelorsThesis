@@ -14,6 +14,8 @@ public class SetupScene : MonoBehaviour
 
 
         Cell[] cells = model.GetCells();
+        if (cells == null)
+            return;
 
         for (int i = 0; i < cells.Length; i++) //create the E-Coli objects for the cells
         {
