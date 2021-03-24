@@ -30,5 +30,6 @@ public abstract class AbstractEnvironment
 
 
     public abstract float GradZ(float x, float z);
-   
+
+    public abstract float GetMaxVal();
 }

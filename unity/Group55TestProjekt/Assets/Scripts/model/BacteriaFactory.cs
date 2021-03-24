@@ -9,6 +9,8 @@ public class BacteriaFactory
     private float dT; //time delta for the cell
     private float smartnessFactor; //smartness factor of the smart cell
 
+    private int iterations;
+
     private RegulatorType regulatorType; //type of regulator that should be used
 
     private BacteriaFactory() //sets the default values
@@ -16,6 +18,7 @@ public class BacteriaFactory
         v = 1.0f;
         dT = 0.05f;
         smartnessFactor = .75f;
+        iterations = 0;
 
         regulatorType = RegulatorType.ODE; 
     }
@@ -30,7 +33,7 @@ public class BacteriaFactory
     public Cell CreateCell(float x, float z, float angle, bool smart)
     {
         if (smart)
-            return new Cell(new SmartInternals(x, z, dT, v, smartnessFactor));
+            return new Cell(new SmartInternals(x, z, 1, v, smartnessFactor));
         ICellRegulation regulator;
         switch (regulatorType)
         {
@@ -50,8 +53,11 @@ public class BacteriaFactory
                 regulator = new BasicRegulation();
                 break;
         }
-    
-        return new Cell(new Internals(x,z,v,dT,angle,regulator));
+        
+        if(iterations == 0)
+            return new Cell(new Internals(x,z,v,dT,angle,regulator));
+        else
+            return new Cell(new ForwardInternals(x, z, v, dT, angle, regulator,iterations));
     }
 
     //static version of the previous method might be nicer to use in code
@@ -80,6 +86,11 @@ public class BacteriaFactory
         this.regulatorType = regulatorType;
     }
 
+    public void SetIterations(int iterations)
+    {
+        this.iterations = iterations;
+    }
+
     //static versions of the setters
     public static void SetCellV(float v)
     {
@@ -99,5 +110,15 @@ public class BacteriaFactory
     public static void SetCellRegulatorType(RegulatorType regulatorType)
     {
         GetInstance().SetRegulatorType(regulatorType);
+    }
+
+    public static void SetCellIterations(int iterations)
+    {
+        GetInstance().SetIterations(iterations);
+    }
+
+    public static bool IsForwardSimulation()
+    {
+        return GetInstance().iterations != 0;
     }
 }

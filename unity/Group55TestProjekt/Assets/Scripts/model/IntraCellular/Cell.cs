@@ -4,6 +4,7 @@ using UnityEngine;
 
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Random;
+using System;
 
 //class for the entire cell might be kind of point less not to sure
 public class Cell
@@ -24,5 +25,17 @@ public class Cell
     public State GetInternalState()
     {
         return cellInternals.GetInternalState();
+    }
+
+    public float GetAngle()
+    {
+        return cellInternals.GetAngle();
+    }
+
+    internal bool IsDone()
+    {
+        if (cellInternals is ForwardInternals)
+            return ((ForwardInternals)cellInternals).IsDone();
+        return false;
     }
 }
