@@ -62,11 +62,11 @@ public class MainMenu : MonoBehaviour
     // Dropdown
     private void Start()
     {
-        
-       startButton.onClick.AddListener(StartSimulation);
-       quitButton.onClick.AddListener(Quit);
-       model = Model.GetInstance();
-       BacteriaFactory.SetCellIterations(500);
+        Model.GetInstance().Reset();
+        startButton.onClick.AddListener(StartSimulation);
+        quitButton.onClick.AddListener(Quit);
+        model = Model.GetInstance();
+        BacteriaFactory.SetCellIterations(500);
 
         //added just to make the program a lot less anoying to use
         d = 25;

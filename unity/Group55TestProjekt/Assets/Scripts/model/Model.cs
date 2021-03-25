@@ -18,6 +18,7 @@ public class Model
         //add code as it is needed
         environment = new Environment(); //super base case just to prevent any scary null pointers
         timeScaleFactor = 1;
+        cells = new Cell[0];
     }
 
     public static Model GetInstance()
@@ -94,5 +95,13 @@ public class Model
         cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
         return cell;
     }
-    
+
+
+    public void Reset()
+    {
+        timeScaleFactor = 1;
+        cells = new Cell[0];
+        cellIndex = 0;
+        numCells = 0;
+    }
 }

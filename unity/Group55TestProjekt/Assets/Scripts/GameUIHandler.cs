@@ -29,18 +29,15 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countTMP;
     [SerializeField] private TextMeshProUGUI timeTMP;
     [SerializeField] private TextMeshProUGUI environmentTMP;
-    //[SerializeField] private TextMeshProUGUI XTMP;
-    //[SerializeField] private TextMeshProUGUI ZTMP;
-    //[SerializeField] private TextMeshProUGUI CTMP;
     [SerializeField] private TextMeshProUGUI timeScaleFactorTMP;
 
-    //[SerializeField] private Canvas cellInfoCanvas;
     [SerializeField] private Canvas largeCellInfoCanvas;
     [SerializeField] private Canvas endSimScreen;
 
-    //[SerializeField] private Button addButton;
-    //[SerializeField] private Button removeButton;
     [SerializeField] private Button endSimButton;
+    [SerializeField] private TextMeshProUGUI numOfCells;
+    [SerializeField] private TextMeshProUGUI numOfIterations;
+    [SerializeField] private TextMeshProUGUI timeElapsed;
 
     private List<GameObject> EColiList;
     private float elpasedTime;
@@ -53,26 +50,17 @@ public class GameUIHandler : MonoBehaviour
         timeTMP = GameObject.Find("timeTMP").GetComponent<TextMeshProUGUI>();
         environmentTMP = GameObject.Find("environmentTMP").GetComponent<TextMeshProUGUI>();
         countTMP = GameObject.Find("countTMP").GetComponent<TextMeshProUGUI>();
-        EColi = GameObject.FindGameObjectWithTag("Player");
 
-
-        EColiList = new List<GameObject>();
-        EColiList.Add(EColi);
-
-        //addButton.onClick.AddListener(SpawnEColi);
-        //removeButton.onClick.AddListener(deleteECoi);
         model = Model.GetInstance();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // EColi = GameObject.FindGameObjectWithTag("Player");
         elpasedTime = elpasedTime + Time.deltaTime * model.GetTimeScaleFactor();
-        float minutes = Mathf.Floor(elpasedTime / 60);
-        float seconds = elpasedTime % 60;
         
-        timeTMP.text = String.Format(minutes + ":" + Mathf.RoundToInt(seconds));
+        
+        timeTMP.text = FormatTimeString();
         countTMP.text = EColiList.Count.ToString();
         environmentTMP.text = "Basic";
         /*if (EColi != null) {
@@ -90,47 +78,19 @@ public class GameUIHandler : MonoBehaviour
         {
             largeCellInfoCanvas.gameObject.SetActive(true);
         }
-
-        /*
-        if (EColiList.Count <= 1)
-        {
-            removeButton.enabled = false;
-        }
-        else
-        {
-            removeButton.enabled = true;
-        }
-        */
-
-}
-
-    void SpawnEColi(){
-        Vector3 position = new Vector3(Random.Range(-10.0F, 10.0F), 1, Random.Range(-10.0F, 10.0F));
-        GameObject newEColi = Instantiate (EColi, position, Quaternion.identity);
-        EColiList.Add(newEColi);
     }
 
-    void deleteECoi()
+    private String FormatTimeString()
     {
-        if (EColiList.Count == 1)
-        {
-            // do nothing
-        }
-        else
-        {
-            GameObject EColiToDelete = EColiList[Random.Range(0, EColiList.Count)];
-            EColiList.Remove(EColiToDelete);
-            Destroy(EColiToDelete);
-        }
-        
+        float minutes = Mathf.Floor(elpasedTime / 60);
+        float seconds = elpasedTime % 60;
+        return String.Format(minutes + ":" + Mathf.RoundToInt(seconds));
     }
 
     public void OnCloseClick()
     {
         CellInfo.focusedCell = null;
         largeCellInfoCanvas.gameObject.SetActive(false);
-        // largeCellInfoCanvas.enabled = false;
-
     }
     public void OnTimeScaleChanged(Slider slider)
     {
@@ -144,6 +104,11 @@ public class GameUIHandler : MonoBehaviour
         endSimScreen.gameObject.SetActive(true);
         prevTimeScaleFactor = model.GetTimeScaleFactor();
         model.SetTimeScaleFactor(0);
+
+        //Update the texts for the end screen
+        numOfCells.text = "Number of Bacteria: " + model.GetCells().Length;
+        numOfIterations.text = "Number of Iterations: " + BacteriaFactory.GetIterations();
+        timeElapsed.text = "Time elapsed: " + FormatTimeString();
     }
 
     public void OnCloseEndSimClick() //called when the stat page is closed

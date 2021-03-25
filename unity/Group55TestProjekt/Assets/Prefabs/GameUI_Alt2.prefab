@@ -6091,6 +6091,9 @@ MonoBehaviour:
   largeCellInfoCanvas: {fileID: 8290617568610455169}
   endSimScreen: {fileID: 8290617568329182704}
   endSimButton: {fileID: 8290617569360700113}
+  numOfCells: {fileID: 374210177465753933}
+  numOfIterations: {fileID: 3454086892297519538}
+  timeElapsed: {fileID: 5323530244383892929}
 --- !u!1 &8290617569443306008
 GameObject:
   m_ObjectHideFlags: 0
