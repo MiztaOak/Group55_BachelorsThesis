@@ -150,8 +150,19 @@ public class MainMenu : MonoBehaviour
 
     void createBasicEnv(float i_0, float d)
     {
-        EnvironmentFactory.CreateMultiEnvironment(d,i_0);
+        EnvironmentFactory.CreateBasicEnvionment(d,i_0);
     }
+
+    void CreateMultiLigandEnvironment(float[] d, float[] i_0)
+    {
+
+    }
+    void CreateMultiLigandEnvironment(float d, float i_0)
+    {
+        EnvironmentFactory.CreateMultiEnvironment(d, i_0);
+    }
+
+
     void createTimeDepEnv(float i_0, float d,float max_t,float k)
     {
         EnvironmentFactory.CreateTimeDependentEnvionment(d,i_0,max_t,k);

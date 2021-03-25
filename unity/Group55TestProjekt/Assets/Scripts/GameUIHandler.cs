@@ -61,19 +61,9 @@ public class GameUIHandler : MonoBehaviour
         
         
         timeTMP.text = FormatTimeString();
-        //countTMP.text = EColiList.Count.ToString();
+        countTMP.text = model.GetCells().Length.ToString();
         environmentTMP.text = "Basic";
-        /*if (EColi != null) {
-            cellInfoCanvas.gameObject.SetActive(true);
-            float x_coord = EColi.transform.position.x;
-            float z_coord = EColi.transform.position.z;
-            XTMP.text = x_coord.ToString();
-            ZTMP.text = z_coord.ToString();
-            CTMP.text = model.environment.getConcentration(x_coord, z_coord).ToString();
-        } else {
-            cellInfoCanvas.gameObject.SetActive(false);
-        }*/
-
+        
         if (CellInfo.focusedCell != null)
         {
             largeCellInfoCanvas.gameObject.SetActive(true);
