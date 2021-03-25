@@ -44,6 +44,8 @@ public class GameUIHandler : MonoBehaviour
 
     private List<GameObject> EColiList;
     private float elpasedTime;
+
+    private float prevTimeScaleFactor;
     
     // Start is called before the first frame update
     void Start()
@@ -140,12 +142,15 @@ public class GameUIHandler : MonoBehaviour
     {
         endSimButton.gameObject.SetActive(false);
         endSimScreen.gameObject.SetActive(true);
+        prevTimeScaleFactor = model.GetTimeScaleFactor();
+        model.SetTimeScaleFactor(0);
     }
 
     public void OnCloseEndSimClick() //called when the stat page is closed
     {
         endSimButton.gameObject.SetActive(true);
         endSimScreen.gameObject.SetActive(false);
+        model.SetTimeScaleFactor(prevTimeScaleFactor);
     }
 
     public void OnEndSim() //called when the user confirms that they wish to end the simulation
