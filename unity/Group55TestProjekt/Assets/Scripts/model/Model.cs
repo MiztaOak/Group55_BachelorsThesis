@@ -106,7 +106,9 @@ public class Model
         cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
         return cell;
     }
+    
 
+    // metohd to export to fetch and export the needed data ( used in LoadingScreen )
     public void ExportData(int index, int iterations)
     {
         List<Iteration> iteration_list = new List<Iteration>();
@@ -139,13 +141,16 @@ public class Model
         ExportHandler.exportData(data_list);
     }
 
+    
 
+    // Class represents all information related to a single cell during the simulation
     public class DataToExport
     {
         public int id;
         public List<Iteration> Iterations;
     }
 
+    // Class representing infromation held in one iteration.
     public class Iteration
     {
         public int iteration;
