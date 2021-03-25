@@ -17,7 +17,7 @@ public class Movement : MonoBehaviour
 
     private Animator myAnimator;
 
-    private Material cellmaterial; 
+    private Material cellmaterial;
 
     private Rigidbody cellRigidBody;
 
@@ -37,11 +37,11 @@ public class Movement : MonoBehaviour
         if (BacteriaFactory.IsForwardSimulation() && !smart)
             cell = model.GetCell();
         else
-            cell = BacteriaFactory.CreateNewCell(transform.position.x,transform.position.z, transform.rotation.y,smart);
+            cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
 
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
-        
+
         originalScale = transform.localScale;
         nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         run = false; // set run to false so that it begins by rotating towards the first location
@@ -86,20 +86,20 @@ public class Movement : MonoBehaviour
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
         if (cell.IsDone())
-            return; 
+            return;
 
         Vector3 currentLocation = cellRigidBody.position;
 
         if (currentLocation == nextLocation) //if at new location request the next location
         {
-            nextLocation = TranslateToVector3(cell.GetNextLocation());         
+            nextLocation = TranslateToVector3(cell.GetNextLocation());
 
             myAnimator.SetBool("Rotating", true);
             run = false;
             //Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
         }
 
-        
+
 
         //Rotates the cell towards the next location
         Quaternion newRot = Quaternion.LookRotation(nextLocation - currentLocation);
@@ -119,7 +119,7 @@ public class Movement : MonoBehaviour
         {
             cellRigidBody.MovePosition(Vector3.MoveTowards(currentLocation, nextLocation, moveSpeed * Time.deltaTime * model.GetTimeScaleFactor()));
         }
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -139,7 +139,7 @@ public class Movement : MonoBehaviour
             Vector3 pos = transform.position;
             transform.position = new Vector3(Mathf.Clamp(pos.x, -14f, 14f), pos.y, Mathf.Clamp(pos.z, -14f, 14f)); //dumb solution plz fix
         }
-        
+
     }
 
     private Vector3 TranslateToVector3(IPointAdapter pointToTranslate) => new Vector3(pointToTranslate.GetX(), transform.position.y, pointToTranslate.GetZ());

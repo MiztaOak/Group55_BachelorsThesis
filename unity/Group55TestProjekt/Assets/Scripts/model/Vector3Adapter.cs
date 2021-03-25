@@ -8,7 +8,7 @@ public class Vector3Adapter : IPointAdapter
 
     public Vector3Adapter(float x, float z)
     {
-        this.point = new Vector3(x,z);
+        this.point = new Vector3(x,0,z);
     }
 
     public void Add(float x, float z)
