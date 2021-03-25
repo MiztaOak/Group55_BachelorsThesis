@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour
 
     public float moveSpeed;
     public float rotSpeed;
-    [SerializeField] private readonly bool smart;
+    [SerializeField] private bool smart;
     public float smartnessFactor;
 
     private Animator myAnimator;

@@ -61,7 +61,7 @@ public class GameUIHandler : MonoBehaviour
         
         
         timeTMP.text = FormatTimeString();
-        countTMP.text = EColiList.Count.ToString();
+        //countTMP.text = EColiList.Count.ToString();
         environmentTMP.text = "Basic";
         /*if (EColi != null) {
             cellInfoCanvas.gameObject.SetActive(true);
