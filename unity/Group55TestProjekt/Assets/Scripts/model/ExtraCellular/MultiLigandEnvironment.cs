@@ -53,4 +53,9 @@ public class MultiLigandEnvironment : AbstractEnvironment
         }
         return gradZ;
     }
+
+    public Environment[] GetEnvironments()
+    {
+        return environments;
+    }
 }

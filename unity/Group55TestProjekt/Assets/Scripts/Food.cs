@@ -14,8 +14,6 @@ public class Food : MonoBehaviour
     public int height;
     public float cellSize;
 
-    public float d, i_0;
-
     private Grid grid;
 
     private void Start()
