@@ -20,11 +20,11 @@ public class ODERegulation : ICellRegulation
     private static double gammaR = 0.00857;
     private static double gammaB = 0.352;
 
-    private static int N=18; //Number of (Tar) receptors
+    private static int N=30; //Number of (Tar) receptors
 
     //Receptor constants
-    private static double Kaon=0.5; //Dissociation constant of active (Tar) receptor
-    private static double Kaoff=0.02; //Dissociation constant of inactive (Tar) receptor
+    private static double Kaon=500; //Dissociation constant of active (Tar) receptor
+    private static double Kaoff=20; //Dissociation constant of inactive (Tar) receptor
     
     private static double initRatios = 0;
 
@@ -32,13 +32,13 @@ public class ODERegulation : ICellRegulation
     private double Ap = initRatios;
     private double Yp = initRatios;
     private double Bp = initRatios;
-    private double m = 7.5;
+    private double m = 5;
     private double S; //Increasing tumbling trigger
     private double U; //Threshold for tumbling
     private double L; //Ligand concentration
 
     //How far we solve the ODEs for each time step
-    private static double tSpan = 0.8;
+    private static double tSpan = 1;
 
     private static System.Random rand = new System.Random();
 
@@ -55,7 +55,7 @@ public class ODERegulation : ICellRegulation
 
     private void SolveStiff(float c)
     {
-        L = (double) c;//0.01 + 6.99 * c;
+        L = (double) 7*c;//0.01 + 6.99 * c;
         var sol = Ode.GearBDF(
             0,
             new Vector(Ap, Yp, Bp, m, S),
@@ -84,7 +84,7 @@ public class ODERegulation : ICellRegulation
         if( S > U )
         {
             S = 0.0f;
-            U = UnityEngine.Random.Range(0.0f,1.0f);
+            U = UnityEngine.Random.Range(0.0f,0.8f);
             return false; //Tumbling
         }
         else
