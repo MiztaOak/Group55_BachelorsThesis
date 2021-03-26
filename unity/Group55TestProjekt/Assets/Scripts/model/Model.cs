@@ -125,20 +125,21 @@ public class Model
         List<Iteration> iteration_list = new List<Iteration>();
         List<DataToExport> data_list = new List<DataToExport>();
 
-        if (index >= numCells)
+        if (index >= numCells && cells.Length == 0)
             return;
-        Cell cell = cells[index];
+        ForwardInternals cell = ((ForwardInternals)cells[index].GetInternals());
 
 
         for (int j = 0; j < iterations; j++)
         {
-            float x = cell.GetNextLocation().GetX();
-            float z = cell.GetNextLocation().GetZ();
-            float ap = (float) cell.GetInternalState().ap;
-            float bp = (float) cell.GetInternalState().bp;
-            float yp = (float) cell.GetInternalState().yp;
-            float m = (float) cell.GetInternalState().m;
-            float l = (float) cell.GetInternalState().l;
+            float x = cell.GetPosition(j).GetX();
+            float z = cell.GetPosition(j).GetZ();
+            State interalState = cell.GetInternalStates()[j];
+            float ap = (float) interalState.ap;
+            float bp = (float) interalState.bp;
+            float yp = (float) interalState.yp;
+            float m = (float) interalState.m;
+            float l = (float) interalState.l;
             oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l);
             iteration_list.Add(oneIteration);
         }
@@ -167,7 +168,7 @@ public class Model
 
         float[] averageLigandC = new float[BacteriaFactory.GetIterations()+1];
 
-        for(int i = 0; i <= averageLigandC.Length; i++)
+        for(int i = 0; i < averageLigandC.Length; i++)
         {
             float averageC = 0;
             for (int j = 0; j < cells.Length; j++)

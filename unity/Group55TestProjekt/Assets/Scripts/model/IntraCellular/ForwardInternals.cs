@@ -122,4 +122,11 @@ public class ForwardInternals : IInternals
     {
         return states;
     }
+
+    public IPointAdapter GetPosition(int i)
+    {
+        if (i >= positions.Length)
+            return null;
+        return positions[i];
+    }
 }
