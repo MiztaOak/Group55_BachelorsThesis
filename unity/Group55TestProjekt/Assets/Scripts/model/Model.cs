@@ -1,13 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 //Class that will manage the overarching data and operations that are needed by all of the program, sort of like the hub of the program
 public class Model
 {
     private static Model instance;
-    public AbstractEnvironment environment { get; set; } //allows for the environment to be changed by the program if needed
-    private float timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
+    private DataToExport cellData;
+    private Iteration oneIteration;
+
+    public AbstractEnvironment
+        environment { get; set; } //allows for the environment to be changed by the program if needed
+
+    private float
+        timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
+
     private Cell[] cells;
 
     private int cellIndex = 0;
@@ -60,9 +70,10 @@ public class Model
         this.numCells = numCells;
         cellIndex = 0;
 
-        for(int i = 0; i < numCells; i++)
+        for (int i = 0; i < numCells; i++)
         {
-            cells[i] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F), Random.Range(0, 2 * Mathf.PI),false);
+            cells[i] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
+                Random.Range(0, 2 * Mathf.PI), false);
         }
     }
 
@@ -80,7 +91,8 @@ public class Model
     {
         if (index >= numCells)
             return;
-        cells[index] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F), Random.Range(0, 2 * Mathf.PI), false);
+        cells[index] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
+            Random.Range(0, 2 * Mathf.PI), false);
     }
 
     public Cell[] GetCells()
@@ -91,11 +103,10 @@ public class Model
     //Returns the "next" cell is used by the movement class to connect a cell object to a given e-coli object
     public Cell GetCell()
     {
-        Cell cell = cells [cellIndex];
+        Cell cell = cells[cellIndex];
         cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
         return cell;
     }
-
 
     public void Reset()
     {
@@ -104,4 +115,70 @@ public class Model
         cellIndex = 0;
         numCells = 0;
     }
+
+    // metohd to export to fetch and export the needed data ( used in LoadingScreen )
+    public void ExportData(int index, int iterations)
+    {
+        List<Iteration> iteration_list = new List<Iteration>();
+        List<DataToExport> data_list = new List<DataToExport>();
+
+        if (index >= numCells)
+            return;
+        Cell cell = cells[index];
+
+
+        for (int j = 0; j < iterations; j++)
+        {
+            float x = cell.GetNextLocation().GetX();
+            float z = cell.GetNextLocation().GetZ();
+            float ap = (float) cell.GetInternalState().ap;
+            float bp = (float) cell.GetInternalState().bp;
+            float yp = (float) cell.GetInternalState().yp;
+            float m = (float) cell.GetInternalState().m;
+            float l = (float) cell.GetInternalState().l;
+            oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l);
+            iteration_list.Add(oneIteration);
+        }
+
+        for (int i = 0; i < numCells; i++)
+        {
+            cellData = new DataToExport() {id = i, Iterations = iteration_list};
+            data_list.Add(cellData);
+        }
+
+        ExportHandler.exportData(data_list);
+    }   
+
+    // Class represents all information related to a single cell during the simulation
+    public class DataToExport
+    {
+        public int id;
+        public List<Iteration> Iterations;
+    }
+
+    // Class representing infromation held in one iteration.
+    public class Iteration
+    {
+        public int iteration;
+        public float x;
+        public float z;
+        public float ap;
+        public float bp;
+        public float yp;
+        public float m;
+        public float l;
+
+        public Iteration(int iteration, float x, float z, float ap, float bp, float yp, float m, float l)
+        {
+            this.iteration = iteration;
+            this.x = x;
+            this.z = z;
+            this.ap = ap;
+            this.bp = bp;
+            this.yp = yp;
+            this.m = m;
+            this.l = l;
+        }
+    }
+    
 }

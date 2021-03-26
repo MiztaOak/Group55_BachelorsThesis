@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,11 +10,12 @@ public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
+    private int iterations = 1000;
 
     // Start is called before the first frame update
     void Start()
     {
-        Model.GetInstance().SetupCells(2, 1000);
+        Model.GetInstance().SetupCells(2, iterations);
         StartCoroutine(Load(2));
     }
 
@@ -22,10 +24,12 @@ public class LoadingScreen : MonoBehaviour
         yield return null;
 
         Model model = Model.GetInstance();
+        ExportHandler.init();
 
         for(int i = 0; i < numOfCells; i++)
         {
             model.SimulateNextCell(i);
+            model.ExportData(i,iterations);
             progressText.text = "Loading progress: " + ((float)(i+1)/numOfCells * 100) + "%";
             yield return null;
         }
