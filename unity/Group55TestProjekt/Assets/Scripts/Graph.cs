@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class Graph : MonoBehaviour
 {
 
     [SerializeField] private Sprite circleSprite;
+    [SerializeField] private TextMeshProUGUI yMax;
+    [SerializeField] private TextMeshProUGUI xMax;
     private RectTransform graphContainer;
 
     private void Awake()
@@ -46,7 +49,10 @@ public class Graph : MonoBehaviour
 
         GameObject previousPoint = null;
 
-        for (int i = 0; i < values.Length; i+=50)
+        this.yMax.text = yMax.ToString();
+        xMax.text = values.Length.ToString();
+
+        for (int i = 0; i < values.Length; i++)
         {
             float x = xSize + i * xSize;
             float y = (values[i] / yMax) * graphHeight;

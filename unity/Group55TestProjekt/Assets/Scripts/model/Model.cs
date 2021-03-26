@@ -166,14 +166,14 @@ public class Model
         if (cells.Length == 0)
             return null;
 
-        float[] averageLigandC = new float[BacteriaFactory.GetIterations()+1];
+        float[] averageLigandC = new float[BacteriaFactory.GetIterations()];
 
         for(int i = 0; i < averageLigandC.Length; i++)
         {
             float averageC = 0;
             for (int j = 0; j < cells.Length; j++)
             {
-                averageC += (float)((ForwardInternals)cells[j].GetInternals()).GetInternalStates()[i].l;
+                averageC += (float)((ForwardInternals)cells[j].GetInternals()).GetInternalStates()[i+1].l;
             }
             averageLigandC[i] = averageC / cells.Length;
         }

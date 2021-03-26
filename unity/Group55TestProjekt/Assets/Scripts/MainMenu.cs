@@ -70,7 +70,7 @@ public class MainMenu : MonoBehaviour
 
         //added just to make the program a lot less anoying to use
         d = 50;
-        CreateMultiLigandEnvironment(i0, d);
+        CreateBasicEnv(i0, d);
     }
 
     private void Update()
