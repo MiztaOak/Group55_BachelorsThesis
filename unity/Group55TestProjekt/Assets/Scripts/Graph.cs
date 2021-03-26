@@ -14,6 +14,10 @@ public class Graph : MonoBehaviour
     [SerializeField] private Sprite circleSprite;
     [SerializeField] private TextMeshProUGUI yMax;
     [SerializeField] private TextMeshProUGUI xMax;
+    [SerializeField] private TextMeshProUGUI averageC;
+    [SerializeField] private TextMeshProUGUI maxC;
+    [SerializeField] private TextMeshProUGUI minC;
+
     private RectTransform graphContainer;
 
     private void Awake()
@@ -52,6 +56,10 @@ public class Graph : MonoBehaviour
         this.yMax.text = yMax.ToString();
         xMax.text = values.Length.ToString();
 
+        float average = 0;
+        float max = -1;
+        float min = Mathf.Infinity;
+
         for (int i = 0; i < values.Length; i++)
         {
             float x = xSize + i * xSize;
@@ -63,7 +71,17 @@ public class Graph : MonoBehaviour
                 DrawLine(previousPoint.GetComponent<RectTransform>().anchoredPosition, currentPoint.GetComponent<RectTransform>().anchoredPosition);
             }
             previousPoint = currentPoint;
+
+            average += values[i];
+            if (values[i] > max)
+                max = values[i];
+            if (values[i] < min)
+                min = values[i];
         }
+
+        averageC.text = "Average ligand consentraion: " + average/values.Length;
+        minC.text = "Minimum average consentration: " + min;
+        maxC.text = "Maximum average consentration: " + max;
     }
 
     private void DrawLine(Vector2 dotA, Vector2 dotB)
