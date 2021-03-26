@@ -117,4 +117,9 @@ public class ForwardInternals : IInternals
     {
         return initalAngel;
     }
+
+    public State[] GetInternalStates()
+    {
+        return states;
+    }
 }

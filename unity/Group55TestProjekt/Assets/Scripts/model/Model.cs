@@ -23,6 +23,8 @@ public class Model
     private int cellIndex = 0;
     private int numCells;
 
+    private float[] averageLigandC;
+
     private Model()
     {
         //add code as it is needed
@@ -114,6 +116,7 @@ public class Model
         cells = new Cell[0];
         cellIndex = 0;
         numCells = 0;
+        averageLigandC = null;
     }
 
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
@@ -156,6 +159,35 @@ public class Model
         public List<Iteration> Iterations;
     }
 
+    //Calculates the average ligand consentration for each time step
+    private float[] CalculateAverageLigandC()
+    {
+        if (cells.Length == 0)
+            return null;
+
+        float[] averageLigandC = new float[BacteriaFactory.GetIterations()+1];
+
+        for(int i = 0; i <= averageLigandC.Length; i++)
+        {
+            float averageC = 0;
+            for (int j = 0; j < cells.Length; j++)
+            {
+                averageC += (float)((ForwardInternals)cells[j].GetInternals()).GetInternalStates()[i].l;
+            }
+            averageLigandC[i] = averageC / cells.Length;
+        }
+
+        return averageLigandC;
+    }
+
+    //Gets the list of average ligand consentrations only calculating them once per simulation
+    public float[] GetAverageLigandC()
+    {
+        if (averageLigandC == null)
+            averageLigandC = CalculateAverageLigandC();
+        return averageLigandC;
+    }
+
     // Class representing infromation held in one iteration.
     public class Iteration
     {
@@ -180,5 +212,4 @@ public class Model
             this.l = l;
         }
     }
-    
 }
