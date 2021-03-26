@@ -25,4 +25,14 @@ public static class EnvironmentFactory
     {
         CreateTimeDependentEnvionment(d, i_0, maxTime, k, 0, 0);
     }
+
+    public static void CreateMultiEnvironment(float d, float i_0)
+    {
+        Model.GetInstance().environment = new MultiLigandEnvironment(new float[] { d, d }, new float[] { i_0, i_0 }, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 6.99f, 6.99f },2);
+    }
+
+    public static void CreateMultiEnvironment(float[] d, float[] i_0)
+    {
+        Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 6.99f, 6.99f }, 2);
+    }
 }

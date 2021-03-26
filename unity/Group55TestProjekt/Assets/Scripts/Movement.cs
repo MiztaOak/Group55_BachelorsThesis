@@ -12,7 +12,7 @@ public class Movement : MonoBehaviour
 
     public float moveSpeed;
     public float rotSpeed;
-    [SerializeField] bool smart;
+    [SerializeField] private bool smart;
     public float smartnessFactor;
 
     private Animator myAnimator;
@@ -26,8 +26,6 @@ public class Movement : MonoBehaviour
     private Vector3 nextLocation;
 
     private Model model;
-
-    private bool done = false;
 
     // Start is called before the first frame update
     void Start()
@@ -95,16 +93,14 @@ public class Movement : MonoBehaviour
             nextLocation = TranslateToVector3(cell.GetNextLocation());         
 
             myAnimator.SetBool("Rotating", true);
-            run = false;
-            //Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
-        }
-
-        
+            run = false;          
+        }  
 
         //Rotates the cell towards the next location
         Quaternion newRot = Quaternion.LookRotation(nextLocation - currentLocation);
         newRot = Quaternion.Euler(0, newRot.eulerAngles.y + 90, 0);
-        Quaternion moveRot = Quaternion.Slerp(transform.rotation, newRot, rotSpeed * Time.deltaTime * model.GetTimeScaleFactor());
+        Quaternion moveRot = Quaternion.Lerp(transform.rotation, newRot, rotSpeed * Time.deltaTime * model.GetTimeScaleFactor());
+        
         cellRigidBody.MoveRotation(moveRot);
         Debug.DrawLine(transform.position, nextLocation, Color.red);
 

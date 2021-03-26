@@ -38,4 +38,9 @@ public class Cell
             return ((ForwardInternals)cellInternals).IsDone();
         return false;
     }
+
+    public IInternals GetInternals()
+    {
+        return cellInternals;
+    }
 }

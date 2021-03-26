@@ -23,11 +23,14 @@ public class Model
     private int cellIndex = 0;
     private int numCells;
 
+    private float[] averageLigandC;
+
     private Model()
     {
         //add code as it is needed
         environment = new Environment(); //super base case just to prevent any scary null pointers
         timeScaleFactor = 1;
+        cells = new Cell[0];
     }
 
     public static Model GetInstance()
@@ -106,7 +109,15 @@ public class Model
         cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
         return cell;
     }
-    
+
+    public void Reset()
+    {
+        timeScaleFactor = 1;
+        cells = new Cell[0];
+        cellIndex = 0;
+        numCells = 0;
+        averageLigandC = null;
+    }
 
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
     public void ExportData(int index, int iterations)
@@ -114,20 +125,21 @@ public class Model
         List<Iteration> iteration_list = new List<Iteration>();
         List<DataToExport> data_list = new List<DataToExport>();
 
-        if (index >= numCells)
+        if (index >= numCells && cells.Length == 0)
             return;
-        Cell cell = cells[index];
+        ForwardInternals cell = ((ForwardInternals)cells[index].GetInternals());
 
 
         for (int j = 0; j < iterations; j++)
         {
-            float x = cell.GetNextLocation().GetX();
-            float z = cell.GetNextLocation().GetZ();
-            float ap = (float) cell.GetInternalState().ap;
-            float bp = (float) cell.GetInternalState().bp;
-            float yp = (float) cell.GetInternalState().yp;
-            float m = (float) cell.GetInternalState().m;
-            float l = (float) cell.GetInternalState().l;
+            float x = cell.GetPosition(j).GetX();
+            float z = cell.GetPosition(j).GetZ();
+            State interalState = cell.GetInternalStates()[j];
+            float ap = (float) interalState.ap;
+            float bp = (float) interalState.bp;
+            float yp = (float) interalState.yp;
+            float m = (float) interalState.m;
+            float l = (float) interalState.l;
             oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l);
             iteration_list.Add(oneIteration);
         }
@@ -139,15 +151,42 @@ public class Model
         }
 
         ExportHandler.exportData(data_list);
-    }
-
-    
+    }   
 
     // Class represents all information related to a single cell during the simulation
     public class DataToExport
     {
         public int id;
         public List<Iteration> Iterations;
+    }
+
+    //Calculates the average ligand consentration for each time step
+    private float[] CalculateAverageLigandC()
+    {
+        if (cells.Length == 0)
+            return null;
+
+        float[] averageLigandC = new float[BacteriaFactory.GetIterations()];
+
+        for(int i = 0; i < averageLigandC.Length; i++)
+        {
+            float averageC = 0;
+            for (int j = 0; j < cells.Length; j++)
+            {
+                averageC += (float)((ForwardInternals)cells[j].GetInternals()).GetInternalStates()[i+1].l;
+            }
+            averageLigandC[i] = averageC / cells.Length;
+        }
+
+        return averageLigandC;
+    }
+
+    //Gets the list of average ligand consentrations only calculating them once per simulation
+    public float[] GetAverageLigandC()
+    {
+        if (averageLigandC == null)
+            averageLigandC = CalculateAverageLigandC();
+        return averageLigandC;
     }
 
     // Class representing infromation held in one iteration.

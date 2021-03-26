@@ -62,15 +62,15 @@ public class MainMenu : MonoBehaviour
     // Dropdown
     private void Start()
     {
-        
-       startButton.onClick.AddListener(StartSimulation);
-       quitButton.onClick.AddListener(Quit);
-       model = Model.GetInstance();
-       BacteriaFactory.SetCellIterations(500);
+        Model.GetInstance().Reset();
+        startButton.onClick.AddListener(StartSimulation);
+        quitButton.onClick.AddListener(Quit);
+        model = Model.GetInstance();
+        BacteriaFactory.SetCellIterations(500);
 
         //added just to make the program a lot less anoying to use
-        d = 25;
-        createBasicEnv(i0, d);
+        d = 50;
+        CreateBasicEnv(i0, d);
     }
 
     private void Update()
@@ -79,8 +79,8 @@ public class MainMenu : MonoBehaviour
 
         if (optionsCanvas.isActiveAndEnabled)
         {
-            basicToggle.onValueChanged.AddListener((value) => { initBasicEnv(); });
-            timeDepToggle.onValueChanged.AddListener ( (value) => {initTimeDepEnv();});
+            basicToggle.onValueChanged.AddListener((value) => { InitBasicEnv(); });
+            timeDepToggle.onValueChanged.AddListener ( (value) => {InitTimeDepEnv();});
             
         }
         if (basicEnvCanvas.isActiveAndEnabled)
@@ -91,7 +91,7 @@ public class MainMenu : MonoBehaviour
             i0Text1.text = i0.ToString("f3");
             //dSlider1
             dText1.text = d.ToString("f1");
-            applyButton1.onClick.AddListener( () => { createBasicEnv(i0,d); });
+            applyButton1.onClick.AddListener( () => { CreateBasicEnv(i0,d); });
         }
 
         if (timeDepEnvCanvas.isActiveAndEnabled)
@@ -108,7 +108,7 @@ public class MainMenu : MonoBehaviour
             KText.text = k.ToString("f3");
             //tmaxSlider
             maxtText.text = maxT.ToString("f3");
-            applyButton2.onClick.AddListener( () => { createTimeDepEnv(i0,d,maxT,k); });
+            applyButton2.onClick.AddListener( () => { CreateTimeDepEnv(i0,d,maxT,k); });
 
 
         }
@@ -135,24 +135,35 @@ public class MainMenu : MonoBehaviour
 
 
 
-    private void initBasicEnv()
+    private void InitBasicEnv()
     {
         basicEnvCanvas.gameObject.SetActive(true);
         timeDepEnvCanvas.gameObject.SetActive(false);
 
     }
-    private void initTimeDepEnv()
+    private void InitTimeDepEnv()
     {
         basicEnvCanvas.gameObject.SetActive(false);
         timeDepEnvCanvas.gameObject.SetActive(true);
 
     }
 
-    void createBasicEnv(float i_0, float d)
+    void CreateBasicEnv(float i_0, float d)
     {
         EnvironmentFactory.CreateBasicEnvionment(d,i_0);
     }
-    void createTimeDepEnv(float i_0, float d,float max_t,float k)
+
+    void CreateMultiLigandEnvironment(float[] i_0, float[] d)
+    {
+        EnvironmentFactory.CreateMultiEnvironment(d, i_0);
+    }
+    void CreateMultiLigandEnvironment(float i_0, float d)
+    {
+        EnvironmentFactory.CreateMultiEnvironment(d, i_0);
+    }
+
+
+    void CreateTimeDepEnv(float i_0, float d,float max_t,float k)
     {
         EnvironmentFactory.CreateTimeDependentEnvionment(d,i_0,max_t,k);
     }

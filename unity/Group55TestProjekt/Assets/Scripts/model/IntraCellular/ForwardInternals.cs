@@ -117,4 +117,16 @@ public class ForwardInternals : IInternals
     {
         return initalAngel;
     }
+
+    public State[] GetInternalStates()
+    {
+        return states;
+    }
+
+    public IPointAdapter GetPosition(int i)
+    {
+        if (i >= positions.Length)
+            return null;
+        return positions[i];
+    }
 }
