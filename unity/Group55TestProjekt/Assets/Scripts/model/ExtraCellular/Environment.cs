@@ -21,11 +21,7 @@ public class Environment : AbstractEnvironment
         this.max = max;
     }
 
-    public Environment(float d, float i_0, float x, float z) : this(d, i_0, x, z, 6.99f)
-    {
-        this.d = d == 0 ? 0.00001f : d;
-        this.i_0 = i_0;
-    }
+    public Environment(float d, float i_0, float x, float z) : this(d, i_0, x, z, 7){}
 
     public Environment(float d, float i_0) : this(d, i_0, 0, 0) { }
 

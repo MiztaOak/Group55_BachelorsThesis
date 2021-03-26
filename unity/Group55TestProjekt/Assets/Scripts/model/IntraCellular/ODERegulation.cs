@@ -55,7 +55,7 @@ public class ODERegulation : ICellRegulation
 
     private void SolveStiff(float c)
     {
-        L = (double) 7*c;//0.01 + 6.99 * c;
+        L = (double) c; //PLEASE FOR THE LOVE OF GOD DONT CHANGE THIS GOD DAMN ROW!
         var sol = Ode.GearBDF(
             0,
             new Vector(Ap, Yp, Bp, m, S),
