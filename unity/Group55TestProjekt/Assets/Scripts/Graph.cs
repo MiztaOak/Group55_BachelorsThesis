@@ -12,8 +12,8 @@ public class Graph : MonoBehaviour
 {
 
     [SerializeField] private Sprite circleSprite;
-    [SerializeField] private TextMeshProUGUI yMax;
-    [SerializeField] private TextMeshProUGUI xMax;
+    [SerializeField] private RectTransform yValueTemp;
+    [SerializeField] private RectTransform xValueTemp;
     [SerializeField] private TextMeshProUGUI averageC;
     [SerializeField] private TextMeshProUGUI maxC;
     [SerializeField] private TextMeshProUGUI minC;
@@ -27,21 +27,7 @@ public class Graph : MonoBehaviour
         ShowGraph(Model.GetInstance().GetAverageLigandC());
     }
 
-    private GameObject CreateCircle(Vector2 anchoredPosition)
-    {
-        GameObject circle = new GameObject("circle", typeof(Image));
-        circle.transform.SetParent(graphContainer, false);
-        circle.GetComponent<Image>().sprite = circleSprite;
-
-        RectTransform rectTransform = circle.GetComponent<RectTransform>();
-        rectTransform.anchoredPosition = anchoredPosition;
-        rectTransform.sizeDelta = new Vector2(12, 12);
-        rectTransform.anchorMin = new Vector2(0, 0);
-        rectTransform.anchorMax = new Vector2(0, 0);
-
-        return circle;
-    }
-
+    //Method that generates the graph based on the list of values
     private void ShowGraph(float[] values)
     {
         if (values.Length == 0)
@@ -53,8 +39,8 @@ public class Graph : MonoBehaviour
 
         GameObject previousPoint = null;
 
-        this.yMax.text = yMax.ToString();
-        xMax.text = values.Length.ToString();
+        //this.yValueTemp.text = yMax.ToString();
+        //xValueTemp.text = values.Length.ToString();
 
         float average = 0;
         float max = -1;
@@ -79,11 +65,50 @@ public class Graph : MonoBehaviour
                 min = values[i];
         }
 
+        //place the labels on the x-axis
+        int labelCount = 10;
+        float graphhWidth = graphContainer.sizeDelta.x;
+        for(int i = 0; i <= labelCount; i++)
+        {
+            //Generate the xlabel
+            RectTransform labelX = Instantiate(xValueTemp);
+            labelX.SetParent(graphContainer, false);
+            labelX.gameObject.SetActive(true);
+            float normalizedValue = i * 1f / labelCount;
+            labelX.anchoredPosition = new Vector2(xSize+normalizedValue*graphhWidth, -3f);
+            labelX.GetComponent<Text>().text = Mathf.RoundToInt(normalizedValue*values.Length).ToString();
+
+            //Generate the ylabel
+            RectTransform labelY = Instantiate(yValueTemp);
+            labelY.SetParent(graphContainer, false);
+            labelY.gameObject.SetActive(true);
+            labelY.anchoredPosition = new Vector2(-2f, normalizedValue*graphHeight);
+            labelY.GetComponent<Text>().text = (Mathf.RoundToInt(normalizedValue * yMax*100)/100f).ToString();
+        }
+
         averageC.text = "Average ligand consentraion: " + average/values.Length;
         minC.text = "Minimum average consentration: " + min;
         maxC.text = "Maximum average consentration: " + max;
     }
 
+
+    //Method that draws the circle for a singel data point
+    private GameObject CreateCircle(Vector2 anchoredPosition)
+    {
+        GameObject circle = new GameObject("circle", typeof(Image));
+        circle.transform.SetParent(graphContainer, false);
+        circle.GetComponent<Image>().sprite = circleSprite;
+
+        RectTransform rectTransform = circle.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = anchoredPosition;
+        rectTransform.sizeDelta = new Vector2(12, 12);
+        rectTransform.anchorMin = new Vector2(0, 0);
+        rectTransform.anchorMax = new Vector2(0, 0);
+
+        return circle;
+    }
+
+    //Method that draws a line between two datapoints
     private void DrawLine(Vector2 dotA, Vector2 dotB)
     {
         GameObject line = new GameObject("line", typeof(Image));
@@ -102,7 +127,7 @@ public class Graph : MonoBehaviour
     }
 
 
-
+    //Method that calcultes the angle that the line should have based on the difference between the two points
     private float CalculateAngle(Vector3 dir)
     {
         dir = dir.normalized;
