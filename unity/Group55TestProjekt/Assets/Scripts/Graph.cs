@@ -14,6 +14,8 @@ public class Graph : MonoBehaviour
     [SerializeField] private Sprite circleSprite;
     [SerializeField] private RectTransform yValueTemp;
     [SerializeField] private RectTransform xValueTemp;
+    private RectTransform xBarTemplate;
+    private RectTransform yBarTemplate;
     [SerializeField] private TextMeshProUGUI averageC;
     [SerializeField] private TextMeshProUGUI maxC;
     [SerializeField] private TextMeshProUGUI minC;
@@ -23,6 +25,8 @@ public class Graph : MonoBehaviour
     private void Awake()
     {
         graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
+        xBarTemplate = transform.Find("xBar").GetComponent<RectTransform>();
+        yBarTemplate = transform.Find("yBar").GetComponent<RectTransform>();
 
         ShowGraph(Model.GetInstance().GetAverageLigandC());
     }
@@ -78,12 +82,24 @@ public class Graph : MonoBehaviour
             labelX.anchoredPosition = new Vector2(xSize+normalizedValue*graphhWidth, -3f);
             labelX.GetComponent<Text>().text = Mathf.RoundToInt(normalizedValue*values.Length).ToString();
 
+            //Generate the xBar
+            RectTransform xBar = Instantiate(xBarTemplate);
+            xBar.SetParent(graphContainer, false);
+            xBar.gameObject.SetActive(true);
+            xBar.anchoredPosition = new Vector2(xSize + normalizedValue * graphhWidth, 140);
+
             //Generate the ylabel
             RectTransform labelY = Instantiate(yValueTemp);
             labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             labelY.anchoredPosition = new Vector2(-2f, normalizedValue*graphHeight);
             labelY.GetComponent<Text>().text = (Mathf.RoundToInt(normalizedValue * yMax*100)/100f).ToString();
+
+            //Generate the yBar
+            RectTransform yBar = Instantiate(yBarTemplate);
+            yBar.SetParent(graphContainer, false);
+            yBar.gameObject.SetActive(true);
+            yBar.anchoredPosition = new Vector2(290, normalizedValue * graphHeight);
         }
 
         averageC.text = "Average ligand consentraion: " + average/values.Length;
