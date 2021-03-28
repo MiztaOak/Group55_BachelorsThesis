@@ -11,7 +11,7 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
     private int iterations = 1000;
-    private int numBacteria = 2;
+    private int numBacteria = 10;
 
     // Start is called before the first frame update
     void Start()
@@ -30,10 +30,12 @@ public class LoadingScreen : MonoBehaviour
         for(int i = 0; i < numOfCells; i++)
         {
             model.SimulateNextCell(i);
-            model.ExportData(i,iterations);
+            
             progressText.text = "Loading progress: " + ((float)(i+1)/numOfCells * 100) + "%";
             yield return null;
         }
+        
+        model.ExportData(numOfCells,iterations);
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2); 
 

@@ -124,34 +124,40 @@ public class Model
     {
         List<Iteration> iteration_list = new List<Iteration>();
         List<DataToExport> data_list = new List<DataToExport>();
+        int Iteration_counter = 0;
 
         if (index >= numCells && cells.Length == 0)
             return;
-        ForwardInternals cell = ((ForwardInternals)cells[index].GetInternals());
 
-
-        for (int j = 0; j < iterations; j++)
+        for (int i = 0; i < index; i++)
         {
-            float x = cell.GetPosition(j).GetX();
-            float z = cell.GetPosition(j).GetZ();
-            State interalState = cell.GetInternalStates()[j];
-            float ap = (float) interalState.ap;
-            float bp = (float) interalState.bp;
-            float yp = (float) interalState.yp;
-            float m = (float) interalState.m;
-            float l = (float) interalState.l;
-            oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l);
-            iteration_list.Add(oneIteration);
-        }
+            ForwardInternals cell = ((ForwardInternals) cells[i].GetInternals());
 
-        for (int i = 0; i < numCells; i++)
-        {
-            cellData = new DataToExport() {id = i, Iterations = iteration_list};
+
+            for (int j = 0; j < iterations; j++)
+            {
+                Debug.Log(cell.GetHashCode());
+                float x = cell.GetPosition(j).GetX();
+                float z = cell.GetPosition(j).GetZ();
+                State interalState = cell.GetInternalStates()[j];
+                float ap = (float) interalState.ap;
+                float bp = (float) interalState.bp;
+                float yp = (float) interalState.yp;
+                float m = (float) interalState.m;
+                float l = (float) interalState.l;
+                oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l);
+                iteration_list.Add(oneIteration);
+                Iteration_counter++;
+            }
+
+            List<Iteration> copy = new List<Iteration>(iteration_list);
+            cellData = new DataToExport() {id = i, Iterations = copy};
             data_list.Add(cellData);
+            iteration_list.Clear();
         }
 
         ExportHandler.exportData(data_list);
-    }   
+    }
 
     // Class represents all information related to a single cell during the simulation
     public class DataToExport
@@ -168,13 +174,14 @@ public class Model
 
         float[] averageLigandC = new float[BacteriaFactory.GetIterations()];
 
-        for(int i = 0; i < averageLigandC.Length; i++)
+        for (int i = 0; i < averageLigandC.Length; i++)
         {
             float averageC = 0;
             for (int j = 0; j < cells.Length; j++)
             {
-                averageC += (float)((ForwardInternals)cells[j].GetInternals()).GetInternalStates()[i+1].l;
+                averageC += (float) ((ForwardInternals) cells[j].GetInternals()).GetInternalStates()[i + 1].l;
             }
+
             averageLigandC[i] = averageC / cells.Length;
         }
 
