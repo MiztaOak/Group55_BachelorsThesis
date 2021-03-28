@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MultiLigandEnvironment : AbstractEnvironment
 {
-    private Environment[] environments;
+    private AbstractEnvironment[] environments;
     private float max = 0;
 
     public MultiLigandEnvironment(float[] d, float[] i_0, float[] x, float[] z, float[] max, int n)
     {
-        environments = new Environment[n];
+        environments = new AbstractEnvironment[n];
         for(int i = 0; i < n; i++)
         {
             this.max += max[i];
@@ -21,7 +21,7 @@ public class MultiLigandEnvironment : AbstractEnvironment
     public override float getConcentration(float x, float z)
     {
         float c = 0;
-        foreach(Environment environment in environments)
+        foreach(AbstractEnvironment environment in environments)
         {
             c += environment.getConcentration(x, z);
         }
@@ -37,7 +37,7 @@ public class MultiLigandEnvironment : AbstractEnvironment
     public override float GradX(float x, float z)
     {
         float gradX = 0;
-        foreach(Environment environment in environments)
+        foreach(AbstractEnvironment environment in environments)
         {
             gradX += environment.GradX(x, z);
         }
@@ -47,14 +47,14 @@ public class MultiLigandEnvironment : AbstractEnvironment
     public override float GradZ(float x, float z)
     {
         float gradZ = 0;
-        foreach (Environment environment in environments)
+        foreach (AbstractEnvironment environment in environments)
         {
             gradZ += environment.GradZ(x, z);
         }
         return gradZ;
     }
 
-    public Environment[] GetEnvironments()
+    public AbstractEnvironment[] GetEnvironments()
     {
         return environments;
     }

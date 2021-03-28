@@ -11,7 +11,7 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
     private int iterations = 1000;
-    private int numBacteria = 10;
+    private int numBacteria = 50;
 
     // Start is called before the first frame update
     void Start()

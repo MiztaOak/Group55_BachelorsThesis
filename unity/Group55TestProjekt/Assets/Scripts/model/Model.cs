@@ -40,20 +40,6 @@ public class Model
         return instance;
     }
 
-    //Code bellow is a very dumb implementation but will be usefull before the ui is implemented
-
-    //creates a basic enironment
-    public void SetEnvironment(float d, float i_0, float x, float y)
-    {
-        environment = new Environment(d, i_0, x, y);
-    }
-
-    //creates a time dependent environment
-    public void SetEnvironment(float d, float i_0, float x, float y, float maxTime, float k)
-    {
-        environment = new TimeDependentEnvironment(d, i_0, x, y, maxTime, k);
-    }
-
     public void SetTimeScaleFactor(float timeScaleFactor)
     {
         this.timeScaleFactor = timeScaleFactor;
