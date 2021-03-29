@@ -34,7 +34,7 @@ public class LoadingScreen : MonoBehaviour
             yield return null;
         }
         
-        model.ExportData(numOfCells,iterations);
+       // model.ExportData(numOfCells, BacteriaFactory.GetIterations());
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2); 
 
