@@ -1193,7 +1193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 0.6
-  rotSpeed: 1.8
+  rotSpeed: 1.6
   smart: 0
   smartnessFactor: 0
 --- !u!54 &8872421074434192036

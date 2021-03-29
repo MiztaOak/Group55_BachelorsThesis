@@ -10,7 +10,7 @@ using Image = UnityEngine.UIElements.Image;
 using Random = UnityEngine.Random;
 using UnityEngine.SceneManagement;
 
-public class GameUIHandler : MonoBehaviour
+public class GameUIHandler : MonoBehaviour, ICellDoneListener
 {
     private Cell cell;
     private GameObject EColi;
@@ -52,6 +52,8 @@ public class GameUIHandler : MonoBehaviour
         countTMP = GameObject.Find("countTMP").GetComponent<TextMeshProUGUI>();
 
         model = Model.GetInstance();
+
+        CellDoneHandler.AddListener(this);
     }
 
     // Update is called once per frame
@@ -111,5 +113,10 @@ public class GameUIHandler : MonoBehaviour
     public void OnEndSim() //called when the user confirms that they wish to end the simulation
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void OnCellDone()
+    {
+        OnEndSimClick();
     }
 }

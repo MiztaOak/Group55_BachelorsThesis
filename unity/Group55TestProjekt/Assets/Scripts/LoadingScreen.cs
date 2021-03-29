@@ -17,6 +17,7 @@ public class LoadingScreen : MonoBehaviour
     {
         n = Model.GetInstance().GetNumCells();
         StartCoroutine(Load(n));
+
     }
 
     IEnumerator Load(int numOfCells)

@@ -70,7 +70,9 @@ public class MainMenu : MonoBehaviour
         quitButton.onClick.AddListener(Quit);
 
         model = Model.GetInstance();
+
         BacteriaFactory.SetCellIterations(500);
+
         //added just to make the program a lot less anoying to use
 
         createBasicEnv(i0, d);
@@ -114,6 +116,7 @@ public class MainMenu : MonoBehaviour
     public void StartSimulation() {
         createBasicEnv(i0, d);
         model.SetupCells(n, iterations);
+        CellDoneHandler.Setup(n);
 
         SceneManager.LoadScene(1); // Scene 1 is loading screen
     }
