@@ -9,12 +9,12 @@ public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
-
+    private int n;
     // Start is called before the first frame update
     void Start()
     {
-        Model.GetInstance().SetupCells(100, 1000);
-        StartCoroutine(Load(100));
+        n = Model.GetInstance().GetNumCells();
+        StartCoroutine(Load(n));
     }
 
     IEnumerator Load(int numOfCells)

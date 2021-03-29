@@ -15,16 +15,19 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI i0Text;
     [SerializeField] private TextMeshProUGUI dText;
     [SerializeField] private TextMeshProUGUI tooltipText;
-    // Sliders
+    [SerializeField] private TextMeshProUGUI nOfCellsText;
+    // Sliders & InputFields
 
     [SerializeField] private Slider i0Slider;
     [SerializeField] private Slider dSlider;
-    
-    // Buttons
-    
+    [SerializeField] private Slider nOfCellsSlider;
+    [SerializeField] private TMP_InputField nOfIterations;
+    // Buttons & Toggles
+
     [SerializeField] private Button startButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button simulateButton;
+    [SerializeField] private Toggle forwardSim; 
     // Canvases
     
     [SerializeField] private Canvas optionsCanvas;
@@ -49,6 +52,8 @@ public class MainMenu : MonoBehaviour
     private float d = 50;
     private float k;
     private float maxT;
+    private int n = 1;
+    private int iterations = 100;
 
     private Model model;
  
@@ -56,43 +61,63 @@ public class MainMenu : MonoBehaviour
     // Dropdown
     private void Start() {
 
-        Debug.Log(tooltipText.text);
-        //ShowToolTip("this is for the helpo");
+        // Create basic listeners for various elements
         simulateButton.onClick.AddListener(StartSimulation);
-        i0Slider.onValueChanged.AddListener(delegate {ValueChanged();});
-        dSlider.onValueChanged.AddListener(delegate { ValueChanged(); });
+        i0Slider.onValueChanged.AddListener(delegate {EnvValueChanged();});
+        dSlider.onValueChanged.AddListener(delegate {EnvValueChanged(); });
+        nOfCellsSlider.onValueChanged.AddListener(delegate {CellValueChanged(); });
+        nOfIterations.onValueChanged.AddListener(delegate {CellValueChanged(); });
+        forwardSim.onValueChanged.AddListener(delegate {ToggleChanged(); });
         quitButton.onClick.AddListener(Quit);
+
+
         model = Model.GetInstance();
         BacteriaFactory.SetCellIterations(500);
         //added just to make the program a lot less anoying to use
 
         createBasicEnv(i0, d);
-        ValueChanged(); // bug fix for first value change
+        EnvValueChanged(); // bug fix for first value change
     }
-
-    private void ValueChanged() {
+    private void EnvValueChanged() {
         i0 = i0Slider.value;
         d = dSlider.value;
-        //i0Slider1
-        i0Text.text = i0.ToString("f3");
-        //dSlider1
-        dText.text = d.ToString("f1");
-        createBasicEnv(i0, d);
 
+        i0Text.text = i0.ToString("f3");
+        dText.text = d.ToString("f1");
+       
+
+        // Used for heatmap visual 
+        createBasicEnv(i0, d);
         grid = new Grid(width, height, cellSize);
         Updateheatmap();
         heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class   
     }
 
+    private void CellValueChanged() {
+        n = (int)nOfCellsSlider.value;
+        nOfCellsText.text = n.ToString();
+        try {  
+            iterations = int.Parse(nOfIterations.text);
+            } 
+        catch (FormatException e) {
+            // Non valid string found, do something!! 
+        }    
+    }
+    private void ToggleChanged() {
+        // Ensure that iterations has the correct value when the toggle value is changed
+        if (!nOfIterations.isActiveAndEnabled) {
+            iterations = 0;
+        } else {
+            CellValueChanged();
+        }
+        
+    }
+
     public void StartSimulation() {
         createBasicEnv(i0, d);
-        if (BacteriaFactory.IsForwardSimulation())
-            SceneManager.LoadScene("Loading");
-        else
-            SceneManager.LoadScene("SampleScene");
-        
-        //better way
-        // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
+        model.SetupCells(n, iterations);
+
+        SceneManager.LoadScene(1); // Scene 1 is loading screen
     }
 
     public void Quit() {
@@ -103,22 +128,8 @@ public class MainMenu : MonoBehaviour
         EnvironmentFactory.CreateBasicEnvionment(d,i_0);
     }
     
-
     public void Updateheatmap() {
         grid = new Grid(width, height, cellSize);
         heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class     
-    }
-
-    private void ShowToolTip(string text) {
-        toolTip.SetActive(true);
-
-        tooltipText.text = text;
-        Vector2 backgroundSize = new Vector2(tooltipText.preferredWidth + 8, tooltipText.preferredHeight + 1);
-        
-        backgroundTransform.sizeDelta = backgroundSize; 
-       
-    }
-    private void HideToolTip() {
-        toolTip.SetActive(false);
     }
 }

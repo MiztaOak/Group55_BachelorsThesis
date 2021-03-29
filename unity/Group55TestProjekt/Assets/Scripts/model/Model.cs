@@ -50,6 +50,10 @@ public class Model
     {
         return timeScaleFactor;
     }
+    public int GetNumCells() 
+    {
+        return numCells;
+    }
 
     //Simulates numCells many cells with iterations many steps each
     public void SimulateCells(int numCells, int iterations)
