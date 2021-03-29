@@ -11,12 +11,13 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
     private int iterations = 1000;
-    private int numBacteria = 50;
+    private int numBacteria = 2;
 
     // Start is called before the first frame update
     void Start()
     {
         Model.GetInstance().SetupCells(numBacteria, iterations);
+        CellDoneHandler.Setup(numBacteria);
         StartCoroutine(Load(numBacteria));
     }
 

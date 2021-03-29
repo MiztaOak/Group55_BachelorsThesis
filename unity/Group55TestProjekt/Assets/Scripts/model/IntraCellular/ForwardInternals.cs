@@ -19,6 +19,8 @@ public class ForwardInternals : IInternals
     private float angle; //current angle
     private float initalAngel;
 
+    private bool isDone = false;
+
     public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations)
     {
         this.model = Model.GetInstance();
@@ -45,7 +47,7 @@ public class ForwardInternals : IInternals
     //Returns true if the cell has reached its final positon
     public bool IsDone()
     {
-        return currentIteration == iterations;
+        return isDone;
     }
 
     //Simulates the movement of the cell
@@ -54,13 +56,17 @@ public class ForwardInternals : IInternals
         for(int i = 1; i < iterations+1; i++)
         {
             positions[i] = new Vector3Adapter(positions[i - 1].GetX(), positions[i - 1].GetZ());
-            if(!GetRunningState(positions[i].GetX(), positions[i].GetZ()))
+            if (!GetRunningState(positions[i].GetX(), positions[i].GetZ()))
+            {
                 angle = CalculateTumbleAngle();
+            }
+            else
+            {
+                float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
 
-            float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
-            
-            if (positions[i].GetX() + dX < 14 && positions[i].GetX() - dX > -14 && positions[i].GetZ() + dZ < 14 && positions[i].GetZ() - dZ > -14)
-                positions[i].Add(dX, dZ);
+                if (positions[i].GetX() + dX < 14 && positions[i].GetX() - dX > -14 && positions[i].GetZ() + dZ < 14 && positions[i].GetZ() - dZ > -14)
+                    positions[i].Add(dX, dZ);
+            }
             AddState(i);
         }
     }
@@ -108,6 +114,11 @@ public class ForwardInternals : IInternals
     public IPointAdapter GetNextLocation()
     {
         IPointAdapter point = positions[currentIteration];
+        if (currentIteration == iterations && !isDone)
+        { 
+            CellDoneHandler.CellDone();
+            isDone = true;
+        }
         currentIteration = currentIteration+1 > iterations ? iterations : currentIteration+1;
        
         return point;

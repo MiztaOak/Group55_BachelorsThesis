@@ -108,6 +108,9 @@ public class Model
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
     public void ExportData(int index, int iterations)
     {
+        if (iterations == 0)
+            return;
+
         List<Iteration> iteration_list = new List<Iteration>();
         List<DataToExport> data_list = new List<DataToExport>();
         int Iteration_counter = 0;
