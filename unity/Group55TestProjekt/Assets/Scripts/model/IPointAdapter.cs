@@ -11,4 +11,5 @@ public interface IPointAdapter
     void Add(float x, float z);
 
     IPointAdapter Copy();
+    bool Equals(IPointAdapter other);
 }

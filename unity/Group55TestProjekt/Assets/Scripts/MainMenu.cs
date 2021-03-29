@@ -56,7 +56,6 @@ public class MainMenu : MonoBehaviour
     private int iterations = 100;
 
     private Model model;
- 
 
     // Dropdown
     private void Start() {
@@ -69,7 +68,6 @@ public class MainMenu : MonoBehaviour
         nOfIterations.onValueChanged.AddListener(delegate {CellValueChanged(); });
         forwardSim.onValueChanged.AddListener(delegate {ToggleChanged(); });
         quitButton.onClick.AddListener(Quit);
-
 
         model = Model.GetInstance();
         BacteriaFactory.SetCellIterations(500);

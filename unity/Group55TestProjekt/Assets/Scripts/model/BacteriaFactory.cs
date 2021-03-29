@@ -121,4 +121,9 @@ public class BacteriaFactory
     {
         return GetInstance().iterations != 0;
     }
+
+    public static int GetIterations()
+    {
+        return GetInstance().iterations;
+    }
 }

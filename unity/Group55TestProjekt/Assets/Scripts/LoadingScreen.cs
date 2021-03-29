@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ public class LoadingScreen : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
+
     private int n;
     // Start is called before the first frame update
     void Start()
@@ -22,13 +24,17 @@ public class LoadingScreen : MonoBehaviour
         yield return null;
 
         Model model = Model.GetInstance();
+        ExportHandler.init();
 
         for(int i = 0; i < numOfCells; i++)
         {
             model.SimulateNextCell(i);
+            
             progressText.text = "Loading progress: " + ((float)(i+1)/numOfCells * 100) + "%";
             yield return null;
         }
+        
+        model.ExportData(numOfCells,iterations);
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2); 
 
