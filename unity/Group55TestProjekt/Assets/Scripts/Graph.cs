@@ -74,26 +74,29 @@ public class Graph : MonoBehaviour
         float graphhWidth = graphContainer.sizeDelta.x;
         for(int i = 0; i <= labelCount; i++)
         {
+            
+            
             //Generate the xlabel
             RectTransform labelX = Instantiate(xValueTemp);
             labelX.SetParent(graphContainer, false);
             labelX.gameObject.SetActive(true);
             float normalizedValue = i * 1f / labelCount;
-            labelX.anchoredPosition = new Vector2(xSize+normalizedValue*graphhWidth, -3f);
+            float xPos = Mathf.Min(xSize + normalizedValue * graphhWidth, graphhWidth);
+            labelX.anchoredPosition = new Vector2(xPos, -3f);
             labelX.GetComponent<Text>().text = Mathf.RoundToInt(normalizedValue*values.Length).ToString();
 
             //Generate the xBar
             RectTransform xBar = Instantiate(xBarTemplate);
             xBar.SetParent(graphContainer, false);
             xBar.gameObject.SetActive(true);
-            xBar.anchoredPosition = new Vector2(xSize + normalizedValue * graphhWidth, 140);
+            xBar.anchoredPosition = new Vector2(xPos, 140);
 
             //Generate the ylabel
             RectTransform labelY = Instantiate(yValueTemp);
             labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             labelY.anchoredPosition = new Vector2(-2f, normalizedValue*graphHeight);
-            labelY.GetComponent<Text>().text = (Mathf.RoundToInt(normalizedValue * yMax*100)/100f).ToString();
+            labelY.GetComponent<Text>().text = (Mathf.RoundToInt(normalizedValue * yMax)).ToString();
 
             //Generate the yBar
             RectTransform yBar = Instantiate(yBarTemplate);
@@ -102,11 +105,15 @@ public class Graph : MonoBehaviour
             yBar.anchoredPosition = new Vector2(290, normalizedValue * graphHeight);
         }
 
-        averageC.text = "Average ligand consentraion: " + average/values.Length;
-        minC.text = "Minimum average consentration: " + min;
-        maxC.text = "Maximum average consentration: " + max;
+        averageC.text = "Average ligand consentraion: " + RoundAverageValue(average/values.Length);
+        minC.text = "Minimum average consentration: " + RoundAverageValue(min);
+        maxC.text = "Maximum average consentration: " + RoundAverageValue(max);
     }
 
+    private float RoundAverageValue(float average)
+    {
+        return Mathf.RoundToInt(average * 1000) / 1000f;
+    }
 
     //Method that draws the circle for a singel data point
     private GameObject CreateCircle(Vector2 anchoredPosition)
