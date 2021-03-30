@@ -33,6 +33,7 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
 
     [SerializeField] private Canvas largeCellInfoCanvas;
     [SerializeField] private Canvas endSimScreen;
+    [SerializeField] private Canvas pauseScreen;
 
     [SerializeField] private Button endSimButton;
     [SerializeField] private TextMeshProUGUI numOfCells;
@@ -42,7 +43,7 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
     private List<GameObject> EColiList;
     private float elpasedTime;
 
-    private float prevTimeScaleFactor;
+    private float prevTimeScaleFactor = 1;
     
     // Start is called before the first frame update
     void Start()
@@ -65,7 +66,16 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
         timeTMP.text = FormatTimeString();
         countTMP.text = model.GetCells().Length.ToString();
         environmentTMP.text = "Basic";
-        
+
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !pauseScreen.gameObject.activeSelf) {
+            pauseScreen.gameObject.SetActive(true);
+            prevTimeScaleFactor = model.GetTimeScaleFactor();
+            model.SetTimeScaleFactor(0);
+        } else if (Input.GetKeyDown(KeyCode.Escape) && pauseScreen.gameObject.activeSelf) {
+            OnResumeClick();
+        }
+           
         if (CellInfo.focusedCell != null)
         {
             largeCellInfoCanvas.gameObject.SetActive(true);
@@ -78,7 +88,10 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
         float seconds = elpasedTime % 60;
         return String.Format(minutes + ":" + Mathf.RoundToInt(seconds));
     }
-
+    public void OnResumeClick() {
+        pauseScreen.gameObject.SetActive(false);
+        model.SetTimeScaleFactor(prevTimeScaleFactor);
+    }
     public void OnCloseClick()
     {
         CellInfo.focusedCell = null;

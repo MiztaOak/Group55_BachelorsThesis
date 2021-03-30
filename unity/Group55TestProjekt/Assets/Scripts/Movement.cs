@@ -45,14 +45,6 @@ public class Movement : MonoBehaviour
         run = false; // set run to false so that it begins by rotating towards the first location
     }
 
-    void Update()
-    {
-        if (Input.GetKey("escape"))
-        {
-            SceneManager.LoadScene(0);
-        }
-
-    }
     /*
     private void OnMouseOver() 
     {
