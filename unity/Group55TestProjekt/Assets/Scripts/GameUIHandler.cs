@@ -112,6 +112,7 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
 
     public void OnEndSim() //called when the user confirms that they wish to end the simulation
     {
+        model.SetTimeScaleFactor(1);
         SceneManager.LoadScene(0);
     }
 

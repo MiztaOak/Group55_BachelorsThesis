@@ -118,25 +118,7 @@ public class Movement : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        HandleCollision(other);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        HandleCollision(other);
-    }
-
-    private void HandleCollision(Collider other) //this should not be needed since the cell should not hit the walls but who knows
-    {
-        if (other.gameObject.name.Substring(0, 4) == "Wall")
-        {
-            Vector3 pos = transform.position;
-            transform.position = new Vector3(Mathf.Clamp(pos.x, -14f, 14f), pos.y, Mathf.Clamp(pos.z, -14f, 14f)); //dumb solution plz fix
-        }
-        
-    }
+    
 
     private Vector3 TranslateToVector3(IPointAdapter pointToTranslate) => new Vector3(pointToTranslate.GetX(), transform.position.y, pointToTranslate.GetZ());
 }
