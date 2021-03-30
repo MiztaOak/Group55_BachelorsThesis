@@ -66,7 +66,7 @@ public class MainMenu : MonoBehaviour
         dSlider.onValueChanged.AddListener(delegate {EnvValueChanged(); });
         nOfCellsSlider.onValueChanged.AddListener(delegate {CellValueChanged(); });
         nOfIterations.onValueChanged.AddListener(delegate {CellValueChanged(); });
-        forwardSim.onValueChanged.AddListener(delegate {ToggleChanged(); });
+        forwardSim.onValueChanged.AddListener(delegate { CellValueChanged(); });
         quitButton.onClick.AddListener(Quit);
 
         model = Model.GetInstance();
@@ -77,6 +77,10 @@ public class MainMenu : MonoBehaviour
 
         createBasicEnv(i0, d);
         EnvValueChanged(); // bug fix for first value change
+    }
+
+    private void Update() {
+        Debug.Log(iterations);
     }
     private void EnvValueChanged() {
         i0 = i0Slider.value;
@@ -96,21 +100,16 @@ public class MainMenu : MonoBehaviour
     private void CellValueChanged() {
         n = (int)nOfCellsSlider.value;
         nOfCellsText.text = n.ToString();
-        try {  
-            iterations = int.Parse(nOfIterations.text);
+        if (nOfIterations.isActiveAndEnabled) {
+            try {  
+                iterations = int.Parse(nOfIterations.text);
             } 
-        catch (FormatException e) {
-            // Non valid string found, do something!! 
-        }    
-    }
-    private void ToggleChanged() {
-        // Ensure that iterations has the correct value when the toggle value is changed
-        if (!nOfIterations.isActiveAndEnabled) {
-            iterations = 0;
+            catch (FormatException e) {
+                // Non valid string found, do something!! 
+            }    
         } else {
-            CellValueChanged();
+            iterations = 0;
         }
-        
     }
 
     public void StartSimulation() {
