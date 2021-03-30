@@ -14,6 +14,7 @@ public class MainMenu : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI i0Text;
     [SerializeField] private TextMeshProUGUI dText;
+    [SerializeField] private TextMeshProUGUI sourcesText;
     [SerializeField] private TextMeshProUGUI tooltipText;
     [SerializeField] private TextMeshProUGUI nOfCellsText;
     // Sliders & InputFields
@@ -84,11 +85,11 @@ public class MainMenu : MonoBehaviour
     private void EnvValueChanged() {
         i0 = i0Slider.value;
         d = dSlider.value;
-        sources = (int)sourcesSlider.value;
+        sources = Mathf.RoundToInt(sourcesSlider.value);
 
         i0Text.text = i0.ToString("f3");
         dText.text = d.ToString("f1");
-       
+        sourcesText.text = sources.ToString();
 
         // Used for heatmap visual 
         createBasicEnv(i0, d);

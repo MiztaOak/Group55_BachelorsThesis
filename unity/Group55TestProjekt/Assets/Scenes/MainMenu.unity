@@ -2376,6 +2376,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   i0Text: {fileID: 1193403021}
   dText: {fileID: 901343309}
+  sourcesText: {fileID: 973127844}
   tooltipText: {fileID: 1462386009}
   nOfCellsText: {fileID: 632287399}
   i0Slider: {fileID: 1671480986}
@@ -6647,7 +6648,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 1
   m_MaxValue: 5
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8976,7 +8977,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Governs the minimum value of the consentration '
+  m_text: Governs the number of ligand sources.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
