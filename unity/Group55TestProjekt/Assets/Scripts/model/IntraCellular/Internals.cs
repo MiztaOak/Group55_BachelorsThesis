@@ -32,8 +32,14 @@ public class Internals : IInternals
         if(!GetRunningState(location.GetX(), location.GetZ()))
             angle = CalculateTumbleAngle();
         float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
-        if (location.GetX() + dX < 14 && location.GetX() - dX > -14 && location.GetZ() + dZ < 14 && location.GetZ() - dZ > -14)
-            location.Add(dX, dZ);
+        while (location.GetX() + dX > 14 && location.GetX() - dX < -14 && location.GetZ() + dZ > 14 && location.GetZ() - dZ < -14)
+        {
+            angle = CalculateTumbleAngle();
+            dX = v * dT * Mathf.Cos(angle);
+            dZ = v * dT * Mathf.Sin(angle);
+        }
+        //if (location.GetX() + dX < 14 && location.GetX() - dX > -14 && location.GetZ() + dZ < 14 && location.GetZ() - dZ > -14)
+          location.Add(dX, dZ);
         /*
     angle = CalculateTumbleAngle();
 

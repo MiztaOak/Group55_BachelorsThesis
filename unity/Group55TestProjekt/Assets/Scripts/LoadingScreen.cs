@@ -16,6 +16,7 @@ public class LoadingScreen : MonoBehaviour
     void Start()
     {
         n = Model.GetInstance().GetNumCells();
+        CellDoneHandler.Setup(n);
         StartCoroutine(Load(n));
 
     }

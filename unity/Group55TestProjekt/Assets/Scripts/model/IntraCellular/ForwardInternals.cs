@@ -64,8 +64,14 @@ public class ForwardInternals : IInternals
             {
                 float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
 
-                if (positions[i].GetX() + dX < 14 && positions[i].GetX() - dX > -14 && positions[i].GetZ() + dZ < 14 && positions[i].GetZ() - dZ > -14)
-                    positions[i].Add(dX, dZ);
+                while(positions[i].GetX() + dX > 14 && positions[i].GetX() - dX < -14 && positions[i].GetZ() + dZ > 14 && positions[i].GetZ() - dZ < -14)
+                {
+                    angle = CalculateTumbleAngle();
+                    dX = v * dT * Mathf.Cos(angle);
+                    dZ = v * dT * Mathf.Sin(angle);
+                }
+                //if (positions[i].GetX() + dX < 14 && positions[i].GetX() - dX > -14 && positions[i].GetZ() + dZ < 14 && positions[i].GetZ() - dZ > -14)
+                positions[i].Add(dX, dZ);
             }
             AddState(i);
         }
