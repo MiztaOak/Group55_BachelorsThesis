@@ -26,13 +26,31 @@ public static class EnvironmentFactory
         CreateTimeDependentEnvionment(d, i_0, maxTime, k, 0, 0);
     }
 
+    public static void CreateMultiEnvironment(float d, float i_0, int n)
+    {
+        if (n <= 1)
+        {
+            CreateBasicEnvionment(d, i_0);
+            return;
+        }
+        float x = 10, y = 10;
+
+        if (n > 5)
+            n = 5;
+        float[] xs = { 10, -10, 10, -10, 0 };
+        float[]ys = { 10, -10, -10, 10, 0 };
+        
+        
+        Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, xs, ys, 49f,n);
+    }
+
     public static void CreateMultiEnvironment(float d, float i_0)
     {
-        Model.GetInstance().environment = new MultiLigandEnvironment(new float[] { d, d }, new float[] { i_0, i_0 }, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 6.99f, 6.99f },2);
+        Model.GetInstance().environment = new MultiLigandEnvironment(new float[] { d, d }, new float[] { i_0, i_0 }, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 49f, 49f }, 2);
     }
 
     public static void CreateMultiEnvironment(float[] d, float[] i_0)
     {
-        Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 6.99f, 6.99f }, 2);
+        Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 49f, 49f }, 2);
     }
 }

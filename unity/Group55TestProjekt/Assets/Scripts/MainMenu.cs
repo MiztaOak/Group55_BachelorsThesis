@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Slider dSlider;
     [SerializeField] private Slider nOfCellsSlider;
     [SerializeField] private TMP_InputField nOfIterations;
+    [SerializeField] private Slider sourcesSlider;
     // Buttons & Toggles
 
     [SerializeField] private Button startButton;
@@ -50,6 +51,7 @@ public class MainMenu : MonoBehaviour
     // C#
     private float i0 = 0.1f;
     private float d = 50;
+    private int sources = 1;
     private float k;
     private float maxT;
     private int n = 1;
@@ -64,6 +66,7 @@ public class MainMenu : MonoBehaviour
         simulateButton.onClick.AddListener(StartSimulation);
         i0Slider.onValueChanged.AddListener(delegate {EnvValueChanged();});
         dSlider.onValueChanged.AddListener(delegate {EnvValueChanged(); });
+        sourcesSlider.onValueChanged.AddListener(delegate { EnvValueChanged(); });
         nOfCellsSlider.onValueChanged.AddListener(delegate {CellValueChanged(); });
         nOfIterations.onValueChanged.AddListener(delegate {CellValueChanged(); });
         forwardSim.onValueChanged.AddListener(delegate {ToggleChanged(); });
@@ -81,6 +84,7 @@ public class MainMenu : MonoBehaviour
     private void EnvValueChanged() {
         i0 = i0Slider.value;
         d = dSlider.value;
+        sources = (int)sourcesSlider.value;
 
         i0Text.text = i0.ToString("f3");
         dText.text = d.ToString("f1");
@@ -126,7 +130,7 @@ public class MainMenu : MonoBehaviour
     }
 
     void createBasicEnv(float i_0, float d) {
-        EnvironmentFactory.CreateBasicEnvionment(d,i_0);
+        EnvironmentFactory.CreateMultiEnvironment(d,i_0,sources);
     }
     
     public void Updateheatmap() {

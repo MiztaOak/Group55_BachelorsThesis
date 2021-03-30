@@ -28,7 +28,7 @@ public class SetupScene : MonoBehaviour
         {
             foreach(Environment env in ((MultiLigandEnvironment)environment).GetEnvironments())
             {
-                Instantiate(food, new Vector3(env.GetX(), 1.88f, env.GetX()), Quaternion.identity);
+                Instantiate(food, new Vector3(env.GetX(), 1.88f, env.GetZ()), Quaternion.identity);
             }
         }
         else
