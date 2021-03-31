@@ -37,19 +37,8 @@ public class Internals : IInternals
             angle = CalculateTumbleAngle();
             dX = v * dT * Mathf.Cos(angle);
             dZ = v * dT * Mathf.Sin(angle);
-        }
-        //if (location.GetX() + dX < 14 && location.GetX() - dX > -14 && location.GetZ() + dZ < 14 && location.GetZ() - dZ > -14)
+        }  
           location.Add(dX, dZ);
-        /*
-    angle = CalculateTumbleAngle();
-
-    float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
-    while(GetRunningState(location.GetX(), location.GetZ()))
-    {
-        location.Add(dX, dZ);
-        if (location.GetX() + dX > 14 || location.GetX() - dX < -14 || location.GetZ() + dZ > 14 || location.GetZ() - dZ < -14)
-            break;
-    }*/
     }
 
     //Returns absolute tumble angle in radians

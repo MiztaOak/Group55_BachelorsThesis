@@ -70,7 +70,6 @@ public class ForwardInternals : IInternals
                     dX = v * dT * Mathf.Cos(angle);
                     dZ = v * dT * Mathf.Sin(angle);
                 }
-                //if (positions[i].GetX() + dX < 14 && positions[i].GetX() - dX > -14 && positions[i].GetZ() + dZ < 14 && positions[i].GetZ() - dZ > -14)
                 positions[i].Add(dX, dZ);
             }
             AddState(i);
