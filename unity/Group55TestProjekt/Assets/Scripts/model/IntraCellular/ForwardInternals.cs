@@ -41,7 +41,7 @@ public class ForwardInternals : IInternals
         this.iterations = iterations;
 
         //Run the forward simulation
-        SimulateMovement();
+        //SimulateMovement();
     }
 
     //Returns true if the cell has reached its final positon
@@ -55,25 +55,34 @@ public class ForwardInternals : IInternals
     {
         for(int i = 1; i < iterations+1; i++)
         {
-            positions[i] = new Vector3Adapter(positions[i - 1].GetX(), positions[i - 1].GetZ());
-            if (!GetRunningState(positions[i].GetX(), positions[i].GetZ()))
+            SimulateMovementStep(i);
+        }
+    }
+
+    //Simulates a single step of movement public since this might be usefull to call from the outside for the dynmaic environment
+    public void SimulateMovementStep(int step)
+    {
+        if (step < 1 || step > iterations)
+            throw new IncorrectSimulationStepException(step);
+
+        positions[step] = new Vector3Adapter(positions[step - 1].GetX(), positions[step - 1].GetZ());
+        if (!GetRunningState(positions[step].GetX(), positions[step].GetZ()))
+        {
+            angle = CalculateTumbleAngle();
+        }
+        else
+        {
+            float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
+
+            while (positions[step].GetX() + dX > 14 && positions[step].GetX() - dX < -14 && positions[step].GetZ() + dZ > 14 && positions[step].GetZ() - dZ < -14)
             {
                 angle = CalculateTumbleAngle();
+                dX = v * dT * Mathf.Cos(angle);
+                dZ = v * dT * Mathf.Sin(angle);
             }
-            else
-            {
-                float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
-
-                while(positions[i].GetX() + dX > 14 && positions[i].GetX() - dX < -14 && positions[i].GetZ() + dZ > 14 && positions[i].GetZ() - dZ < -14)
-                {
-                    angle = CalculateTumbleAngle();
-                    dX = v * dT * Mathf.Cos(angle);
-                    dZ = v * dT * Mathf.Sin(angle);
-                }
-                positions[i].Add(dX, dZ);
-            }
-            AddState(i);
+            positions[step].Add(dX, dZ);
         }
+        AddState(step);
     }
 
     //Returns absolute tumble angle in radians

@@ -55,10 +55,9 @@ public class Model
     }
 
     //Simulates numCells many cells with iterations many steps each
-    public void SimulateCells(int numCells, int iterations)
+    public void CreateCells(int numCells)
     {
         cells = new Cell[numCells];
-        BacteriaFactory.SetCellIterations(iterations);
         this.numCells = numCells;
         cellIndex = 0;
 
@@ -68,6 +67,17 @@ public class Model
                 Random.Range(0, 2 * Mathf.PI), false);
         }
     }
+
+    public void SimulateTimeStep(int timeStep)
+    {
+        //add code for updating the environment or something i guess
+        foreach (Cell cell in cells)
+        {
+            ((ForwardInternals)cell.GetInternals()).SimulateMovementStep(timeStep);
+        }
+    }
+
+    
 
     //Sets up the model and factory to simulate numCells many cells with iterations many steps 
     public void SetupCells(int numCells, int iterations)

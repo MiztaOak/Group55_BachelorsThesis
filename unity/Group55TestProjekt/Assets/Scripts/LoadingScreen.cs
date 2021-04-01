@@ -24,17 +24,30 @@ public class LoadingScreen : MonoBehaviour
     IEnumerator Load(int numOfCells)
     {
         yield return null;
-
+        int iterations = BacteriaFactory.GetIterations();
         Model model = Model.GetInstance();
         ExportHandler.init();
 
-        for(int i = 0; i < numOfCells; i++)
+        //Creates the cell objects
+        model.CreateCells(numOfCells);
+
+        if(iterations > 0)
         {
-            model.SimulateNextCell(i);
-            
-            progressText.text = "Loading progress: " + ((float)(i+1)/numOfCells * 100) + "%";
-            yield return null;
+            for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
+            {
+                model.SimulateTimeStep(i);
+                progressText.text = "Loading progress: " + ((float) i / iterations * 100) + "%";
+                yield return null;
+            }
         }
+        else
+        {
+            progressText.text = "Loading progress: 100%"; //if no simulation you are done
+            
+        }
+        
+
+        
         
        // model.ExportData(numOfCells, BacteriaFactory.GetIterations());
 
