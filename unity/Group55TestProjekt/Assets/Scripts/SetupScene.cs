@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 public class SetupScene : MonoBehaviour
 {
-    [SerializeField] private GameObject eColi;
+    [SerializeField] private Movement eColi;
     [SerializeField] private GameObject food;
 
     // Start is called before the first frame update
@@ -17,7 +17,7 @@ public class SetupScene : MonoBehaviour
         if (cells == null)
             return;
 
-        for (int i = 0; i < cells.Count; i++) //create the E-Coli objects for the cells
+        for (int i = 0; i < model.GetNumCells(0); i++) //create the E-Coli objects for the cells
         {
             IPointAdapter point = cells[i].GetNextLocation();
             Instantiate(eColi, new Vector3(point.GetX(), 1, point.GetZ()), Quaternion.Euler(0, cells[i].GetAngle(), 0));
