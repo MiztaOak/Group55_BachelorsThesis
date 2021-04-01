@@ -39,15 +39,13 @@ public class LoadingScreen : MonoBehaviour
                 progressText.text = "Loading progress: " + ((float) i / iterations * 100) + "%";
                 yield return null;
             }
+            model.GetAverageLigandC();
         }
         else
         {
             progressText.text = "Loading progress: 100%"; //if no simulation you are done
             
         }
-        
-
-        
         
        // model.ExportData(numOfCells, BacteriaFactory.GetIterations());
 

@@ -64,7 +64,7 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
         
         
         timeTMP.text = FormatTimeString();
-        countTMP.text = model.GetCells().Length.ToString();
+        countTMP.text = model.GetCells().Count.ToString();
         environmentTMP.text = "Basic";
 
 
@@ -111,7 +111,7 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
         model.SetTimeScaleFactor(0);
 
         //Update the texts for the end screen
-        numOfCells.text = "Number of Bacteria: " + model.GetCells().Length;
+        numOfCells.text = "Number of Bacteria: " + model.GetCells().Count;
         numOfIterations.text = "Number of Iterations: " + BacteriaFactory.GetIterations();
         timeElapsed.text = "Time elapsed: " + FormatTimeString();
     }

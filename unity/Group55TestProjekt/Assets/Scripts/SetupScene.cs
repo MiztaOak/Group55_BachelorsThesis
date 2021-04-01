@@ -13,11 +13,11 @@ public class SetupScene : MonoBehaviour
     {
         Model model = Model.GetInstance();
 
-        Cell[] cells = model.GetCells();
+        List<Cell> cells = model.GetCells();
         if (cells == null)
             return;
 
-        for (int i = 0; i < cells.Length; i++) //create the E-Coli objects for the cells
+        for (int i = 0; i < cells.Count; i++) //create the E-Coli objects for the cells
         {
             IPointAdapter point = cells[i].GetNextLocation();
             Instantiate(eColi, new Vector3(point.GetX(), 1, point.GetZ()), Quaternion.Euler(0, cells[i].GetAngle(), 0));

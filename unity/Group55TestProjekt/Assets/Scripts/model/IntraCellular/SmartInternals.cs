@@ -62,4 +62,9 @@ public class SmartInternals : IInternals
     {
         throw new System.NotImplementedException();
     }
+
+    public IInternals Copy()
+    {
+        return new SmartInternals(location.GetX(), location.GetZ(), dT, v, smartnessFactor);
+    }
 }

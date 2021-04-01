@@ -18,7 +18,7 @@ public class Model
     private float
         timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
 
-    private Cell[] cells;
+    private List<Cell> cells;
 
     private int cellIndex = 0;
     private int numCells;
@@ -30,7 +30,7 @@ public class Model
         //add code as it is needed
         environment = new Environment(); //super base case just to prevent any scary null pointers
         timeScaleFactor = 1;
-        cells = new Cell[0];
+        cells = new List<Cell>();
     }
 
     public static Model GetInstance()
@@ -57,14 +57,14 @@ public class Model
     //Simulates numCells many cells with iterations many steps each
     public void CreateCells(int numCells)
     {
-        cells = new Cell[numCells];
+        cells = new List<Cell>(numCells);
         this.numCells = numCells;
         cellIndex = 0;
 
         for (int i = 0; i < numCells; i++)
         {
-            cells[i] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
-                Random.Range(0, 2 * Mathf.PI), false);
+            cells.Add(BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
+                Random.Range(0, 2 * Mathf.PI), false));
         }
     }
 
@@ -82,7 +82,7 @@ public class Model
     //Sets up the model and factory to simulate numCells many cells with iterations many steps 
     public void SetupCells(int numCells, int iterations)
     {
-        cells = new Cell[numCells];
+        cells = new List<Cell>(numCells);
         BacteriaFactory.SetCellIterations(iterations);
         this.numCells = numCells;
         cellIndex = 0;
@@ -97,7 +97,7 @@ public class Model
             Random.Range(0, 2 * Mathf.PI), false);
     }
 
-    public Cell[] GetCells()
+    public List<Cell> GetCells()
     {
         return cells;
     }
@@ -113,7 +113,7 @@ public class Model
     public void Reset()
     {
         timeScaleFactor = 1;
-        cells = new Cell[0];
+        cells = new List<Cell>();
         cellIndex = 0;
         numCells = 0;
         averageLigandC = null;
@@ -129,7 +129,7 @@ public class Model
         List<DataToExport> data_list = new List<DataToExport>();
         int Iteration_counter = 0;
 
-        if (index >= numCells && cells.Length == 0)
+        if (index >= numCells && cells.Count == 0)
             return;
 
         for (int i = 0; i < index; i++)
@@ -172,7 +172,7 @@ public class Model
     //Calculates the average ligand consentration for each time step
     private float[] CalculateAverageLigandC()
     {
-        if (cells.Length == 0)
+        if (cells.Count == 0)
             return null;
 
         float[] averageLigandC = new float[BacteriaFactory.GetIterations()];
@@ -180,12 +180,12 @@ public class Model
         for (int i = 0; i < averageLigandC.Length; i++)
         {
             float averageC = 0;
-            for (int j = 0; j < cells.Length; j++)
+            for (int j = 0; j < cells.Count; j++)
             {
                 averageC += (float) ((ForwardInternals) cells[j].GetInternals()).GetInternalStates()[i + 1].l;
             }
 
-            averageLigandC[i] = averageC / cells.Length;
+            averageLigandC[i] = averageC / cells.Count;
         }
 
         return averageLigandC;

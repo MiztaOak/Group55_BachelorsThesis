@@ -21,6 +21,8 @@ public class ForwardInternals : IInternals
 
     private bool isDone = false;
 
+    private int deathDate;
+
     public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations)
     {
         this.model = Model.GetInstance();
@@ -39,9 +41,24 @@ public class ForwardInternals : IInternals
         this.angle = angle;
         initalAngel = angle;
         this.iterations = iterations;
+        this.deathDate = iterations+1;
+    }
 
-        //Run the forward simulation
-        //SimulateMovement();
+    public ForwardInternals(IPointAdapter[] locations, State[] states, float v, float dT, float angle, ICellRegulation regulator, int iteration, int iterations)
+    {
+        this.regulator = regulator;
+        positions = new IPointAdapter[iterations + 1];
+        states = new State[iterations + 1];
+        this.deathDate = iterations + 1;
+
+        //Fix the states so that there are no null pointers this should maybe 
+        for(int i = 0; i <= iteration; i++)
+        {
+            positions[i] = locations[i];
+            this.states[i] = states[i];
+        }
+        this.states[iteration] = GetInternalState();
+        currentIteration = iteration;
     }
 
     //Returns true if the cell has reached its final positon
@@ -153,5 +170,10 @@ public class ForwardInternals : IInternals
         if (i >= positions.Length)
             return null;
         return positions[i];
+    }
+
+    public IInternals Copy()
+    {
+        return new ForwardInternals(positions,states, v, dT, angle, regulator.Copy(), iterations, currentIteration);
     }
 }

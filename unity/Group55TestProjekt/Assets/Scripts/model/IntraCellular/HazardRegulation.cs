@@ -38,4 +38,9 @@ public class HazardRegulation : ICellRegulation
         } 
         
     }
+
+    public ICellRegulation Copy()
+    {
+        return new HazardRegulation();
+    }
 }

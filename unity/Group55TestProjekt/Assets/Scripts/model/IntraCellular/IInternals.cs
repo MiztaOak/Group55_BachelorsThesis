@@ -7,4 +7,5 @@ public interface IInternals
     IPointAdapter GetNextLocation();
     State GetInternalState();
     float GetAngle();
+    IInternals Copy();
 }

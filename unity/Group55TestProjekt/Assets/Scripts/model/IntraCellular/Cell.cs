@@ -15,6 +15,11 @@ public class Cell
     {
         this.cellInternals = cellInternals;
     }
+
+    public Cell(Cell parent)
+    {
+        cellInternals = parent.cellInternals.Copy();
+    }
    
     //gets the next location that the cell should move to should only be called when a new location is needed
     public IPointAdapter GetNextLocation()
