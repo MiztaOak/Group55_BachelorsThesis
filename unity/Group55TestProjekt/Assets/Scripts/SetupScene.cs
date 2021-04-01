@@ -20,7 +20,8 @@ public class SetupScene : MonoBehaviour
         for (int i = 0; i < model.GetNumCells(0); i++) //create the E-Coli objects for the cells
         {
             IPointAdapter point = cells[i].GetNextLocation();
-            Instantiate(eColi, new Vector3(point.GetX(), 1, point.GetZ()), Quaternion.Euler(0, cells[i].GetAngle(), 0));
+            Movement tmp = Instantiate(eColi, new Vector3(point.GetX(), 1, point.GetZ()), Quaternion.Euler(0, cells[i].GetAngle(), 0));
+            tmp.SetCell(cells[i]);
         }
 
         AbstractEnvironment environment = model.environment;

@@ -20,7 +20,6 @@ public class Model
 
     private List<Cell> cells;
 
-    private int cellIndex = 0;
     private int[] numCells;
 
     private float[] averageLigandC;
@@ -38,20 +37,6 @@ public class Model
         if (instance == null)
             instance = new Model();
         return instance;
-    }
-
-    public void SetTimeScaleFactor(float timeScaleFactor)
-    {
-        this.timeScaleFactor = timeScaleFactor;
-    }
-
-    public float GetTimeScaleFactor()
-    {
-        return timeScaleFactor;
-    }
-    public int GetNumCells(int iteration) 
-    {
-        return numCells[iteration]; //might cause problems later
     }
 
     //Simulates numCells many cells with iterations many steps each
@@ -81,7 +66,6 @@ public class Model
         this.numCells = new int[iterations + 1];
         for (int i = 0; i <= iterations; i++)
             this.numCells[i] = numCells;
-        cellIndex = 0;
         timeScaleFactor = 1;
     }
 
@@ -99,14 +83,6 @@ public class Model
     public List<Cell> GetCells()
     {
         return cells;
-    }
-
-    //Returns the "next" cell is used by the movement class to connect a cell object to a given e-coli object
-    public Cell GetCell()
-    {
-        Cell cell = cells[cellIndex];
-        cellIndex = cellIndex + 1; //> cells.Count - 1 ? cells.Count - 1 : cellIndex + 1;
-        return cell;
     }
 
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
@@ -212,5 +188,19 @@ public class Model
             this.m = m;
             this.l = l;
         }
+    }
+
+    public void SetTimeScaleFactor(float timeScaleFactor)
+    {
+        this.timeScaleFactor = timeScaleFactor;
+    }
+
+    public float GetTimeScaleFactor()
+    {
+        return timeScaleFactor;
+    }
+    public int GetNumCells(int iteration)
+    {
+        return numCells[iteration]; //might cause problems later
     }
 }
