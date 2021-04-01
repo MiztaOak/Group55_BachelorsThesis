@@ -22,6 +22,7 @@ public class ForwardInternals : IInternals
     private bool isDone = false;
 
     private int deathDate;
+    private Dictionary<int, Cell> children = new Dictionary<int, Cell>();
 
     public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations)
     {
@@ -44,6 +45,7 @@ public class ForwardInternals : IInternals
         this.deathDate = iterations+1;
     }
 
+    //Constructure that is used when a cell is created as the result of a cell division
     public ForwardInternals(IPointAdapter[] locations, State[] states, float v, float dT, float angle, ICellRegulation regulator, int iteration, int iterations)
     {
         this.regulator = regulator;
@@ -135,6 +137,13 @@ public class ForwardInternals : IInternals
             state.l = r.GetL();
         }
         states[i] = state;
+    }
+
+    private void Split(int iteration)
+    {
+        Cell child = new Cell(Copy());
+        model.AddCell(child,iteration);
+        children.Add(iteration, child);
     }
 
     public State GetInternalState()

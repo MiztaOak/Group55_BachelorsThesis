@@ -21,7 +21,7 @@ public class Model
     private List<Cell> cells;
 
     private int cellIndex = 0;
-    private int numCells;
+    private int[] numCells;
 
     private float[] averageLigandC;
 
@@ -49,18 +49,14 @@ public class Model
     {
         return timeScaleFactor;
     }
-    public int GetNumCells() 
+    public int GetNumCells(int iteration) 
     {
-        return numCells;
+        return numCells[iteration]; //might cause problems later
     }
 
     //Simulates numCells many cells with iterations many steps each
     public void CreateCells(int numCells)
     {
-        cells = new List<Cell>(numCells);
-        this.numCells = numCells;
-        cellIndex = 0;
-
         for (int i = 0; i < numCells; i++)
         {
             cells.Add(BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
@@ -77,24 +73,27 @@ public class Model
         }
     }
 
-    
-
     //Sets up the model and factory to simulate numCells many cells with iterations many steps 
     public void SetupCells(int numCells, int iterations)
     {
         cells = new List<Cell>(numCells);
         BacteriaFactory.SetCellIterations(iterations);
-        this.numCells = numCells;
+        this.numCells = new int[iterations + 1];
+        for (int i = 0; i <= iterations; i++)
+            this.numCells[i] = numCells;
         cellIndex = 0;
+        timeScaleFactor = 1;
     }
 
-    //Simulates a single cell
-    public void SimulateNextCell(int index)
+    public void AddCell(Cell cell,int iteration)
     {
-        if (index >= numCells)
-            return;
-        cells[index] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
-            Random.Range(0, 2 * Mathf.PI), false);
+        cells.Add(cell);
+        numCells[iteration]++;
+    }
+
+    public void KillCell(int iteration)
+    {
+        numCells[iteration]--;
     }
 
     public List<Cell> GetCells()
@@ -106,17 +105,8 @@ public class Model
     public Cell GetCell()
     {
         Cell cell = cells[cellIndex];
-        cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
+        cellIndex = cellIndex + 1; //> cells.Count - 1 ? cells.Count - 1 : cellIndex + 1;
         return cell;
-    }
-
-    public void Reset()
-    {
-        timeScaleFactor = 1;
-        cells = new List<Cell>();
-        cellIndex = 0;
-        numCells = 0;
-        averageLigandC = null;
     }
 
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
@@ -129,7 +119,7 @@ public class Model
         List<DataToExport> data_list = new List<DataToExport>();
         int Iteration_counter = 0;
 
-        if (index >= numCells && cells.Count == 0)
+        if (index >= cells.Count && cells.Count == 0)
             return;
 
         for (int i = 0; i < index; i++)
