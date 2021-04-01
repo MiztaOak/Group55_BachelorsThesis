@@ -67,4 +67,14 @@ public class SmartInternals : IInternals
     {
         return new SmartInternals(location.GetX(), location.GetZ(), dT, v, smartnessFactor);
     }
+
+    public bool IsDead()
+    {
+        return false;
+    }
+
+    public bool IsSplit()
+    {
+        return false;
+    }
 }

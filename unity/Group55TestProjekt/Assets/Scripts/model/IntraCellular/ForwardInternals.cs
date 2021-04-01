@@ -185,4 +185,14 @@ public class ForwardInternals : IInternals
     {
         return new ForwardInternals(positions,states, v, dT, angle, regulator.Copy(), iterations, currentIteration);
     }
+
+    public bool IsDead()
+    {
+        return currentIteration == deathDate;
+    }
+
+    public bool IsSplit()
+    {
+        return children.ContainsKey(currentIteration);
+    }
 }

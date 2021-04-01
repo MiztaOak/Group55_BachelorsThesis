@@ -8,4 +8,6 @@ public interface IInternals
     State GetInternalState();
     float GetAngle();
     IInternals Copy();
+    bool IsDead();
+    bool IsSplit();
 }

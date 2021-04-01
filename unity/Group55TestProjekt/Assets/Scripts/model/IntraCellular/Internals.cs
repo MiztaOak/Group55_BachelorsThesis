@@ -91,4 +91,14 @@ public class Internals : IInternals
     {
         return new Internals(location.GetX(), location.GetZ(), v, dT, angle, regulator.Copy());
     }
+
+    public bool IsDead()
+    {
+        return false;
+    }
+
+    public bool IsSplit()
+    {
+        return false;
+    }
 }
