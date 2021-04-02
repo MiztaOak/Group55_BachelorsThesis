@@ -24,42 +24,50 @@ public class ForwardInternals : IInternals
     private int deathDate;
     private Dictionary<int, Cell> children = new Dictionary<int, Cell>();
 
-    public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations)
+    private LifeRegulator lifeRegulator;
+
+    private ForwardInternals(float v, float dT, float angle, ICellRegulation regulation, int iterations)
     {
-        this.model = Model.GetInstance();
-        this.regulator = regulator;
-
-        //crete the arrays
-        positions = new IPointAdapter[iterations+1];
-        states = new State[iterations + 1];
-
-        //add the initial values to the arrays
-        positions[0] = new Vector3Adapter(x, z);
-        AddState(0);
-
+        model = Model.GetInstance();
+        regulator = regulation;
         this.v = v;
         this.dT = dT;
         this.angle = angle;
         initalAngel = angle;
         this.iterations = iterations;
-        this.deathDate = iterations+1;
+        deathDate = iterations + 1;
+
+        lifeRegulator = new LifeRegulator();
+
+        //crete the arrays
+        positions = new IPointAdapter[iterations + 1];
+        states = new State[iterations + 1];
+    }
+
+    public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations):
+        this(v,dT,angle,regulator,iterations)
+    {
+        //add the initial values to the arrays
+        positions[0] = new Vector3Adapter(x, z);
+        AddState(0);
+
+        
     }
 
     //Constructure that is used when a cell is created as the result of a cell division
-    public ForwardInternals(IPointAdapter[] locations, State[] states, float v, float dT, float angle, ICellRegulation regulator, int iteration, int iterations)
+    public ForwardInternals(IPointAdapter[] locations, State[] states, float v, float dT, float angle, ICellRegulation regulator, int iterations, int iteration) :
+        this(v, dT, angle, regulator, iterations)
     {
-        this.regulator = regulator;
-        positions = new IPointAdapter[iterations + 1];
-        states = new State[iterations + 1];
-        this.deathDate = iterations + 1;
 
         //Fix the states so that there are no null pointers this should maybe 
         for(int i = 0; i <= iteration; i++)
         {
-            positions[i] = locations[i];
+            Debug.Log("i = " + i);
+            positions[i] = locations[i].Copy();
             this.states[i] = states[i];
         }
-        this.states[iteration] = GetInternalState();
+        this.positions[iteration + 1] = locations[iteration].Copy();
+        this.states[iteration+1] = GetInternalState();
         currentIteration = iteration;
     }
 
@@ -84,8 +92,29 @@ public class ForwardInternals : IInternals
         if (step < 1 || step > iterations)
             throw new IncorrectSimulationStepException(step);
 
+        if (deathDate <= step)
+            return;
+
+        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ());
+
+        if (lifeRegulator.Die(c)) //kill the cell
+        {
+            deathDate = step;
+            for(int i = step; i <= iterations; i++) //set the remaining positions and states to the current one
+            {
+                positions[i] = positions[step-1];
+                states[i] = states[step - 1];
+            }
+
+            return;
+        }
+        else if (lifeRegulator.Split(c*model.GetNumCells(0)/model.GetNumCells(step - 1))) //split the cell
+        {
+            Split(step-1);
+        }
+
         positions[step] = new Vector3Adapter(positions[step - 1].GetX(), positions[step - 1].GetZ());
-        if (!GetRunningState(positions[step].GetX(), positions[step].GetZ()))
+        if (!regulator.DecideState(c))
         {
             angle = CalculateTumbleAngle();
         }
@@ -141,7 +170,7 @@ public class ForwardInternals : IInternals
 
     private void Split(int iteration)
     {
-        Cell child = new Cell(Copy());
+        Cell child = new Cell(Copy(iteration));
         model.AddCell(child,iteration);
         children.Add(iteration, child);
     }
@@ -184,6 +213,11 @@ public class ForwardInternals : IInternals
     public IInternals Copy()
     {
         return new ForwardInternals(positions,states, v, dT, angle, regulator.Copy(), iterations, currentIteration);
+    }
+
+    public IInternals Copy(int iteration)
+    {
+        return new ForwardInternals(positions, states, v, dT, angle, regulator.Copy(), iterations, iteration);
     }
 
     public bool IsDead()

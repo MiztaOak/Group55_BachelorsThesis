@@ -84,7 +84,7 @@ public class MainMenu : MonoBehaviour
     }
 
     private void Update() {
-        Debug.Log(iterations);
+        //Debug.Log(iterations);
     }
     private void EnvValueChanged() {
         i0 = i0Slider.value;

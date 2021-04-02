@@ -52,9 +52,9 @@ public class Model
     public void SimulateTimeStep(int timeStep)
     {
         //add code for updating the environment or something i guess
-        foreach (Cell cell in cells)
+        for (int i = 0; i < cells.Count; i++)
         {
-            ((ForwardInternals)cell.GetInternals()).SimulateMovementStep(timeStep);
+            ((ForwardInternals)cells[i].GetInternals()).SimulateMovementStep(timeStep);
         }
     }
 
