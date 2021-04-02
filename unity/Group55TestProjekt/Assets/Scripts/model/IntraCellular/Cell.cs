@@ -48,4 +48,10 @@ public class Cell
     {
         return cellInternals;
     }
+
+    public void AddListener(ICellDeathListener listener)
+    {
+        if (cellInternals is ForwardInternals)
+            ((ForwardInternals)cellInternals).AddListener(listener);
+    }
 }

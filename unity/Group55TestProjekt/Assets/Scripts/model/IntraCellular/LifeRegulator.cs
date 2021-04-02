@@ -19,20 +19,20 @@ public class LifeRegulator
     {
         if (ULife == 0)
         { //Step 1, initialize
-            ULife = Random.Range(0.0f, 1.0f);
+            ULife = Random.Range(0.5f, 1.0f);
             BLife = 0;
         }
-        float BNext = BLife + h(c,30,0.1f,0.2f) * (1 - BLife); //Step 2
+        float BNext = BLife + h(c,15,0.1f,0.2f) * (1 - BLife); //Step 2
         if (BNext > ULife)
         { //Tumble and return to step 1
             ULife = 0;
             BLife = 0;
-            return false; //Tumble
+            return true;
         }
         else
         { //Keep running, and return to step 2
             BLife = BNext;
-            return true; //Run
+            return false;
         }
     }
 
@@ -43,17 +43,17 @@ public class LifeRegulator
             UDeath = Random.Range(0.0f, 1.0f);
             BDeath = 0;
         }
-        float BNext = BDeath + (1-h(c,10,0.1f,0.2f)) * (1 - BDeath); //Step 2
+        float BNext = BDeath + (1-h(c,15, 1, 0.2f)) * (1 - BDeath); //Step 2
         if (BNext > UDeath)
         { //Tumble and return to step 1
             UDeath = 0;
             BDeath = 0;
-            return false; //Tumble
+            return true;
         }
         else
         { //Keep running, and return to step 2
             BDeath = BNext;
-            return true; //Run
+            return false; 
         }
     }
 }

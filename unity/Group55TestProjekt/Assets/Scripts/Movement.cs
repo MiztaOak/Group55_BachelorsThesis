@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviour, ICellDeathListener
 {
     private Cell cell;
     private bool run;
@@ -114,8 +114,14 @@ public class Movement : MonoBehaviour
     public void SetCell(Cell cell)
     {
         this.cell = cell;
+        cell.AddListener(this);
         nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
     }
 
     private Vector3 TranslateToVector3(IPointAdapter pointToTranslate) => new Vector3(pointToTranslate.GetX(), transform.position.y, pointToTranslate.GetZ());
+
+    public void Notify()
+    {
+        Destroy(gameObject);
+    }
 }

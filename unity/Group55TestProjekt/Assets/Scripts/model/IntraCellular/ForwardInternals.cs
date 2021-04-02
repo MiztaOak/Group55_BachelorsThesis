@@ -25,6 +25,7 @@ public class ForwardInternals : IInternals
     private Dictionary<int, Cell> children = new Dictionary<int, Cell>();
 
     private LifeRegulator lifeRegulator;
+    private List<ICellDeathListener> cellDeathListeners;
 
     private ForwardInternals(float v, float dT, float angle, ICellRegulation regulation, int iterations)
     {
@@ -42,6 +43,7 @@ public class ForwardInternals : IInternals
         //crete the arrays
         positions = new IPointAdapter[iterations + 1];
         states = new State[iterations + 1];
+        cellDeathListeners = new List<ICellDeathListener>();
     }
 
     public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations):
@@ -95,11 +97,12 @@ public class ForwardInternals : IInternals
         if (deathDate <= step)
             return;
 
-        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ());
+        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ()) * model.GetNumCells(0) / model.GetNumCells(step - 1);
 
         if (lifeRegulator.Die(c)) //kill the cell
         {
             deathDate = step;
+            model.KillCell(step);
             for(int i = step; i <= iterations; i++) //set the remaining positions and states to the current one
             {
                 positions[i] = positions[step-1];
@@ -108,7 +111,7 @@ public class ForwardInternals : IInternals
 
             return;
         }
-        else if (lifeRegulator.Split(c*model.GetNumCells(0)/model.GetNumCells(step - 1))) //split the cell
+        else if (lifeRegulator.Split(c)) //split the cell
         {
             Split(step-1);
         }
@@ -170,6 +173,8 @@ public class ForwardInternals : IInternals
 
     private void Split(int iteration)
     {
+        if (model.GetNumCells(iteration) > 25)
+            return;
         Cell child = new Cell(Copy(iteration));
         model.AddCell(child,iteration);
         children.Add(iteration, child);
@@ -183,6 +188,18 @@ public class ForwardInternals : IInternals
     public IPointAdapter GetNextLocation()
     {
         IPointAdapter point = positions[currentIteration];
+        if(currentIteration == deathDate) //notify the movement script that the cell should die
+        {
+            isDone = true;
+            CellDoneHandler.CellDone();
+            foreach (ICellDeathListener listener in cellDeathListeners)
+                listener.Notify();
+        }
+        else if (children.ContainsKey(currentIteration)) //send the command to create the new e-coli object
+        {
+            model.GiveBirthToCell(children[currentIteration]);
+        }
+
         if (currentIteration == iterations && !isDone)
         { 
             CellDoneHandler.CellDone();
@@ -228,5 +245,10 @@ public class ForwardInternals : IInternals
     public bool IsSplit()
     {
         return children.ContainsKey(currentIteration);
+    }
+
+    public void AddListener(ICellDeathListener listener)
+    {
+        cellDeathListeners.Add(listener);
     }
 }

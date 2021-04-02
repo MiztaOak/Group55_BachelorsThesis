@@ -24,12 +24,15 @@ public class Model
 
     private float[] averageLigandC;
 
+    private List<ICellBirthListener> cellBirthListeners;
+
     private Model()
     {
         //add code as it is needed
         environment = new Environment(); //super base case just to prevent any scary null pointers
         timeScaleFactor = 1;
         cells = new List<Cell>();
+        cellBirthListeners = new List<ICellBirthListener>();
     }
 
     public static Model GetInstance()
@@ -51,6 +54,8 @@ public class Model
 
     public void SimulateTimeStep(int timeStep)
     {
+        if (timeStep != 0)
+            numCells[timeStep] = numCells[timeStep - 1];
         //add code for updating the environment or something i guess
         for (int i = 0; i < cells.Count; i++)
         {
@@ -67,12 +72,20 @@ public class Model
         for (int i = 0; i <= iterations; i++)
             this.numCells[i] = numCells;
         timeScaleFactor = 1;
+        cellBirthListeners = new List<ICellBirthListener>();
     }
 
     public void AddCell(Cell cell,int iteration)
     {
         cells.Add(cell);
         numCells[iteration]++;
+    }
+
+    public void GiveBirthToCell(Cell cell)
+    {
+        CellDoneHandler.Birth();
+        foreach (ICellBirthListener listener in cellBirthListeners)
+            listener.Notify(cell);
     }
 
     public void KillCell(int iteration)
@@ -151,7 +164,7 @@ public class Model
                 averageC += (float) ((ForwardInternals) cells[j].GetInternals()).GetInternalStates()[i + 1].l;
             }
 
-            averageLigandC[i] = averageC / cells.Count;
+            averageLigandC[i] = averageC / (numCells[i] != 0 ? numCells[i]:1);
         }
 
         return averageLigandC;
@@ -202,5 +215,10 @@ public class Model
     public int GetNumCells(int iteration)
     {
         return numCells[iteration]; //might cause problems later
+    }
+
+    public void AddListener(ICellBirthListener listener)
+    {
+        cellBirthListeners.Add(listener);
     }
 }
