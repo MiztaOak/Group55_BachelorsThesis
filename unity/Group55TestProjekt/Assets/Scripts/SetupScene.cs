@@ -20,7 +20,7 @@ public class SetupScene : MonoBehaviour, ICellBirthListener
     {
         Model model = Model.GetInstance();
         model.AddListener(this);
-        List<Cell> cells = model.GetCells();
+        List<Cell> cells = model.GetCells(0);
         if (cells == null)
             return;
 

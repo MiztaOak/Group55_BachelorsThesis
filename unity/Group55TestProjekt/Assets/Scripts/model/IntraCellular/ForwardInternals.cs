@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class ForwardInternals : IInternals
@@ -27,6 +28,8 @@ public class ForwardInternals : IInternals
     private LifeRegulator lifeRegulator;
     private List<ICellDeathListener> cellDeathListeners;
 
+    private Cell parentObject; //TODO replce this with something smarter
+
     private ForwardInternals(float v, float dT, float angle, ICellRegulation regulation, int iterations)
     {
         model = Model.GetInstance();
@@ -52,8 +55,6 @@ public class ForwardInternals : IInternals
         //add the initial values to the arrays
         positions[0] = new Vector3Adapter(x, z);
         AddState(0);
-
-        
     }
 
     //Constructure that is used when a cell is created as the result of a cell division
@@ -97,16 +98,18 @@ public class ForwardInternals : IInternals
         if (deathDate <= step)
             return;
 
-        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ()) * model.GetNumCells(0) / model.GetNumCells(step - 1);
+        float factor = (float)(Math.Log(2*model.GetNumCells(0)-model.GetNumCells(step-1))/Math.Log((double)2*model.GetNumCells(0)));
+        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ()) * (factor < 0 ? 0:factor);
 
         if (lifeRegulator.Die(c)) //kill the cell
         {
             deathDate = step;
-            model.KillCell(step);
+            model.KillCell(step,parentObject);
+            State deathState = new State();
             for(int i = step; i <= iterations; i++) //set the remaining positions and states to the current one
             {
                 positions[i] = positions[step-1];
-                states[i] = states[step - 1];
+                states[i] = deathState;
             }
 
             return;
@@ -140,8 +143,8 @@ public class ForwardInternals : IInternals
     private float CalculateTumbleAngle()
     {
         //Tumble angle based on article (Edgington)
-        float newAngle = Random.Range(18f, 98f);
-        float rand = Random.Range(0.0f, 1.0f);
+        float newAngle = UnityEngine.Random.Range(18f, 98f);
+        float rand = UnityEngine.Random.Range(0.0f, 1.0f);
         if (rand > 0.5)
             newAngle *= -1;
         newAngle *= Mathf.PI / 180;
@@ -175,7 +178,10 @@ public class ForwardInternals : IInternals
     {
         if (model.GetNumCells(iteration) > 25)
             return;
+        IInternals copy = Copy(iteration);
         Cell child = new Cell(Copy(iteration));
+        ((ForwardInternals)copy).SetPartentObject(child);
+
         model.AddCell(child,iteration);
         children.Add(iteration, child);
     }
@@ -206,7 +212,9 @@ public class ForwardInternals : IInternals
             isDone = true;
         }
         currentIteration = currentIteration+1 > iterations ? iterations : currentIteration+1;
-       
+
+        if (point == null)
+            Debug.Log("Fucked");
         return point;
     }
 
@@ -245,6 +253,11 @@ public class ForwardInternals : IInternals
     public bool IsSplit()
     {
         return children.ContainsKey(currentIteration);
+    }
+
+    internal void SetPartentObject(Cell parentObject)
+    {
+        this.parentObject = parentObject;
     }
 
     public void AddListener(ICellDeathListener listener)

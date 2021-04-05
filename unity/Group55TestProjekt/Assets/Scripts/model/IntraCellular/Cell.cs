@@ -14,6 +14,8 @@ public class Cell
     public Cell(IInternals cellInternals)
     {
         this.cellInternals = cellInternals;
+        if (this.cellInternals is ForwardInternals)
+            ((ForwardInternals)this.cellInternals).SetPartentObject(this);
     }
 
     public Cell(Cell parent)
