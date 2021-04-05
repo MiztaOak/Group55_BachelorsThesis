@@ -116,7 +116,7 @@ public class ForwardInternals : IInternals
         }
         else if (lifeRegulator.Split(c)) //split the cell
         {
-            Split(step-1);
+            Split(step);
         }
 
         positions[step] = new Vector3Adapter(positions[step - 1].GetX(), positions[step - 1].GetZ());
@@ -178,8 +178,8 @@ public class ForwardInternals : IInternals
     {
         if (model.GetNumCells(iteration) > 25)
             return;
-        IInternals copy = Copy(iteration);
-        Cell child = new Cell(Copy(iteration));
+        IInternals copy = Copy(iteration-1);
+        Cell child = new Cell(Copy(iteration-1));
         ((ForwardInternals)copy).SetPartentObject(child);
 
         model.AddCell(child,iteration);

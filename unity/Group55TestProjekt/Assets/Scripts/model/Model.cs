@@ -92,8 +92,8 @@ public class Model
     //Method that adds a new cell to the simulation
     public void AddCell(Cell cell,int iteration)
     {
-        if(iteration < BacteriaFactory.GetIterations())
-            cells[iteration+1].Add(cell);
+        //if(iteration < BacteriaFactory.GetIterations())
+            cells[iteration].Add(cell);
         allCells.Add(cell);
         numCells[iteration]++;
     }
@@ -187,10 +187,10 @@ public class Model
             float averageC = 0;
             for (int j = 0; j < cells[i].Count; j++) //for the cells present in that iteration
             {
-                averageC += (float) ((ForwardInternals) cells[i][j].GetInternals()).GetInternalStates()[i + 1].l;
+                averageC += (float) ((ForwardInternals) cells[i][j].GetInternals()).GetInternalStates()[i].l;
             }
 
-            averageLigandC[i] = averageC / (numCells[i] != 0 ? numCells[i]:1);
+            averageLigandC[i] = (numCells[i] != 0 ? averageC / numCells[i] : 0);
         }
 
         return averageLigandC;
