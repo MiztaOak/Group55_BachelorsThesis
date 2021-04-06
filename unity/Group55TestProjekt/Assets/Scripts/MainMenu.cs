@@ -76,6 +76,7 @@ public class MainMenu : MonoBehaviour
         model = Model.GetInstance();
 
         BacteriaFactory.SetCellIterations(500);
+        BacteriaFactory.SetCellDeathAndDivision(true);
 
         //added just to make the program a lot less anoying to use
 
