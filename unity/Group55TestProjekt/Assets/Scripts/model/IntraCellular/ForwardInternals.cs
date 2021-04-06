@@ -174,14 +174,14 @@ public class ForwardInternals : IInternals
             state.bp = r.GetBP();
             state.m = r.GetM();
             state.l = r.GetL();
+            state.death = lifeRegulator.GetDeath();
+            state.life = lifeRegulator.GetLife();
         }
         states[i] = state;
     }
 
     private void Split(int iteration)
     {
-        if (model.GetNumCells(iteration) > 25)
-            return;
         IInternals copy = Copy(iteration-1);
         Cell child = new Cell(Copy(iteration-1));
         ((ForwardInternals)copy).SetPartentObject(child);

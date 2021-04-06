@@ -10,9 +10,9 @@ public class LifeRegulator
     private float BDeath;
     private float UDeath;
 
-    private float h(float c, float x0, float l, float k)
-    { //Basic logistic function with x0 = 0.5, L = 1, k = 1.
-        return (l / (1 + Mathf.Exp(-k*(c - x0))));
+    private float h(float c, float k, float m)
+    {
+        return m + k * c;
     }
 
     public bool Split(float c)
@@ -22,7 +22,7 @@ public class LifeRegulator
             ULife = Random.Range(0.5f, 1.0f);
             BLife = 0;
         }
-        float BNext = BLife + h(c,30,0.1f,0.2f) * (1 - BLife); //Step 2
+        float BNext = BLife + h(c,0.002f,0.002f) * (1 - BLife); //Step 2
         if (BNext > ULife)
         { //Tumble and return to step 1
             ULife = 0;
@@ -43,7 +43,7 @@ public class LifeRegulator
             UDeath = Random.Range(0.0f, 1.0f);
             BDeath = 0;
         }
-        float BNext = BDeath + (1-h(c,15, 1, 0.2f)) * (1 - BDeath); //Step 2
+        float BNext = BDeath + h(c, -0.001f, 0.05f) * (1 - BDeath); //Step 2
         if (BNext > UDeath)
         { //Tumble and return to step 1
             UDeath = 0;
@@ -55,5 +55,15 @@ public class LifeRegulator
             BDeath = BNext;
             return false; 
         }
+    }
+
+    public float GetLife()
+    {
+        return BLife / ULife;
+    }
+
+    public float GetDeath()
+    {
+        return BDeath / UDeath;
     }
 }
