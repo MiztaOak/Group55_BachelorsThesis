@@ -64,7 +64,7 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
         
         
         timeTMP.text = FormatTimeString();
-        countTMP.text = model.GetCells().Count.ToString();
+        countTMP.text = model.GetNumCells(IterationHandler.GetInstance().GetCurrentInteration()).ToString();
         environmentTMP.text = "Basic";
 
 

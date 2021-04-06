@@ -87,13 +87,13 @@ public class Model
         timeScaleFactor = 1;
         cellBirthListeners = new List<ICellBirthListener>();
         allCells = new List<Cell>();
+        IterationHandler.GetInstance().Reset();
     }
 
     //Method that adds a new cell to the simulation
     public void AddCell(Cell cell,int iteration)
     {
-        //if(iteration < BacteriaFactory.GetIterations())
-            cells[iteration].Add(cell);
+        cells[iteration].Add(cell);
         allCells.Add(cell);
         numCells[iteration]++;
     }

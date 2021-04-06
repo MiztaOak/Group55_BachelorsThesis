@@ -40,8 +40,8 @@ public class CellInfo : MonoBehaviour
             UpdateBarGraph(cheBBar, (float)cellState.bp);
             UpdateBarGraph(cheABar, Mathf.Min((float)cellState.ap*100,1));
             UpdateBarGraph(mBar, (float)cellState.m/5);
-            UpdateBarGraph(lifeBar, 0);
-            UpdateBarGraph(divBar, 0);
+            UpdateBarGraph(lifeBar, (float)cellState.death);
+            UpdateBarGraph(divBar, (float)cellState.life);
             UpdateBarGraph(cBar, (float)cellState.l/model.environment.GetMaxVal());
         }
     }
