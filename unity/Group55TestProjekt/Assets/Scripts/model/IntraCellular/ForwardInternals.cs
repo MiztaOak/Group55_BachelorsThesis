@@ -198,6 +198,7 @@ public class ForwardInternals : IInternals
     public IPointAdapter GetNextLocation()
     {
         IPointAdapter point = positions[currentIteration];
+        IterationHandler.GetInstance().UpdateIteration(currentIteration);
         if(currentIteration == deathDate) //notify the movement script that the cell should die
         {
             isDone = true;
