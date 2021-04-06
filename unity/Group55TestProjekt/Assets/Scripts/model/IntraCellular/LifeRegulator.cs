@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LifeRegulator 
+public class LifeRegulator : ILifeRegulator
 {
     private float BLife;
     private float ULife;

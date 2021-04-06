@@ -26,7 +26,7 @@ public class ForwardInternals : IInternals
     private int birthDate;
     private Dictionary<int, Cell> children = new Dictionary<int, Cell>();
 
-    private LifeRegulator lifeRegulator;
+    private ILifeRegulator lifeRegulator;
     private List<ICellDeathListener> cellDeathListeners;
 
     private Cell parentObject; //TODO replce this with something smarter
@@ -42,7 +42,7 @@ public class ForwardInternals : IInternals
         this.iterations = iterations;
         deathDate = iterations + 1;
 
-        lifeRegulator = new LifeRegulator();
+        lifeRegulator = BacteriaFactory.GetInstance().GetLifeRegulator();
 
         //crete the arrays
         positions = new IPointAdapter[iterations + 1];

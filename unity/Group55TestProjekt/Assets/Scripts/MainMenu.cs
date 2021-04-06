@@ -137,4 +137,9 @@ public class MainMenu : MonoBehaviour
         grid = new Grid(width, height, cellSize);
         heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class     
     }
+
+    public void SetCellDeathDivision(bool status)
+    {
+        BacteriaFactory.SetCellDeathAndDivision(status);
+    }
 }
