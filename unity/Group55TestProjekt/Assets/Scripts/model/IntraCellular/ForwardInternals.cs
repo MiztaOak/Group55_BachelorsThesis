@@ -23,6 +23,7 @@ public class ForwardInternals : IInternals
     private bool isDone = false;
 
     private int deathDate;
+    private int birthDate;
     private Dictionary<int, Cell> children = new Dictionary<int, Cell>();
 
     private LifeRegulator lifeRegulator;
@@ -49,12 +50,14 @@ public class ForwardInternals : IInternals
         cellDeathListeners = new List<ICellDeathListener>();
     }
 
+    //Constructor called when a cell is created in the begining of the program
     public ForwardInternals(float x, float z, float v, float dT, float angle, ICellRegulation regulator, int iterations):
         this(v,dT,angle,regulator,iterations)
     {
         //add the initial values to the arrays
         positions[0] = new Vector3Adapter(x, z);
         AddState(0);
+        birthDate = 0;
     }
 
     //Constructure that is used when a cell is created as the result of a cell division
@@ -72,6 +75,7 @@ public class ForwardInternals : IInternals
         this.positions[iteration + 1] = locations[iteration].Copy();
         this.states[iteration+1] = GetInternalState();
         currentIteration = iteration;
+        birthDate = iteration;
     }
 
     //Returns true if the cell has reached its final positon
