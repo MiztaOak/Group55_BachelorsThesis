@@ -32,7 +32,6 @@ public class Movement : MonoBehaviour, ICellDeathListener
     {
         model = Model.GetInstance();
 
-<<<<<<< HEAD
         if (!BacteriaFactory.IsForwardSimulation() || smart)
         {
             cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
@@ -40,13 +39,6 @@ public class Movement : MonoBehaviour, ICellDeathListener
         }
             
        
-=======
-        if (BacteriaFactory.IsForwardSimulation() && !smart)
-            cell = model.GetCell();
-        else
-            cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
-
->>>>>>> main
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
 
