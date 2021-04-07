@@ -185,12 +185,12 @@ public class Model
         for (int i = 0; i < averageLigandC.Length; i++) //for each iteration
         {
             float averageC = 0;
-            for (int j = 0; j < cells[i].Count; j++) //for the cells present in that iteration
+            for (int j = 0; j < cells[i+1].Count; j++) //for the cells present in that iteration
             {
-                averageC += (float) ((ForwardInternals) cells[i][j].GetInternals()).GetInternalStates()[i].l;
+                averageC += (float) ((ForwardInternals) cells[i+1][j].GetInternals()).GetInternalStates()[i+1].l;
             }
 
-            averageLigandC[i] = (numCells[i] != 0 ? averageC / numCells[i] : 0);
+            averageLigandC[i] = (numCells[i+1] != 0 ? averageC / numCells[i+1] : 0);
         }
 
         return averageLigandC;
@@ -241,6 +241,26 @@ public class Model
     public int GetNumCells(int iteration)
     {
         return numCells[iteration]; //might cause problems later
+    }
+
+    //Method that returns the number of cells that are within a given distance of the given location
+    //only to be used with cells that have a ForwardsInternals as their internals (since iteration does not make sense otherwise)
+    public int GetNumOfCloseCells(int iteration, float distance, IPointAdapter location)
+    {
+        int num = 0;
+
+        distance *= distance; //removes the need for sqrt operation
+
+        foreach(Cell cell in cells[iteration])
+        {
+            if (!(cell.GetInternals() is ForwardInternals))
+                continue;
+            IPointAdapter cellLocation = ((ForwardInternals)cell.GetInternals()).GetPosition(iteration);
+            if (distance >= Mathf.Pow(cellLocation.GetX() - location.GetX(), 2) + Mathf.Pow(cellLocation.GetZ() - location.GetZ(), 2))
+                num++;
+        }
+
+        return num;
     }
 
     public void AddListener(ICellBirthListener listener)
