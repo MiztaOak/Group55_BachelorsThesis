@@ -17,7 +17,7 @@ public class Movement : MonoBehaviour, ICellDeathListener
 
     private Animator myAnimator;
 
-    private Material cellmaterial; 
+    private Material cellmaterial;
 
     private Rigidbody cellRigidBody;
 
@@ -32,6 +32,7 @@ public class Movement : MonoBehaviour, ICellDeathListener
     {
         model = Model.GetInstance();
 
+<<<<<<< HEAD
         if (!BacteriaFactory.IsForwardSimulation() || smart)
         {
             cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
@@ -39,9 +40,16 @@ public class Movement : MonoBehaviour, ICellDeathListener
         }
             
        
+=======
+        if (BacteriaFactory.IsForwardSimulation() && !smart)
+            cell = model.GetCell();
+        else
+            cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
+
+>>>>>>> main
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
-        
+
         originalScale = transform.localScale;
         run = false; // set run to false so that it begins by rotating towards the first location
     }
@@ -77,17 +85,19 @@ public class Movement : MonoBehaviour, ICellDeathListener
     private void FixedUpdate() //update that has to be used for the rigid body if not the collisions wont work
     {
         if (cell.IsDone())
-            return; 
+            return;
 
         Vector3 currentLocation = cellRigidBody.position;
 
         if (currentLocation == nextLocation) //if at new location request the next location
         {
-            nextLocation = TranslateToVector3(cell.GetNextLocation());         
+            nextLocation = TranslateToVector3(cell.GetNextLocation());
 
             myAnimator.SetBool("Rotating", true);
+
             run = false;          
         }  
+
 
         //Rotates the cell towards the next location
         Quaternion newRot = Quaternion.LookRotation(nextLocation - currentLocation);
@@ -108,7 +118,7 @@ public class Movement : MonoBehaviour, ICellDeathListener
         {
             cellRigidBody.MovePosition(Vector3.MoveTowards(currentLocation, nextLocation, moveSpeed * Time.deltaTime * model.GetTimeScaleFactor()));
         }
-        
+
     }
 
     public void SetCell(Cell cell)

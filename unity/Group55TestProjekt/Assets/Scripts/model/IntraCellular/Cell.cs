@@ -22,7 +22,7 @@ public class Cell
     {
         cellInternals = parent.cellInternals.Copy();
     }
-   
+
     //gets the next location that the cell should move to should only be called when a new location is needed
     public IPointAdapter GetNextLocation()
     {

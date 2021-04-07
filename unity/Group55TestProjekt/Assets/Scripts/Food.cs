@@ -19,7 +19,6 @@ public class Food : MonoBehaviour
     private void Start()
     {
         Vector3 position = transform.position;
-     
         grid = new Grid(width, height, cellSize);
 
         heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class     

@@ -32,6 +32,7 @@ public class Internals : IInternals
         if(!GetRunningState(location.GetX(), location.GetZ()))
             angle = CalculateTumbleAngle();
         float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
+
         while (location.GetX() + dX > 14 && location.GetX() - dX < -14 && location.GetZ() + dZ > 14 && location.GetZ() - dZ < -14)
         {
             angle = CalculateTumbleAngle();
@@ -47,9 +48,9 @@ public class Internals : IInternals
         //Tumble angle based on article (Edgington)
         float newAngle = Random.Range(18f, 98f);
         float rand = Random.Range(0.0f, 1.0f);
-        if( rand > 0.5 )
+        if (rand > 0.5)
             newAngle *= -1;
-        newAngle *= Mathf.PI/180;
+        newAngle *= Mathf.PI / 180;
         newAngle += this.angle;
         return newAngle;
     }
@@ -70,15 +71,15 @@ public class Internals : IInternals
     public State GetInternalState()
     {
         State state = new State();
-        if( this.regulator is ODERegulation )
+        if (this.regulator is ODERegulation)
         {
-            ODERegulation r = (ODERegulation) this.regulator;
+            ODERegulation r = (ODERegulation)this.regulator;
             state.yp = r.GetYP();
             state.ap = r.GetAP();
             state.bp = r.GetBP();
-            state.m  = r.GetM();
-            state.l  = r.GetL();
-        } 
+            state.m = r.GetM();
+            state.l = r.GetL();
+        }
         return state;
     }
 
