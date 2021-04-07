@@ -178,4 +178,9 @@ public class BernoulliRegulation : ICellRegulation
         CheZ();
         return running;
     }
+
+    public ICellRegulation Copy()
+    {
+        return new BernoulliRegulation();
+    }
 }

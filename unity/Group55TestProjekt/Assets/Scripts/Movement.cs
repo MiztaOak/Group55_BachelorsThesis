@@ -5,14 +5,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviour, ICellDeathListener
 {
     private Cell cell;
     private bool run;
 
     public float moveSpeed;
     public float rotSpeed;
-    [SerializeField] bool smart;
+    [SerializeField] private bool smart;
     public float smartnessFactor;
 
     private Animator myAnimator;
@@ -27,34 +27,33 @@ public class Movement : MonoBehaviour
 
     private Model model;
 
-    private bool done = false;
-
     // Start is called before the first frame update
     void Start()
     {
         model = Model.GetInstance();
 
+<<<<<<< HEAD
+        if (!BacteriaFactory.IsForwardSimulation() || smart)
+        {
+            cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
+            nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
+        }
+            
+       
+=======
         if (BacteriaFactory.IsForwardSimulation() && !smart)
             cell = model.GetCell();
         else
             cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
 
+>>>>>>> main
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
 
         originalScale = transform.localScale;
-        nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         run = false; // set run to false so that it begins by rotating towards the first location
     }
 
-    void Update()
-    {
-        if (Input.GetKey("escape"))
-        {
-            SceneManager.LoadScene(0);
-        }
-
-    }
     /*
     private void OnMouseOver() 
     {
@@ -95,16 +94,16 @@ public class Movement : MonoBehaviour
             nextLocation = TranslateToVector3(cell.GetNextLocation());
 
             myAnimator.SetBool("Rotating", true);
-            run = false;
-            //Debug.Log("New location calculated x= " + nextLocation.x + " and z = " + nextLocation.z);
-        }
 
+            run = false;          
+        }  
 
 
         //Rotates the cell towards the next location
         Quaternion newRot = Quaternion.LookRotation(nextLocation - currentLocation);
         newRot = Quaternion.Euler(0, newRot.eulerAngles.y + 90, 0);
-        Quaternion moveRot = Quaternion.Slerp(transform.rotation, newRot, rotSpeed * Time.deltaTime * model.GetTimeScaleFactor());
+        Quaternion moveRot = Quaternion.Lerp(transform.rotation, newRot, rotSpeed * Time.deltaTime * model.GetTimeScaleFactor());
+        
         cellRigidBody.MoveRotation(moveRot);
         Debug.DrawLine(transform.position, nextLocation, Color.red);
 
@@ -122,25 +121,17 @@ public class Movement : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void SetCell(Cell cell)
     {
-        HandleCollision(other);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        HandleCollision(other);
-    }
-
-    private void HandleCollision(Collider other) //this should not be needed since the cell should not hit the walls but who knows
-    {
-        if (other.gameObject.name.Substring(0, 4) == "Wall")
-        {
-            Vector3 pos = transform.position;
-            transform.position = new Vector3(Mathf.Clamp(pos.x, -14f, 14f), pos.y, Mathf.Clamp(pos.z, -14f, 14f)); //dumb solution plz fix
-        }
-
+        this.cell = cell;
+        cell.AddListener(this);
+        nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
     }
 
     private Vector3 TranslateToVector3(IPointAdapter pointToTranslate) => new Vector3(pointToTranslate.GetX(), transform.position.y, pointToTranslate.GetZ());
+
+    public void Notify()
+    {
+        Destroy(gameObject);
+    }
 }

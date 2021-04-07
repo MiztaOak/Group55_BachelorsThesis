@@ -40,4 +40,9 @@ public class Vector3Adapter : IPointAdapter
     {
         return new Vector3Adapter(point.x, point.z);
     }
+
+    public bool Equals(IPointAdapter other)
+    {
+        return point.x == other.GetX() && point.z == other.GetZ();
+    }
 }

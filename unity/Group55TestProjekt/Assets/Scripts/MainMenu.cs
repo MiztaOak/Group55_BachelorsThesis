@@ -12,149 +12,149 @@ public class MainMenu : MonoBehaviour
 {
     // Texts
 
-    [SerializeField] private TextMeshProUGUI i0Text1;
-    [SerializeField] private TextMeshProUGUI i0Text2;
-    [SerializeField] private TextMeshProUGUI dText1;
-    [SerializeField] private TextMeshProUGUI dText2;
-    [SerializeField] private TextMeshProUGUI KText;
-    [SerializeField] private TextMeshProUGUI maxtText;
+    [SerializeField] private TextMeshProUGUI i0Text;
+    [SerializeField] private TextMeshProUGUI dText;
+    [SerializeField] private TextMeshProUGUI sourcesText;
+    [SerializeField] private TextMeshProUGUI tooltipText;
+    [SerializeField] private TextMeshProUGUI nOfCellsText;
+    // Sliders & InputFields
 
-    // Sliders
-    
-    [SerializeField] private Slider i0Slider1;
-    [SerializeField] private Slider i0Slider2;
-    [SerializeField] private Slider dSlider1;
-    [SerializeField] private Slider dSlider2;
-    [SerializeField] private Slider KSlider;
-    [SerializeField] private Slider maxtSlider;
-    
-    // Buttons
-    
+    [SerializeField] private Slider i0Slider;
+    [SerializeField] private Slider dSlider;
+    [SerializeField] private Slider nOfCellsSlider;
+    [SerializeField] private TMP_InputField nOfIterations;
+    [SerializeField] private Slider sourcesSlider;
+    // Buttons & Toggles
+
     [SerializeField] private Button startButton;
     [SerializeField] private Button quitButton;
-
-    [SerializeField] private Button applyButton1;
-    [SerializeField] private Button applyButton2;
-    
-    // Toggles
-
-    [SerializeField] private Toggle basicToggle;
-    [SerializeField] private Toggle timeDepToggle;
-    
+    [SerializeField] private Button simulateButton;
+    [SerializeField] private Toggle forwardSim; 
     // Canvases
-
-    [SerializeField] private Canvas basicEnvCanvas;
-    [SerializeField] private Canvas timeDepEnvCanvas;
+    
     [SerializeField] private Canvas optionsCanvas;
 
-    
-    // C#
+    // Images
+    [SerializeField] private RawImage i0Info;
+    [SerializeField] private RawImage dInfo;
+    [SerializeField] private Texture2D questionMark;
 
-    private float i0;
-    private float d;
+    // ToolTip
+    [SerializeField] private GameObject toolTip;
+    [SerializeField] private RectTransform backgroundTransform;
+    // Heatmap
+    private int width = 120;
+    private int height = 120;
+    private float cellSize = 0.25f;
+    private Grid grid;
+    [SerializeField] private HeatmapVisual heatmapVisual;
+
+    // C#
+    private float i0 = 0.1f;
+    private float d = 50;
+    private int sources = 1;
     private float k;
     private float maxT;
+    private int n = 1;
+    private int iterations = 100;
 
     private Model model;
-    
-    
-    
+
     // Dropdown
-    private void Start()
-    {
-        
-       startButton.onClick.AddListener(StartSimulation);
-       quitButton.onClick.AddListener(Quit);
-       model = Model.GetInstance();
-       BacteriaFactory.SetCellIterations(500);
+    private void Start() {
+
+        // Create basic listeners for various elements
+        simulateButton.onClick.AddListener(StartSimulation);
+        i0Slider.onValueChanged.AddListener(delegate {EnvValueChanged();});
+        dSlider.onValueChanged.AddListener(delegate {EnvValueChanged(); });
+        sourcesSlider.onValueChanged.AddListener(delegate { EnvValueChanged(); });
+        nOfCellsSlider.onValueChanged.AddListener(delegate {CellValueChanged(); });
+        nOfIterations.onValueChanged.AddListener(delegate {CellValueChanged(); });
+        forwardSim.onValueChanged.AddListener(delegate { CellValueChanged(); });
+        quitButton.onClick.AddListener(Quit);
+
+        model = Model.GetInstance();
+
+        BacteriaFactory.SetCellIterations(500);
+        BacteriaFactory.SetCellDeathAndDivision(true);
+        BacteriaFactory.SetCellRegulatorType(RegulatorType.ODE);
 
         //added just to make the program a lot less anoying to use
-        d = 25;
+
         createBasicEnv(i0, d);
+        EnvValueChanged(); // bug fix for first value change
     }
 
-    private void Update()
-    {
+    private void Update() {
+        //Debug.Log(iterations);
+    }
+    private void EnvValueChanged() {
+        i0 = i0Slider.value;
+        d = dSlider.value;
+        sources = Mathf.RoundToInt(sourcesSlider.value);
 
+        i0Text.text = i0.ToString("f3");
+        dText.text = d.ToString("f1");
+        sourcesText.text = sources.ToString();
 
-        if (optionsCanvas.isActiveAndEnabled)
-        {
-            basicToggle.onValueChanged.AddListener((value) => { initBasicEnv(); });
-            timeDepToggle.onValueChanged.AddListener ( (value) => {initTimeDepEnv();});
-            
-        }
-        if (basicEnvCanvas.isActiveAndEnabled)
-        {
-            i0 = i0Slider1.value;
-            d =  dSlider1.value;
-                //i0Slider1
-            i0Text1.text = i0.ToString("f3");
-            //dSlider1
-            dText1.text = d.ToString("f1");
-            applyButton1.onClick.AddListener( () => { createBasicEnv(i0,d); });
-        }
+        // Used for heatmap visual 
+        createBasicEnv(i0, d);
+        grid = new Grid(width, height, cellSize);
+        Updateheatmap();
+        heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class   
+    }
 
-        if (timeDepEnvCanvas.isActiveAndEnabled)
-        {
-            i0 = i0Slider2.value;
-            d =  dSlider2.value;
-            k = KSlider.value;
-            maxT =  maxtSlider.value;
-            //i0Slider2
-            i0Text2.text = i0.ToString("f3");
-            //dSlider2
-            dText2.text = d.ToString("f1");
-            //kSlider
-            KText.text = k.ToString("f3");
-            //tmaxSlider
-            maxtText.text = maxT.ToString("f3");
-            applyButton2.onClick.AddListener( () => { createTimeDepEnv(i0,d,maxT,k); });
-
-
+    private void CellValueChanged() {
+        n = (int)nOfCellsSlider.value;
+        nOfCellsText.text = n.ToString();
+        if (nOfIterations.isActiveAndEnabled) {
+            try {  
+                iterations = int.Parse(nOfIterations.text);
+            } 
+            catch (FormatException e) {
+                // Non valid string found, do something!! 
+            }    
+        } else {
+            iterations = 0;
         }
     }
 
+    public void StartSimulation() {
+        createBasicEnv(i0, d);
+        model.SetupCells(n, iterations);
+        CellDoneHandler.Setup(n);
 
-    public  void StartSimulation()
-    {
-        if(BacteriaFactory.IsForwardSimulation())
-            SceneManager.LoadScene("Loading");
-        else
-            SceneManager.LoadScene("SampleScene");
-        
-        //better way
-        // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
+        SceneManager.LoadScene(1); // Scene 1 is loading screen
     }
 
-    public void Quit()
-    {
-
-        Debug.Log("DONE");
+    public void Quit() {
         Application.Quit();
     }
 
-
-
-    private void initBasicEnv()
-    {
-        basicEnvCanvas.gameObject.SetActive(true);
-        timeDepEnvCanvas.gameObject.SetActive(false);
-
+    void createBasicEnv(float i_0, float d) {
+        EnvironmentFactory.CreateMultiEnvironment(d,i_0,sources);
     }
-    private void initTimeDepEnv()
-    {
-        basicEnvCanvas.gameObject.SetActive(false);
-        timeDepEnvCanvas.gameObject.SetActive(true);
-
+    
+    public void Updateheatmap() {
+        grid = new Grid(width, height, cellSize);
+        heatmapVisual.SetGrid(grid); //sends the grid to the heatmapVisual class     
     }
 
-    void createBasicEnv(float i_0, float d)
+    public void SetCellDeathDivision(bool status)
     {
-        EnvironmentFactory.CreateBasicEnvionment(d,i_0);
-    }
-    void createTimeDepEnv(float i_0, float d,float max_t,float k)
-    {
-        EnvironmentFactory.CreateTimeDependentEnvionment(d,i_0,max_t,k);
+        BacteriaFactory.SetCellDeathAndDivision(status);
     }
 
+    public void HandleDropDownSelection(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                BacteriaFactory.SetCellRegulatorType(RegulatorType.ODE);
+                break;
+            case 1:
+                BacteriaFactory.SetCellRegulatorType(RegulatorType.Hazard);
+                break;
+        }
+    }
 }

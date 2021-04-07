@@ -1784,12 +1784,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efc863fc3afee3746bb916cea78fad85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1.2
-  rotSpeed: 0.9
+  moveSpeed: 0.6
+  rotSpeed: 1.8
   smart: 1
   smartnessFactor: 1
-  selected: 0
-  cellInfoCanvas: {fileID: 0}
 --- !u!54 &6329531594984847010
 Rigidbody:
   m_ObjectHideFlags: 0

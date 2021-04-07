@@ -8,6 +8,7 @@ public class BacteriaFactory
     private float v; //speed of the cell might not be needed but is nice not to have to send in as a parameter
     private float dT; //time delta for the cell
     private float smartnessFactor; //smartness factor of the smart cell
+    private bool deathAndDivision;
 
     private int iterations;
 
@@ -15,10 +16,11 @@ public class BacteriaFactory
 
     private BacteriaFactory() //sets the default values
     {
-        v = 1.0f;
-        dT = 0.05f;
+        v = 3.0f;
+        dT = 0.15f;
         smartnessFactor = .75f;
         iterations = 0;
+        deathAndDivision = true;
 
         regulatorType = RegulatorType.ODE; 
     }
@@ -60,6 +62,13 @@ public class BacteriaFactory
             return new Cell(new ForwardInternals(x, z, v, dT, angle, regulator,iterations));
     }
 
+    public ILifeRegulator GetLifeRegulator()
+    {
+        if (deathAndDivision)
+            return new LifeRegulator();
+        return new DummyLifeRegulator();
+    }
+
     //static version of the previous method might be nicer to use in code
     public static Cell CreateNewCell(float x, float z, float angle, bool smart)
     {
@@ -91,6 +100,11 @@ public class BacteriaFactory
         this.iterations = iterations;
     }
 
+    public void SetDeathAndDivision(bool deathAndDivision)
+    {
+        this.deathAndDivision = deathAndDivision;
+    }
+
     //static versions of the setters
     public static void SetCellV(float v)
     {
@@ -117,8 +131,18 @@ public class BacteriaFactory
         GetInstance().SetIterations(iterations);
     }
 
+    public static void SetCellDeathAndDivision(bool deathAndDivision)
+    {
+        GetInstance().SetDeathAndDivision(deathAndDivision);
+    }
+
     public static bool IsForwardSimulation()
     {
         return GetInstance().iterations != 0;
+    }
+
+    public static int GetIterations()
+    {
+        return GetInstance().iterations;
     }
 }

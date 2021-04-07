@@ -29,27 +29,22 @@ public class Internals : IInternals
 
     private void CalculateNextLocation()
     {
-        angle = CalculateTumbleAngle();
-
+        if(!GetRunningState(location.GetX(), location.GetZ()))
+            angle = CalculateTumbleAngle();
         float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
-        while (GetRunningState(location.GetX(), location.GetZ()))
+
+        while (location.GetX() + dX > 14 && location.GetX() - dX < -14 && location.GetZ() + dZ > 14 && location.GetZ() - dZ < -14)
         {
-            location.Add(dX, dZ);
-            if (location.GetX() + dX > 14 || location.GetX() - dX < -14 || location.GetZ() + dZ > 14 || location.GetZ() - dZ < -14)
-                break;
-        }
+            angle = CalculateTumbleAngle();
+            dX = v * dT * Mathf.Cos(angle);
+            dZ = v * dT * Mathf.Sin(angle);
+        }  
+          location.Add(dX, dZ);
     }
 
     //Returns absolute tumble angle in radians
     private float CalculateTumbleAngle()
     {
-        //Help bacteria tumble in general direction of food
-        // float dZ = location.GetZ() - model.environment.GetZ(), dX = location.GetX() - model.environment.GetX();
-
-        // float correctAngle = Mathf.Atan2(dZ,dX)+Mathf.PI;
-        // float errorAngle = Random.Range(0f, Mathf.PI/2) * (Random.value <= 0.5 ? 1 : -1);
-        // return correctAngle + errorAngle;
-
         //Tumble angle based on article (Edgington)
         float newAngle = Random.Range(18f, 98f);
         float rand = Random.Range(0.0f, 1.0f);
@@ -91,5 +86,20 @@ public class Internals : IInternals
     public float GetAngle()
     {
         return angle;
+    }
+
+    public IInternals Copy()
+    {
+        return new Internals(location.GetX(), location.GetZ(), v, dT, angle, regulator.Copy());
+    }
+
+    public bool IsDead()
+    {
+        return false;
+    }
+
+    public bool IsSplit()
+    {
+        return false;
     }
 }
