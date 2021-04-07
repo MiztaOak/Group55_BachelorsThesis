@@ -15,25 +15,35 @@ public class LoadingScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        n = Model.GetInstance().GetNumCells();
+        n = Model.GetInstance().GetNumCells(0);
         CellDoneHandler.Setup(n);
         StartCoroutine(Load(n));
-
     }
 
     IEnumerator Load(int numOfCells)
     {
         yield return null;
-
+        int iterations = BacteriaFactory.GetIterations();
         Model model = Model.GetInstance();
         ExportHandler.init();
 
-        for(int i = 0; i < numOfCells; i++)
+        //Creates the cell objects
+        model.CreateCells(numOfCells);
+
+        if(iterations > 0)
         {
-            model.SimulateNextCell(i);
+            for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
+            {
+                model.SimulateTimeStep(i);
+                progressText.text = "Loading progress: " + ((float) i / iterations * 100) + "%";
+                yield return null;
+            }
+            model.GetAverageLigandC();
+        }
+        else
+        {
+            progressText.text = "Loading progress: 100%"; //if no simulation you are done
             
-            progressText.text = "Loading progress: " + ((float)(i+1)/numOfCells * 100) + "%";
-            yield return null;
         }
         
        // model.ExportData(numOfCells, BacteriaFactory.GetIterations());

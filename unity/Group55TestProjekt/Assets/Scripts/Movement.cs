@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviour, ICellDeathListener
 {
     private Cell cell;
     private bool run;
@@ -32,16 +32,17 @@ public class Movement : MonoBehaviour
     {
         model = Model.GetInstance();
 
-        if (BacteriaFactory.IsForwardSimulation() && !smart)
-            cell = model.GetCell();
-        else
-            cell = BacteriaFactory.CreateNewCell(transform.position.x,transform.position.z, transform.rotation.y,smart);
-
+        if (!BacteriaFactory.IsForwardSimulation() || smart)
+        {
+            cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
+            nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
+        }
+            
+       
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
         
         originalScale = transform.localScale;
-        nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         run = false; // set run to false so that it begins by rotating towards the first location
     }
 
@@ -110,7 +111,17 @@ public class Movement : MonoBehaviour
         
     }
 
-    
+    public void SetCell(Cell cell)
+    {
+        this.cell = cell;
+        cell.AddListener(this);
+        nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
+    }
 
     private Vector3 TranslateToVector3(IPointAdapter pointToTranslate) => new Vector3(pointToTranslate.GetX(), transform.position.y, pointToTranslate.GetZ());
+
+    public void Notify()
+    {
+        Destroy(gameObject);
+    }
 }

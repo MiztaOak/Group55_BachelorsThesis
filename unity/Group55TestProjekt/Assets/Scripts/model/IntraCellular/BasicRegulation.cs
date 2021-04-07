@@ -22,4 +22,9 @@ public class BasicRegulation : ICellRegulation
         else
             return false; //Tumbling
     }
+
+    public ICellRegulation Copy()
+    {
+        return new BasicRegulation();
+    }
 }

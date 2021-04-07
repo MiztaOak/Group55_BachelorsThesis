@@ -108,4 +108,9 @@ public class DistRegulation : ICellRegulation
         CheZ();
         return running;
     }
+
+    public ICellRegulation Copy()
+    {
+        return new DistRegulation();
+    }
 }

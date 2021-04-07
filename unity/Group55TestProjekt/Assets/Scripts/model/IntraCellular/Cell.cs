@@ -14,6 +14,13 @@ public class Cell
     public Cell(IInternals cellInternals)
     {
         this.cellInternals = cellInternals;
+        if (this.cellInternals is ForwardInternals)
+            ((ForwardInternals)this.cellInternals).SetPartentObject(this);
+    }
+
+    public Cell(Cell parent)
+    {
+        cellInternals = parent.cellInternals.Copy();
     }
    
     //gets the next location that the cell should move to should only be called when a new location is needed
@@ -42,5 +49,11 @@ public class Cell
     public IInternals GetInternals()
     {
         return cellInternals;
+    }
+
+    public void AddListener(ICellDeathListener listener)
+    {
+        if (cellInternals is ForwardInternals)
+            ((ForwardInternals)cellInternals).AddListener(listener);
     }
 }

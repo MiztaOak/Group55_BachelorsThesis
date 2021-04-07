@@ -90,4 +90,9 @@ public class ODERegulation : ICellRegulation
         else
             return true; //Running 
     }
+
+    public ICellRegulation Copy()
+    {
+        return new ODERegulation();
+    }
 }

@@ -22,6 +22,11 @@ public class CellDoneHandler
         }
     }
 
+    public static void Birth()
+    {
+        cellsNotDone++;
+    }
+
     public static void Setup(int cells)
     {
         cellsNotDone = cells;

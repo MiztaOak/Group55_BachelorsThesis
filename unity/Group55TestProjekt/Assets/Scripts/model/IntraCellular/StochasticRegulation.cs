@@ -87,4 +87,9 @@ public class StochasticRegulation : ICellRegulation
         else
             return true; //run
     }
+
+    public ICellRegulation Copy()
+    {
+        return new StochasticRegulation();
+    }
 }

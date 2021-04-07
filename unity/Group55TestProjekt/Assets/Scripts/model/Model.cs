@@ -18,19 +18,23 @@ public class Model
     private float
         timeScaleFactor; //variable that scales the "time" of the simulation might be better to place this in a repo class later
 
-    private Cell[] cells;
+    private List<Cell> allCells; //all cells that where ever present in the simulation
+    private List<Cell>[] cells; //matrix where each list contains the cells that existed in that time step
 
-    private int cellIndex = 0;
-    private int numCells;
+    private int[] numCells;
 
     private float[] averageLigandC;
+
+    private List<ICellBirthListener> cellBirthListeners;
 
     private Model()
     {
         //add code as it is needed
         environment = new Environment(); //super base case just to prevent any scary null pointers
         timeScaleFactor = 1;
-        cells = new Cell[0];
+        cells = new List<Cell>[0];
+        cellBirthListeners = new List<ICellBirthListener>();
+        allCells = new List<Cell>();
     }
 
     public static Model GetInstance()
@@ -40,73 +44,85 @@ public class Model
         return instance;
     }
 
-    public void SetTimeScaleFactor(float timeScaleFactor)
-    {
-        this.timeScaleFactor = timeScaleFactor;
-    }
-
-    public float GetTimeScaleFactor()
-    {
-        return timeScaleFactor;
-    }
-    public int GetNumCells() 
-    {
-        return numCells;
-    }
-
     //Simulates numCells many cells with iterations many steps each
-    public void SimulateCells(int numCells, int iterations)
+    public void CreateCells(int numCells)
     {
-        cells = new Cell[numCells];
-        BacteriaFactory.SetCellIterations(iterations);
-        this.numCells = numCells;
-        cellIndex = 0;
-
+        cells[0] = new List<Cell>();
         for (int i = 0; i < numCells; i++)
         {
-            cells[i] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
+            Cell cell = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
                 Random.Range(0, 2 * Mathf.PI), false);
+            cells[0].Add(cell);
+            allCells.Add(cell);
+        }
+    }
+
+    public void SimulateTimeStep(int timeStep)
+    {
+        if (timeStep != 0)
+            numCells[timeStep] = numCells[timeStep - 1];
+
+        cells[timeStep - 1].ForEach(c => cells[timeStep].Add(c)); //Copy all the cells from the previous time step
+        //add code for updating the environment or something i guess
+        for (int i = 0; i < cells[timeStep].Count; i++)
+        {
+            int tmp = cells[timeStep].Count;
+            ((ForwardInternals)cells[timeStep][i].GetInternals()).SimulateMovementStep(timeStep);
+
+            if (tmp > cells[timeStep].Count) //if the current cell died and was removed the index has to be updated
+                i--;
         }
     }
 
     //Sets up the model and factory to simulate numCells many cells with iterations many steps 
     public void SetupCells(int numCells, int iterations)
     {
-        cells = new Cell[numCells];
+        cells = new List<Cell>[iterations+1];
+        for(int i = 0; i < cells.Length; i++)
+            cells[i] = new List<Cell>();
+
         BacteriaFactory.SetCellIterations(iterations);
-        this.numCells = numCells;
-        cellIndex = 0;
-    }
-
-    //Simulates a single cell
-    public void SimulateNextCell(int index)
-    {
-        if (index >= numCells)
-            return;
-        cells[index] = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
-            Random.Range(0, 2 * Mathf.PI), false);
-    }
-
-    public Cell[] GetCells()
-    {
-        return cells;
-    }
-
-    //Returns the "next" cell is used by the movement class to connect a cell object to a given e-coli object
-    public Cell GetCell()
-    {
-        Cell cell = cells[cellIndex];
-        cellIndex = cellIndex + 1 > numCells - 1 ? numCells - 1 : cellIndex + 1;
-        return cell;
-    }
-
-    public void Reset()
-    {
+        this.numCells = new int[iterations + 1];
+        this.numCells[0] = numCells;
         timeScaleFactor = 1;
-        cells = new Cell[0];
-        cellIndex = 0;
-        numCells = 0;
+        cellBirthListeners = new List<ICellBirthListener>();
+        allCells = new List<Cell>();
+        IterationHandler.GetInstance().Reset();
         averageLigandC = null;
+    }
+
+    //Method that adds a new cell to the simulation
+    public void AddCell(Cell cell,int iteration)
+    {
+        cells[iteration].Add(cell);
+        allCells.Add(cell);
+        numCells[iteration]++;
+    }
+
+    public void GiveBirthToCell(Cell cell)
+    {
+        CellDoneHandler.Birth();
+        foreach (ICellBirthListener listener in cellBirthListeners)
+            listener.Notify(cell);
+    }
+
+    //Method that removes a cell that has died
+    public void KillCell(int iteration, Cell cell)
+    {
+        numCells[iteration]--;
+        cells[iteration].Remove(cell);
+    }
+
+    //Returns the cells for a given timeStep
+    public List<Cell> GetCells(int timeStep)
+    {
+        return cells[timeStep];
+    }
+
+    //Returns all the cells that were ever present in the simulation
+    public List<Cell> GetCells()
+    {
+        return allCells;
     }
 
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
@@ -119,12 +135,12 @@ public class Model
         List<DataToExport> data_list = new List<DataToExport>();
         int Iteration_counter = 0;
 
-        if (index >= numCells && cells.Length == 0)
+        if (index >= allCells.Count && allCells.Count == 0)
             return;
 
         for (int i = 0; i < index; i++)
         {
-            ForwardInternals cell = ((ForwardInternals) cells[i].GetInternals());
+            ForwardInternals cell = ((ForwardInternals)allCells[i].GetInternals());
 
 
             for (int j = 0; j < iterations; j++)
@@ -162,20 +178,20 @@ public class Model
     //Calculates the average ligand consentration for each time step
     private float[] CalculateAverageLigandC()
     {
-        if (cells.Length == 0)
+        if (allCells.Count == 0)
             return null;
 
         float[] averageLigandC = new float[BacteriaFactory.GetIterations()];
 
-        for (int i = 0; i < averageLigandC.Length; i++)
+        for (int i = 0; i < averageLigandC.Length; i++) //for each iteration
         {
             float averageC = 0;
-            for (int j = 0; j < cells.Length; j++)
+            for (int j = 0; j < cells[i+1].Count; j++) //for the cells present in that iteration
             {
-                averageC += (float) ((ForwardInternals) cells[j].GetInternals()).GetInternalStates()[i + 1].l;
+                averageC += (float) ((ForwardInternals) cells[i+1][j].GetInternals()).GetInternalStates()[i+1].l;
             }
 
-            averageLigandC[i] = averageC / cells.Length;
+            averageLigandC[i] = (numCells[i+1] != 0 ? averageC / numCells[i+1] : 0);
         }
 
         return averageLigandC;
@@ -212,5 +228,44 @@ public class Model
             this.m = m;
             this.l = l;
         }
+    }
+
+    public void SetTimeScaleFactor(float timeScaleFactor)
+    {
+        this.timeScaleFactor = timeScaleFactor;
+    }
+
+    public float GetTimeScaleFactor()
+    {
+        return timeScaleFactor;
+    }
+    public int GetNumCells(int iteration)
+    {
+        return numCells[iteration]; //might cause problems later
+    }
+
+    //Method that returns the number of cells that are within a given distance of the given location
+    //only to be used with cells that have a ForwardsInternals as their internals (since iteration does not make sense otherwise)
+    public int GetNumOfCloseCells(int iteration, float distance, IPointAdapter location)
+    {
+        int num = 0;
+
+        distance *= distance; //removes the need for sqrt operation
+
+        foreach(Cell cell in cells[iteration])
+        {
+            if (!(cell.GetInternals() is ForwardInternals))
+                continue;
+            IPointAdapter cellLocation = ((ForwardInternals)cell.GetInternals()).GetPosition(iteration);
+            if (distance >= Mathf.Pow(cellLocation.GetX() - location.GetX(), 2) + Mathf.Pow(cellLocation.GetZ() - location.GetZ(), 2))
+                num++;
+        }
+
+        return num;
+    }
+
+    public void AddListener(ICellBirthListener listener)
+    {
+        cellBirthListeners.Add(listener);
     }
 }
