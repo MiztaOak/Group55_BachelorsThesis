@@ -26,7 +26,7 @@ public class HazardRegulation : ICellRegulation
             U = Random.Range(0.0f,1.0f);
             B = 0;
         }
-        float BNext = B + h(c)*(1-B); //Step 2
+        float BNext = B + h(c/Model.GetInstance().environment.GetMaxVal())*(1-B); //Step 2
         if( BNext > U )
         { //Tumble and return to step 1
             U = 0;
