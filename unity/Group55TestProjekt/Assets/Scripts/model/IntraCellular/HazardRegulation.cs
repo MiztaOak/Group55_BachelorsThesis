@@ -7,6 +7,7 @@ public class HazardRegulation : ICellRegulation
 
     private float B;
     private float U;
+    private float l;
 
     //Don't know if we want to have time as a factor, or just work in steps. The dimensions of dt
     //are a bit unclear
@@ -19,7 +20,8 @@ public class HazardRegulation : ICellRegulation
 
     public bool DecideState(float c)
     {
-        if( U == 0 )
+        l = c;
+        if ( U == 0 )
         { //Step 1, initialize
             U = Random.Range(0.0f,1.0f);
             B = 0;
@@ -42,5 +44,10 @@ public class HazardRegulation : ICellRegulation
     public ICellRegulation Copy()
     {
         return new HazardRegulation();
+    }
+
+    public float GetL()
+    {
+        return l;
     }
 }

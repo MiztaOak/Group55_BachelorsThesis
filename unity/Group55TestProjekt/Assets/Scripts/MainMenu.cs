@@ -77,6 +77,7 @@ public class MainMenu : MonoBehaviour
 
         BacteriaFactory.SetCellIterations(500);
         BacteriaFactory.SetCellDeathAndDivision(true);
+        BacteriaFactory.SetCellRegulatorType(RegulatorType.ODE);
 
         //added just to make the program a lot less anoying to use
 
@@ -142,5 +143,18 @@ public class MainMenu : MonoBehaviour
     public void SetCellDeathDivision(bool status)
     {
         BacteriaFactory.SetCellDeathAndDivision(status);
+    }
+
+    public void HandleDropDownSelection(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                BacteriaFactory.SetCellRegulatorType(RegulatorType.ODE);
+                break;
+            case 1:
+                BacteriaFactory.SetCellRegulatorType(RegulatorType.Hazard);
+                break;
+        }
     }
 }

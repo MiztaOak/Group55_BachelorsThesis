@@ -88,6 +88,7 @@ public class Model
         cellBirthListeners = new List<ICellBirthListener>();
         allCells = new List<Cell>();
         IterationHandler.GetInstance().Reset();
+        averageLigandC = null;
     }
 
     //Method that adds a new cell to the simulation
