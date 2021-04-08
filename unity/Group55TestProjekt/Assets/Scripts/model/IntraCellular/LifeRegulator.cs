@@ -22,7 +22,7 @@ public class LifeRegulator : ILifeRegulator
             ULife = Random.Range(0.5f, 1.0f);
             BLife = 0;
         }
-        float BNext = BLife + h(c,0.002f,0.002f) * (1 - BLife); //Step 2
+        float BNext = BLife + h(c,0.0025f,0.002f) * (1 - BLife); //Step 2
         if (BNext > ULife)
         { //Tumble and return to step 1
             ULife = 0;
@@ -43,7 +43,7 @@ public class LifeRegulator : ILifeRegulator
             UDeath = Random.Range(0.0f, 1.0f);
             BDeath = 0;
         }
-        float BNext = BDeath + h(c, -0.001f, 0.05f) * (1 - BDeath); //Step 2
+        float BNext = BDeath + h(c, -0.001f, 0.035f) * (1 - BDeath); //Step 2
         if (BNext > UDeath)
         { //Tumble and return to step 1
             UDeath = 0;
