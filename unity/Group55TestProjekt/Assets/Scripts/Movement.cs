@@ -46,31 +46,17 @@ public class Movement : MonoBehaviour, ICellDeathListener
         run = false; // set run to false so that it begins by rotating towards the first location
     }
 
-    /*
-    private void OnMouseOver() 
-    {
-        // Only allow one cell to be selected at once
-        if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged") && !GameObject.FindGameObjectWithTag("Player")) {
-            gameObject.tag = "Player";
-
-            CellInfo.focusedCell = cell; // send info the info panel
-
-            // Change color
-            cellmaterial = transform.Find("Cell").GetComponent<Renderer>().material;
-            cellmaterial.SetFloat("Boolean_E606F07D", 1); 
-            // Make a bit bigger 
-            transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
-        } else if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Player")) {
-            gameObject.tag = "Untagged";
-            cellmaterial.SetFloat("Boolean_E606F07D", 0);
-            cellmaterial = null;
-            transform.localScale = originalScale;
-        }
-    }*/
-
     private void OnMouseUp()
     {
+        GameObject oldFocus = GameObject.FindGameObjectWithTag("Player");
+        if(oldFocus != null)
+        {
+            oldFocus.gameObject.tag = "Untagged";
+            oldFocus.transform.Find("Cell").GetComponent<Renderer>().material.SetFloat("Boolean_E606F07D", 0);
+        }
+
         gameObject.tag = "Player";
+        transform.Find("Cell").GetComponent<Renderer>().material.SetFloat("Boolean_E606F07D", 1);
         CellInfo.focusedCell = cell;
     }
 
