@@ -1196,6 +1196,8 @@ MonoBehaviour:
   rotSpeed: 1.6
   smart: 0
   smartnessFactor: 0
+  deathParticle: {fileID: 2243066140072537064, guid: f60e7a85f6f5e8f4bbc359bbf43fc37b,
+    type: 3}
 --- !u!54 &8872421074434192036
 Rigidbody:
   m_ObjectHideFlags: 0
