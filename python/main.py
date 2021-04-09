@@ -5,6 +5,7 @@ from datetime import datetime
 from itertools import chain
 from tkinter import *
 from tkinter import filedialog
+from tkinter import ttk
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -16,7 +17,7 @@ import seaborn as sns
 
 window = Tk()
 window.title('Chemotaxis analytical tool')
-window.geometry('525x450')
+window.geometry('400x300')
 window.resizable(width=False, height=False)
 window.configure(bg='white')
 
@@ -162,6 +163,7 @@ def path_plotter():
         plt.title('Path of a single cell (world view)')
         plt.axis('off')
     # plt.show()
+    status_label.config(text='Plotting single cell path')
     plt.savefig(directory + '/cell_path.png')
 
 
@@ -186,6 +188,7 @@ def zoomed_path_plotter():
         plt.axis('off')
 
     # plt.show()
+    status_label.config(text='Plotting zoomed out cell path')
     plt.savefig(directory + '/zoomed_cell_path.png')
 
 
@@ -253,6 +256,7 @@ def protein_concentration_plotter():
     ax[2, 1].axis('off')
 
     # plt.show()
+    status_label.config(text='plotting protein concentrations')
     plt.savefig(directory + '/concentrations.png')
 
 
@@ -319,6 +323,7 @@ def heatmap_plotter():
     ax.plot_trisurf(df.x, df.y, df.z, cmap=cm.jet, linewidth=0.2)
 
     # plt.show()
+    status_label.config(text='Plotting heatmap')
     plt.savefig(directory + '/heat_map_start_end.png')
 
 
@@ -568,13 +573,12 @@ ani2.save('/content/drive/MyDrive/Kandidatarbete Grupp 55/python scripts for dat
 
 
 def do_the_job():
-    window.config(cursor="wait")
-    window.update()
+    progress_bar.start(10)
     path_plotter()
     zoomed_path_plotter()
     protein_concentration_plotter()
     heatmap_plotter()
-    window.config(cursor="")
+    progress_bar.stop()
 
 
 def browseFiles():
@@ -609,7 +613,7 @@ welcome_text = Label(window,
 welcome_text.pack(pady=3)
 
 label_file_explorer = Label(window,
-                            text="File Explorer using Tkinter",
+                            text="No file selected",
                             width=100, height=4,
                             fg="blue")
 label_file_explorer.pack(pady=5)
@@ -623,6 +627,9 @@ visualize_button = Button(window, text='Visualize the data', command=do_the_job,
 visualize_button.pack(pady=5)
 visualize_button.configure(state='disabled')
 
-# progress_bar = ttk.Progressbar(window, orient=HORIZONTAL, length=300, mode='determinate')
-# .pack(pady=50)
+progress_bar = ttk.Progressbar(window, orient=HORIZONTAL, length=222, mode='indeterminate')
+progress_bar.pack(pady=20)
+
+status_label = Label(window, text='')
+status_label.place(x=87,y=240)
 window.mainloop()
