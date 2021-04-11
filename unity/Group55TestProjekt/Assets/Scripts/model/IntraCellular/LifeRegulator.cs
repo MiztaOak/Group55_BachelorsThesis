@@ -59,11 +59,11 @@ public class LifeRegulator : ILifeRegulator
 
     public float GetLife()
     {
-        return BLife / ULife;
+        return ULife != 0 ? BLife / ULife : 0;
     }
 
     public float GetDeath()
     {
-        return BDeath / UDeath;
+        return UDeath != 0 ? BDeath / UDeath : 0;
     }
 }
