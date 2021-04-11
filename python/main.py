@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-
 ## Gui Code
+from matplotlib import animation
 
 window = Tk()
 window.title('Chemotaxis analytical tool')
@@ -51,7 +51,7 @@ def open_file(path):
 
     the_data = json.load(f)
     global data_len
-    data_len = len(the_data)
+    data_len = len(the_data) - 1
     global data
     data = the_data
 
@@ -137,8 +137,8 @@ def start_end_point_parser():
     end_xs = []
     end_zs = []
     for j in range(data_len):
-        x = xs[(j * iteration_length) + 999]
-        z = zs[(j * iteration_length) + 999]
+        x = xs[(j * iteration_length) + iteration_length - 1]
+        z = zs[(j * iteration_length) + iteration_length - 1]
         end_xs.append(x)
         end_zs.append(z)
     return start_xs, start_zs, end_xs, end_zs
@@ -571,14 +571,83 @@ ani2.save('/content/drive/MyDrive/Kandidatarbete Grupp 55/python scripts for dat
 #plt.show()
 '''
 
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
+fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+'''
+cell_data = cell_parser(The_cell)
+
+x_list = cell_data[0][13:-1]
+z_list = cell_data[1][13:-1]
+ap_list = cell_data[2][13:-1]
+bp_list = cell_data[3][13:-1]
+yp_list = cell_data[4][13:-1]
+m_list = cell_data[5][13:-1]
+l_list = cell_data[6][13:-1]
+time_list = cell_data[7][13:-1]
+iteration_length = cell_data[8]
+
+x_max = 2 * np.amax(x_list, 0)
+x_min = 2 * np.amin(x_list, 0)
+z_max = 2 * np.amax(z_list, 0)
+z_min = 2 * np.amin(z_list, 0)
+
+l_max = 1.3 * np.amax(l_list, 0)
+
+line1, = ax1.plot([], [], lw=2)
+line2, = ax2.plot([], [], lw=2, color='r')
+
+line = [line1, line2]
+
+# the same axes initalizations as before (just now we do it for both of them)
+
+ax1.set_xlim(x_min, x_max)
+ax1.set_ylim(z_min, z_max)
+
+ax1.grid(False)
+ax1.axis(False)
+# ax1.plot(0, 0, 'r*', markersize=10, label = 'Ligand source')
+
+ax2.set_ylim(0, l_max)
+ax2.set_xlim(0, iteration_length)
+
+# initialize the data arrays
+x1data, y1data, x2data, x3data, x4data, x5data, x6data, timedata = [], [], [], [], [], [], [], []
+
+
+def run(i):
+    # update the data
+    x1 = x_list[i]
+    x6 = l_list[i]
+    y1 = z_list[i]
+    time = time_list[i]
+
+    x1data.append(x1)
+    y1data.append(y1)
+    x6data.append(x6)
+    timedata.append(time)
+    line[0].set_data(x1data, y1data)
+    line[1].set_data(timedata, x6data)
+
+    return line
+
+
+def save_animation():
+    status_label.configure(text='Working on the animation')
+    ani2 = animation.FuncAnimation(fig, run, frames=984, blit=True, interval=100, repeat=False)
+    ani2.save('animation.mp4', writer=writer)
+
+'''
+
 
 def do_the_job():
-    progress_bar.start(10)
     path_plotter()
     zoomed_path_plotter()
     protein_concentration_plotter()
     heatmap_plotter()
-    progress_bar.stop()
+    # save_animation()
+    visualize_button.configure(state='disabled')
+
 
 
 def browseFiles():
@@ -591,8 +660,6 @@ def browseFiles():
                                                       "*.json*"),
                                                      ("all files",
                                                       "*.*")))
-
-    # Change label contents
     if not filename:
         return
     else:
@@ -627,9 +694,14 @@ visualize_button = Button(window, text='Visualize the data', command=do_the_job,
 visualize_button.pack(pady=5)
 visualize_button.configure(state='disabled')
 
-progress_bar = ttk.Progressbar(window, orient=HORIZONTAL, length=222, mode='indeterminate')
-progress_bar.pack(pady=20)
-
 status_label = Label(window, text='')
-status_label.place(x=87,y=240)
+status_label.place(x=87, y=240)
 window.mainloop()
+
+
+def main():
+    print("Hello World!")
+
+
+if __name__ == "__main__":
+    main()

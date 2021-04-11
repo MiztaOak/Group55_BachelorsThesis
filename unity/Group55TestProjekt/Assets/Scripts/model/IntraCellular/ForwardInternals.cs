@@ -68,7 +68,7 @@ public class ForwardInternals : IInternals
         //Fix the states so that there are no null pointers this should maybe 
         for(int i = 0; i <= iteration; i++)
         {
-            Debug.Log("i = " + i);
+           // Debug.Log("i = " + i);
             positions[i] = locations[i].Copy();
             this.states[i] = states[i];
         }
@@ -114,6 +114,7 @@ public class ForwardInternals : IInternals
             {
                 positions[i] = positions[step-1];
                 states[i] = deathState;
+                states[i].death = 1;
             }
 
             return;
