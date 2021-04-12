@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class LoadingScreen : MonoBehaviour
-{
+public class LoadingScreen : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
+    [SerializeField] private Slider progressSlider; 
 
     private int n;
     // Start is called before the first frame update
@@ -34,15 +34,18 @@ public class LoadingScreen : MonoBehaviour
         {
             for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
             {
+                float procent = 0;
                 model.SimulateTimeStep(i);
-                progressText.text = "Loading progress: " + ((float) i / iterations * 100) + "%";
+                procent = (float)i / iterations * 100;
+                progressText.text = procent + "%";
+                progressSlider.value = procent;
                 yield return null;
             }
             model.GetAverageLigandC();
         }
         else
         {
-            progressText.text = "Loading progress: 100%"; //if no simulation you are done
+            progressText.text = "100%"; //if no simulation you are done
             
         }
         
