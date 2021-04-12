@@ -7,12 +7,14 @@ public class SetupScene : MonoBehaviour, ICellBirthListener
 {
     [SerializeField] private Movement eColi;
     [SerializeField] private GameObject food;
-
+    [SerializeField] private ParticleSystem cellBirth;
     public void Notify(Cell cell)
     {
         IPointAdapter point = cell.GetNextLocation();
         Movement tmp = Instantiate(eColi, new Vector3(point.GetX(), 1, point.GetZ()), Quaternion.Euler(0, cell.GetAngle(), 0));
         tmp.SetCell(cell);
+        // Play lil particle effect
+        Instantiate(cellBirth, new Vector3(point.GetX(), 2, point.GetZ()), Quaternion.Euler(0, cell.GetAngle(), 0));
     }
 
     // Start is called before the first frame update
