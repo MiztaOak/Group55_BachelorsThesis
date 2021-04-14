@@ -5,6 +5,7 @@ from itertools import chain
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
+
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -301,7 +302,7 @@ def population_change():
     plt.clf()
 
 
-def plot_life_death_analysis():
+def life_death_analysis():
     cell_data = cell_parser(The_cell)
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
@@ -314,9 +315,29 @@ def plot_life_death_analysis():
     ax2.plot(cell_data[7], cell_data[9], 'b')
     ax2.title.set_text('life')
 
-
-
     plt.savefig(directory + '/death_and_life')
+    plt.clf()
+
+
+def average_ligand_concentration():
+    cell_data = cell_parser(The_cell)
+    l_sum_list = []
+    l_sum = 0
+    cell_index = 0
+    for i in cell_data[7]:
+        while cell_index < data_len:
+            l_sum += data[cell_index]['Iterations'][i]['l']
+            # print(l_sum)
+            cell_index += 1
+
+        l_sum_list.append(l_sum / 333)
+        l_sum = 0
+        cell_index = 0
+
+    plt.plot(cell_data[7], l_sum_list)
+    plt.ylabel('Average concentration for the cell population')
+    plt.xlabel('Iteration')
+    plt.savefig(directory + '/average_ligand_concentration')
     plt.clf()
 
 
@@ -326,15 +347,17 @@ def do_the_job():
     protein_concentration_plotter()
     heatmap_plotter()
     population_change()
-    plot_life_death_analysis()
+    life_death_analysis()
+    average_ligand_concentration()
     visualize_button.configure(state='disabled')
     messagebox.showinfo(title='Success', message='The files has been saved to {}'.format(data_path))
+    go_to_dir_button.configure(state='active')
 
 
 #
 
 
-def browseFiles():
+def browse_files():
     global data_path
     global The_cell
     global directory
@@ -357,6 +380,10 @@ def browseFiles():
         visualize_button.configure(state='active')
 
 
+def go_to_dir():
+    os.startfile(directory)
+
+
 # GUI COMPONENTS
 welcome_text = Label(window,
                      text='Welcome to our analytical tool \n Please choose a file',
@@ -371,13 +398,14 @@ label_file_explorer.pack(pady=5)
 
 button_explore = Button(window,
                         text="Browse Files",
-                        command=browseFiles)
+                        command=browse_files)
 button_explore.pack(pady=5)
 
 visualize_button = Button(window, text='Visualize the data', command=do_the_job, bg='white')
-visualize_button.pack(pady=5)
+visualize_button.pack(pady=20)
 visualize_button.configure(state='disabled')
 
-status_label = Label(window, text='')
-status_label.place(x=87, y=240)
+go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white')
+go_to_dir_button.pack(pady=20)
+go_to_dir_button.configure(state='disabled')
 window.mainloop()
