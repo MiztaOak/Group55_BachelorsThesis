@@ -4,7 +4,7 @@ import random
 from itertools import chain
 from tkinter import *
 from tkinter import filedialog
-
+from tkinter import messagebox
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,7 +19,7 @@ window.geometry('400x300')
 window.resizable(width=False, height=False)
 window.configure(bg='white')
 
-sns.set(rc={'figure.figsize': (18, 12)})
+sns.set(rc={'figure.figsize': (12, 10)})
 sns.set_context("notebook", font_scale=1.4)
 
 # Data setup
@@ -146,9 +146,6 @@ def start_end_point_parser():
     return start_xs, start_zs, end_xs, end_zs
 
 
-# Method to plot a path between 2 points
-
-# The parameters should be changed to "cell" when the data exporting is working correctly
 def path_plotter():
     cell_data = cell_parser(The_cell)
     fst_list = cell_data[0]
@@ -165,6 +162,7 @@ def path_plotter():
     plt.axis('off')
     # plt.show()
     plt.savefig(directory + '/cell_path.png')
+    plt.clf()
 
 
 def zoomed_path_plotter():
@@ -180,6 +178,7 @@ def zoomed_path_plotter():
     plt.title('Path of a single cell (Zoomed in view) ')
     plt.axis('off')
     plt.savefig(directory + '/zoomed_cell_path.png')
+    plt.clf()
 
 
 def protein_concentration_plotter():
@@ -223,6 +222,7 @@ def protein_concentration_plotter():
     ax[2, 1].axis('off')
 
     plt.savefig(directory + '/concentrations.png')
+    plt.clf()
 
 
 # protein_concentration_plotter()
@@ -288,12 +288,36 @@ def heatmap_plotter():
     ax.plot_trisurf(df.x, df.y, df.z, cmap=cm.jet, linewidth=0.2)
 
     plt.savefig(directory + '/heat_map_start_end.png')
+    plt.clf()
 
 
 def population_change():
     cell_data = cell_parser(The_cell)
     plt.plot(cell_data[7], data[-1])
+    plt.title('Population change throughout the simulation')
+    plt.ylabel('Number of cells')
+    plt.xlabel('iteration')
     plt.savefig(directory + '/population_change')
+    plt.clf()
+
+
+def plot_life_death_analysis():
+    cell_data = cell_parser(The_cell)
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    plt.plot(figsize=(16, 12))
+    plt.title('Dath and life changes against ligand concentration for a cell')
+
+    ax1.plot(cell_data[7], cell_data[10], 'r')
+    ax1.title.set_text('Death')
+
+    ax2.plot(cell_data[7], cell_data[9], 'b')
+    ax2.title.set_text('life')
+
+
+
+    plt.savefig(directory + '/death_and_life')
+    plt.clf()
 
 
 def do_the_job():
@@ -302,7 +326,9 @@ def do_the_job():
     protein_concentration_plotter()
     heatmap_plotter()
     population_change()
+    plot_life_death_analysis()
     visualize_button.configure(state='disabled')
+    messagebox.showinfo(title='Success', message='The files has been saved to {}'.format(data_path))
 
 
 #
