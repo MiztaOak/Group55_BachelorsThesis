@@ -49,7 +49,7 @@ public class LoadingScreen : MonoBehaviour {
             
         }
         
-       // model.ExportData(numOfCells, BacteriaFactory.GetIterations());
+       model.ExportData(numOfCells, BacteriaFactory.GetIterations());
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2); 
 
