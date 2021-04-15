@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grid
+public class Grid: IIterationListener
 {
     //based on the tutorial located at: https://www.youtube.com/watch?v=waEsGu--9P8&t=0s
 
@@ -28,12 +28,26 @@ public class Grid
         this.maxZ = maxZ;
 
         gridArray = new float[width, height];
-
+        //IterationHandler.GetInstance().Subscribe(this); //looks bad so turning it off for the moment
         PopulateGrid();
     }
 
     //simple standard constructor to be used for the current setup
     public Grid(int width, int height, float cellSize) : this(width, height, cellSize, new Vector3(-width * cellSize * .5f,1,-height*cellSize*.5f), -20f, 20f, -20f, 20f) { } 
+
+    private void PopulateGrid(int timeStep) //populates the grid with the consentrations for the different "squares"
+    {
+        Model model = Model.GetInstance();
+        for (int x = 0; x < gridArray.GetLength(0); x++)
+        {
+            for (int z = 0; z < gridArray.GetLength(1); z++)
+            {
+                Vector3 pos = GetPostion(x, z);
+                if(pos.x < maxX && pos.x > minX && pos.z < maxZ && pos.z > minZ)
+                    gridArray[x,z] = model.environment.GetConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f,timeStep)/model.environment.GetMaxVal(); 
+            }
+        }
+    }
 
     private void PopulateGrid() //populates the grid with the consentrations for the different "squares"
     {
@@ -43,13 +57,12 @@ public class Grid
             for (int z = 0; z < gridArray.GetLength(1); z++)
             {
                 Vector3 pos = GetPostion(x, z);
-                if(pos.x < maxX && pos.x > minX && pos.z < maxZ && pos.z > minZ)
-                    gridArray[x,z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f)/model.environment.GetMaxVal(); 
+                if (pos.x < maxX && pos.x > minX && pos.z < maxZ && pos.z > minZ)
+                    gridArray[x, z] = model.environment.getConcentration(pos.x + cellSize * .5f, pos.z + cellSize * .5f) / model.environment.GetMaxVal();
             }
         }
-
-        
     }
+
 
     public Vector3 GetPostion(int x, int z)     //gets the world position for index x and z
     {
@@ -102,11 +115,17 @@ public class Grid
         listeners.Add(listener);
     }
 
-    public void Notify()
+    public void NotifyListeners()
     {
         foreach(GridListeners listener in listeners)
         {
             listener.OnGridUpdate();
         }
+    }
+
+    public void NotifyIterationChanged(int iteration)
+    {
+        PopulateGrid(iteration);
+        listeners.ForEach(n => n.OnGridUpdate());
     }
 }

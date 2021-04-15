@@ -21,11 +21,11 @@ public static class EnvironmentFactory
         CreateBasicEnvionment(d, i_0, 0, 0);
     }
 
-    public static void CreateMultiEnvironment(float d, float i_0, int n)
+    public static void CreateMultiEnvironment(float d, float i_0, int n, bool isDynamic)
     {
         if (n <= 1)
         {
-            CreateBasicEnvionment(d, i_0);
+            CreateBasicEnvionment(d, i_0,0,0,isDynamic);
             return;
         }
         float x = 10, y = 10;
@@ -36,7 +36,7 @@ public static class EnvironmentFactory
         float[]ys = { 10, -10, -10, 10, 0 };
         
         
-        Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, xs, ys, 49f,n);
+        Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, xs, ys, 49f,n,isDynamic);
     }
 
     public static void CreateMultiEnvironment(float d, float i_0)

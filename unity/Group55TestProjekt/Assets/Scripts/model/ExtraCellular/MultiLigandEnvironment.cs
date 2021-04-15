@@ -18,13 +18,13 @@ public class MultiLigandEnvironment : AbstractEnvironment
         
     }
 
-    public MultiLigandEnvironment(float d, float i_0, float[] x, float[] z, float max, int n)
+    public MultiLigandEnvironment(float d, float i_0, float[] x, float[] z, float max, int n, bool isDynamic)
     {
         environments = new AbstractEnvironment[n];
         this.max = max;
         for (int i = 0; i < n; i++)
         {
-            environments[i] = new Environment(d, i_0, x[i], z[i], max);
+            environments[i] = new Environment(d, i_0, x[i], z[i], max,isDynamic);
         }
 
     }

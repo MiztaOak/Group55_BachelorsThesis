@@ -50,8 +50,18 @@ public class Model
         cells[0] = new List<Cell>();
         for (int i = 0; i < numCells; i++)
         {
-            Cell cell = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
-                Random.Range(0, 2 * Mathf.PI), false);
+            float x = Random.Range(-12f, 12f);
+            float z;
+            if (x < 3 && x > -3) //if x close to the center make sure that the cell does not spawn in the center
+            {
+                z = Random.Range(3f, 12f) * (Random.value <= 0.5 ? -1 : 1);
+            }
+            else
+            {
+                z = Random.Range(-12f, 12f);
+            }
+
+            Cell cell = BacteriaFactory.CreateNewCell(x, z, Random.Range(0, 2 * Mathf.PI), false);
             cells[0].Add(cell);
             allCells.Add(cell);
         }
@@ -257,7 +267,7 @@ public class Model
             if (!(cell.GetInternals() is ForwardInternals))
                 continue;
             IPointAdapter cellLocation = ((ForwardInternals)cell.GetInternals()).GetPosition(iteration);
-            if (distance >= Mathf.Pow(cellLocation.GetX() - location.GetX(), 2) + Mathf.Pow(cellLocation.GetZ() - location.GetZ(), 2))
+            if (Mathf.Pow(cellLocation.GetX() - location.GetX(), 2) + Mathf.Pow(cellLocation.GetZ() - location.GetZ(), 2) <= distance)
                 num++;
         }
 

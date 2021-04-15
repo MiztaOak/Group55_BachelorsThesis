@@ -165,9 +165,8 @@ public class ForwardInternals : IInternals
     private void AddState(int i)
     {
         State state = new State();
-        if (this.regulator is ODERegulation)
+        if (this.regulator is ODERegulation r)
         {
-            ODERegulation r = (ODERegulation)this.regulator;
             state.yp = r.GetYP();
             state.ap = r.GetAP();
             state.bp = r.GetBP();
@@ -176,9 +175,9 @@ public class ForwardInternals : IInternals
             state.death = lifeRegulator.GetDeath();
             state.life = lifeRegulator.GetLife();
         }
-        else if(regulator is HazardRegulation)
+        else if (this.regulator is HazardRegulation h)
         {
-            state.l = ((HazardRegulation)regulator).GetL();
+            state.l = h.GetL();
         }
         states[i] = state;
     }

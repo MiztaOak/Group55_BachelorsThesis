@@ -53,10 +53,9 @@ public class MainMenu : MonoBehaviour
     private float i0 = 0.1f;
     private float d = 50;
     private int sources = 1;
-    private float k;
-    private float maxT;
     private int n = 1;
     private int iterations = 100;
+    private bool isDynamic = true;
 
     private Model model;
 
@@ -132,7 +131,7 @@ public class MainMenu : MonoBehaviour
     }
 
     void createBasicEnv(float i_0, float d) {
-        EnvironmentFactory.CreateMultiEnvironment(d,i_0,sources);
+        EnvironmentFactory.CreateMultiEnvironment(d,i_0,sources,isDynamic);
     }
     
     public void Updateheatmap() {
@@ -143,6 +142,11 @@ public class MainMenu : MonoBehaviour
     public void SetCellDeathDivision(bool status)
     {
         BacteriaFactory.SetCellDeathAndDivision(status);
+    }
+
+    public void SetIsDynamic(bool status)
+    {
+        isDynamic = status;
     }
 
     public void HandleDropDownSelection(int index)

@@ -2,7 +2,7 @@
 public abstract class AbstractEnvironment
 {
     protected float xCord, zCord; //postion of the source
-    protected bool isDynamic;
+    protected bool isDynamic = false;
 
     public AbstractEnvironment(float xCord, float zCord)
     {
@@ -23,7 +23,8 @@ public abstract class AbstractEnvironment
 
         if (isDynamic)
         {
-            c /= Model.GetInstance().GetNumOfCloseCells(timeStep, 1, new Vector3Adapter(x, z));
+            int n = Model.GetInstance().GetNumOfCloseCells(timeStep, 1, new Vector3Adapter(x, z));
+            c /= n != 0 ? n : 1;
         }
 
         return c;
