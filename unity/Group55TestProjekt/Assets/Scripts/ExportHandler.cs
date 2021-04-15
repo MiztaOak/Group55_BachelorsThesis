@@ -7,6 +7,7 @@ using UnityEngine;
 public static class ExportHandler
 {
     public static readonly string dirPath = Application.dataPath + "/Exports/";
+    static String timeStamp = DateTime.Now.ToString("HH_mm_ss");
 
 // checks if the directory exists, and if not create one.
     public static void init()
@@ -18,9 +19,9 @@ public static class ExportHandler
     }
 
     // static method to save data to specific file using JSON.NET
-    public static void exportData(List<Model.DataToExport> dataToExport)
+    public static void exportData(List<object> dataToExport)
     {
-        using (StreamWriter file = File.CreateText(dirPath + "exported_data.json"))
+        using (StreamWriter file = File.CreateText(dirPath + "Data"+ timeStamp+ ".json"))
         {
             JsonSerializer serializer = new JsonSerializer();
             //serialize object directly into file stream
