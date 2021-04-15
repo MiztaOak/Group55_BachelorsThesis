@@ -5,6 +5,7 @@ from itertools import chain
 from tkinter import *
 from tkinter import filedialog
 
+import PIL
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,6 +13,7 @@ import pandas as pd
 import seaborn as sns
 
 ## Gui Code
+from PIL import ImageTk
 
 window = Tk()
 window.title('Chemotaxis analytical tool')
@@ -459,5 +461,9 @@ visualize_button.configure(state='disabled')
 go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white')
 go_to_dir_button.pack(pady=20)
 go_to_dir_button.configure(state='disabled')
+
+ico = PIL.Image.open('app_icon.png')
+photo = ImageTk.PhotoImage(ico)
+window.wm_iconphoto(False, photo)
 
 window.mainloop()
