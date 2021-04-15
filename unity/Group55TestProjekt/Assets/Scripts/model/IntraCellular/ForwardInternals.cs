@@ -281,4 +281,10 @@ public class ForwardInternals : IInternals
         get => birthDate;
         set => birthDate = value;
     }
+
+    public int DeathDate
+    {
+        get => deathDate;
+        set => deathDate = value;
+    }
 }
