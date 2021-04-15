@@ -40,6 +40,16 @@ public class MultiLigandEnvironment : AbstractEnvironment
         return c;
     }
 
+    public new float GetConcentration(float x, float z, int timeStep)
+    {
+        float c = 0;
+        foreach(AbstractEnvironment environment in environments)
+        {
+            c += environment.GetConcentration(x, z, timeStep);
+        }
+        return c;
+    }
+
     public override float GetMaxVal()
     {
         return max;

@@ -101,9 +101,8 @@ public class ForwardInternals : IInternals
 
         if (deathDate <= step)
             return;
-        
-        float factor = model.GetNumOfCloseCells(step - 1, 1, positions[step - 1]);
-        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ()) / factor;
+       
+        float c = model.environment.GetConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ(),step-1);
 
         if (lifeRegulator.Die(c)) //kill the cell
         {
