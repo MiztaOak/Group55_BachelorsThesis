@@ -160,8 +160,9 @@ public class Model
                 float l = (float) interalState.l;
                 float life = (float) interalState.life;
                 float death = (float) interalState.death;
+                int birth_date =  cell.BirthDate;
 
-                oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l, life, death);
+                oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l, life, death,birth_date);
                 iteration_list.Add(oneIteration);
             }
 
@@ -233,9 +234,10 @@ public class Model
         public float l;
         public float life;
         public float death;
+        public int birth_date;
 
         public Iteration(int iteration, float x, float z, float ap, float bp, float yp, float m, float l, float life,
-            float death)
+            float death,int birth_date)
         {
             this.iteration = iteration;
             this.x = x;
@@ -247,6 +249,7 @@ public class Model
             this.l = l;
             this.life = life;
             this.death = death;
+            this.birth_date = birth_date;
         }
     }
 

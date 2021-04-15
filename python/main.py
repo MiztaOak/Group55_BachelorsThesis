@@ -4,7 +4,6 @@ import random
 from itertools import chain
 from tkinter import *
 from tkinter import filedialog
-from tkinter import messagebox
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -330,7 +329,7 @@ def average_ligand_concentration():
             # print(l_sum)
             cell_index += 1
 
-        l_sum_list.append(l_sum / 333)
+        l_sum_list.append(l_sum / cell_data[8])
         l_sum = 0
         cell_index = 0
 
@@ -341,7 +340,41 @@ def average_ligand_concentration():
     plt.clf()
 
 
+# return if cell has died and when
+def cell_obituary_notice(cell):
+    cell_data = cell_parser(cell)
+    death_list = cell_data[10]
+    if 1 in death_list:
+        death_date = cell_data[10].index(1)
+        print('Cell {} was murdered at iteration: {}'.format(cell['id'], death_date))
+        return True, death_date, cell['id']
+    else:
+        print('The cell is buzzin')
+        return False
+
+
+def cell_population_information():
+    dead_cells = []
+    new_born_cells = []
+
+    for i in data[:-1]:
+        for j in range(len(i['Iterations'])):
+            if i['Iterations'][j]['death'] == 1:
+                dead_cells.append(i['id'])
+                break
+
+    for i in data[:-1]:
+        if int(i['Iterations'][0]['birth_date']) > 0:
+            new_born_cells.append(i['id'])
+
+    survived_cell = [x for x in range(len(data[:-1])) if x not in dead_cells]
+
+    return new_born_cells, dead_cells, survived_cell
+
+
 def do_the_job():
+    cell_population_information()
+    '''
     path_plotter()
     zoomed_path_plotter()
     protein_concentration_plotter()
@@ -352,6 +385,7 @@ def do_the_job():
     visualize_button.configure(state='disabled')
     messagebox.showinfo(title='Success', message='The files has been saved to {}'.format(data_path))
     go_to_dir_button.configure(state='active')
+'''
 
 
 #
@@ -384,6 +418,9 @@ def go_to_dir():
     os.startfile(directory)
 
 
+# bg = ImageTk.PhotoImage(PIL.Image.open("bg.png"))
+# label1 = Label(window, image=bg)
+# label1.place(x=0, y=0)
 # GUI COMPONENTS
 welcome_text = Label(window,
                      text='Welcome to our analytical tool \n Please choose a file',
@@ -408,4 +445,5 @@ visualize_button.configure(state='disabled')
 go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white')
 go_to_dir_button.pack(pady=20)
 go_to_dir_button.configure(state='disabled')
+
 window.mainloop()
