@@ -4,7 +4,6 @@ import random
 from itertools import chain
 from tkinter import *
 from tkinter import filedialog
-from tkinter import messagebox
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -54,7 +53,6 @@ def open_file(path):
 
 # Generate a new random cell for the visualization
 def cell_randomizer(data):
-    data_len = len(data)
     random_index = random.randint(0, data_len - 1)
     cell = data[random_index]
     return cell
@@ -77,6 +75,8 @@ def cell_parser(cell):
     l_list = []
     life_list = []
     death_list = []
+    birth_date_list = []
+    death_date_list = []
     for i in range(iteration_length):
         iteration = iterations[i]
         x = iteration['x']
@@ -88,6 +88,8 @@ def cell_parser(cell):
         l = iteration['l']
         life = iteration['life']
         death = iteration['death']
+        birth_date = iteration['birth_date']
+        death_date = iteration['death_date']
         x_list.append(x)
         z_list.append(z)
         ap_list.append(ap)
@@ -97,10 +99,13 @@ def cell_parser(cell):
         l_list.append(l)
         life_list.append(life)
         death_list.append(death)
+        birth_date_list.append(birth_date)
+        death_date_list.append(death_date)
 
     # The indexes: x= 0  ,z=1    ,ap=2   ,bp=3   ,yp=4  ,m=5   ,l=6   ,time=7
     parsed_data = (
-        x_list, z_list, ap_list, bp_list, yp_list, m_list, l_list, time_list, iteration_length, life_list, death_list)
+        x_list, z_list, ap_list, bp_list, yp_list, m_list, l_list, time_list, iteration_length, life_list, death_list,
+        birth_date_list, death_date_list)
     return parsed_data
 
 
@@ -321,27 +326,69 @@ def life_death_analysis():
 
 def average_ligand_concentration():
     cell_data = cell_parser(The_cell)
+    iterations = cell_data[7]
+    birth_date = cell_data[11]
+    death = cell_data[10]
+    cell_count = data[-1]
     l_sum_list = []
     l_sum = 0
     cell_index = 0
-    for i in cell_data[7]:
+    for i in iterations:
         while cell_index < data_len:
-            l_sum += data[cell_index]['Iterations'][i]['l']
-            # print(l_sum)
-            cell_index += 1
+            cell = data[cell_index]['Iterations'][i]
+            if cell['birth_date'] > i or cell['death_date'] < i:
+                cell_index += 1
 
-        l_sum_list.append(l_sum / 333)
+            else:
+                l_sum += cell['l']
+                l_sum = l_sum
+                cell_index += 1
+
+        l_sum_list.append(l_sum / cell_count[i])
         l_sum = 0
         cell_index = 0
 
-    plt.plot(cell_data[7], l_sum_list)
+    plt.plot(iterations, l_sum_list)
     plt.ylabel('Average concentration for the cell population')
     plt.xlabel('Iteration')
     plt.savefig(directory + '/average_ligand_concentration')
     plt.clf()
 
 
+# return if cell has died and when
+def cell_obituary_notice(cell):
+    cell_data = cell_parser(cell)
+    death_date_list = cell_data[12]
+    if death_date_list[0] != 0 and death_date_list[0] != cell_data[8]+1:
+        print('Cell {} was murdered at iteration: {}'.format(cell['id'], death_date_list[0]))
+        return True, death_date_list[0], cell['id']
+    else:
+        print('The cell is buzzin')
+        return False
+
+
+def cell_population_information():
+    dead_cells = []
+    new_born_cells = []
+
+    for i in data[:-1]:
+        for j in range(len(i['Iterations'])):
+            if i['Iterations'][j]['death'] == 1:
+                dead_cells.append(i['id'])
+                break
+
+    for i in data[:-1]:
+        if int(i['Iterations'][0]['birth_date']) > 0:
+            new_born_cells.append(i['id'])
+
+    survived_cells = [x for x in range(len(data[:-1])) if x not in dead_cells]
+
+    return new_born_cells, dead_cells, survived_cells
+
+
 def do_the_job():
+    average_ligand_concentration()
+    '''
     path_plotter()
     zoomed_path_plotter()
     protein_concentration_plotter()
@@ -352,6 +399,7 @@ def do_the_job():
     visualize_button.configure(state='disabled')
     messagebox.showinfo(title='Success', message='The files has been saved to {}'.format(data_path))
     go_to_dir_button.configure(state='active')
+'''
 
 
 #
@@ -384,6 +432,9 @@ def go_to_dir():
     os.startfile(directory)
 
 
+# bg = ImageTk.PhotoImage(PIL.Image.open("bg.png"))
+# label1 = Label(window, image=bg)
+# label1.place(x=0, y=0)
 # GUI COMPONENTS
 welcome_text = Label(window,
                      text='Welcome to our analytical tool \n Please choose a file',
@@ -408,4 +459,5 @@ visualize_button.configure(state='disabled')
 go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white')
 go_to_dir_button.pack(pady=20)
 go_to_dir_button.configure(state='disabled')
+
 window.mainloop()

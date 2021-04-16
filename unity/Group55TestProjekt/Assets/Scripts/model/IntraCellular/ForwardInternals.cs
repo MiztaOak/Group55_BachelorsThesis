@@ -188,6 +188,7 @@ public class ForwardInternals : IInternals
         IInternals copy = Copy(iteration-1);
         Cell child = new Cell(Copy(iteration-1));
         ((ForwardInternals)copy).SetPartentObject(child);
+        //birthDate = iteration - 1;
 
         model.AddCell(child,iteration);
         children.Add(iteration, child);
@@ -271,5 +272,17 @@ public class ForwardInternals : IInternals
     public void AddListener(ICellDeathListener listener)
     {
         cellDeathListeners.Add(listener);
+    }
+
+    public int BirthDate
+    {
+        get => birthDate;
+        set => birthDate = value;
+    }
+
+    public int DeathDate
+    {
+        get => deathDate;
+        set => deathDate = value;
     }
 }
