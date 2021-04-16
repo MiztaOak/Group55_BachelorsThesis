@@ -56,6 +56,7 @@ public class MainMenu : MonoBehaviour
     private int n = 1;
     private int iterations = 100;
     private bool isDynamic = true;
+    private bool isForward = true;
 
     private Model model;
 
@@ -82,6 +83,7 @@ public class MainMenu : MonoBehaviour
 
         createBasicEnv(i0, d);
         EnvValueChanged(); // bug fix for first value change
+        CellValueChanged();
     }
 
     private void Update() {
@@ -106,7 +108,7 @@ public class MainMenu : MonoBehaviour
     private void CellValueChanged() {
         n = (int)nOfCellsSlider.value;
         nOfCellsText.text = n.ToString();
-        if (nOfIterations.isActiveAndEnabled) {
+        if (isForward) {
             try {  
                 iterations = int.Parse(nOfIterations.text);
             } 
@@ -147,6 +149,11 @@ public class MainMenu : MonoBehaviour
     public void SetIsDynamic(bool status)
     {
         isDynamic = status;
+    }
+
+    public void SetIsForward(bool isForward)
+    {
+        this.isForward = isForward;
     }
 
     public void HandleDropDownSelection(int index)
