@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI sourcesText;
     [SerializeField] private TextMeshProUGUI tooltipText;
     [SerializeField] private TextMeshProUGUI nOfCellsText;
+    [SerializeField] private TextMeshProUGUI nOfRunsText;
     // Sliders & InputFields
 
     [SerializeField] private Slider i0Slider;
@@ -154,6 +155,13 @@ public class MainMenu : MonoBehaviour
     public void SetIsForward(bool isForward)
     {
         this.isForward = isForward;
+    }
+
+    public void SetNumberOfRuns(float runs)
+    {
+        int r = Mathf.RoundToInt(runs);
+        LoadingScreen.SetRuns(r);
+        nOfRunsText.text = r.ToString();
     }
 
     public void HandleDropDownSelection(int index)

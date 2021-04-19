@@ -12,6 +12,7 @@ public class LoadingScreen : MonoBehaviour {
     [SerializeField] private Slider progressSlider; 
 
     private int n;
+    private static int runs = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -29,15 +30,17 @@ public class LoadingScreen : MonoBehaviour {
         Model model = Model.GetInstance();
 
         //Creates the cell objects
-        for(int k = 0; k < 2; k++) //simulates m different runs only showing the last one but exporting the data for the rest
+        model.CreateCells(numOfCells);
+        if (iterations > 0)
         {
-            if (k != 0) //reset data if not the first run (since that is already setup elsewhere in the code)
-                model.SetupCells(n,iterations);
-
-            model.CreateCells(numOfCells);
-
-            if (iterations > 0)
+            for (int k = 0; k < runs; k++) //simulates m different runs only showing the last one but exporting the data for the rest
             {
+                if (k != 0)
+                { //reset data if not the first run (since that is already setup elsewhere in the code)
+                    model.SetupCells(n, iterations);
+                    model.CreateCells(numOfCells);
+                }
+
                 for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
                 {
                     float procent = 0;
@@ -48,19 +51,19 @@ public class LoadingScreen : MonoBehaviour {
                     yield return null;
                 }
 
-                model.GetAverageLigandC();
-            }
-            else
-            {
-                progressText.text = "100%"; //if no simulation you are done
 
+                model.ExportData(numOfCells, BacteriaFactory.GetIterations());
+
+                yield return null;
             }
 
-            model.ExportData(numOfCells, BacteriaFactory.GetIterations());
-
-            yield return null;
+            model.GetAverageLigandC();
         }
-        
+        else
+        {
+            progressText.text = "100%"; //if no simulation you are done
+
+        }
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2);
 
@@ -71,5 +74,10 @@ public class LoadingScreen : MonoBehaviour {
 
             yield return null;
         }
+    }
+
+    public static void SetRuns(int runs)
+    {
+        LoadingScreen.runs = runs > 0 ? runs : 1;
     }
 }
