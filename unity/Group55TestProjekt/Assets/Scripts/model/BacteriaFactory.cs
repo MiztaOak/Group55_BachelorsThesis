@@ -105,6 +105,11 @@ public class BacteriaFactory
         this.deathAndDivision = deathAndDivision;
     }
 
+    public RegulatorType GetRegulatorType()
+    {
+        return regulatorType;
+    }
+
     //static versions of the setters
     public static void SetCellV(float v)
     {

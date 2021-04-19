@@ -29,32 +29,38 @@ public class LoadingScreen : MonoBehaviour {
         Model model = Model.GetInstance();
 
         //Creates the cell objects
-        model.CreateCells(numOfCells);
-
-        if (iterations > 0)
+        for(int k = 0; k < 2; k++) //simulates m different runs only showing the last one but exporting the data for the rest
         {
-            for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
+            if (k != 0) //reset data if not the first run (since that is already setup elsewhere in the code)
+                model.SetupCells(n,iterations);
+
+            model.CreateCells(numOfCells);
+
+            if (iterations > 0)
             {
-                float procent = 0;
-                model.SimulateTimeStep(i);
-                procent = (float)i / iterations * 100;
-                progressText.text = procent + "%";
-                progressSlider.value = procent;
-                yield return null;
+                for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
+                {
+                    float procent = 0;
+                    model.SimulateTimeStep(i);
+                    procent = (float)i / iterations * 100;
+                    progressText.text = procent + "%";
+                    progressSlider.value = procent;
+                    yield return null;
+                }
+
+                model.GetAverageLigandC();
+            }
+            else
+            {
+                progressText.text = "100%"; //if no simulation you are done
+
             }
 
-            model.GetAverageLigandC();
-        }
-        else
-        {
-            progressText.text = "100%"; //if no simulation you are done
-            
+            model.ExportData(numOfCells, BacteriaFactory.GetIterations());
+
+            yield return null;
         }
         
-       model.ExportData(numOfCells, BacteriaFactory.GetIterations());
-
-
-        model.ExportData(numOfCells, BacteriaFactory.GetIterations());
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2);
 
