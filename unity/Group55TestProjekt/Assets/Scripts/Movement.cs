@@ -41,7 +41,7 @@ public class Movement : MonoBehaviour, ICellDeathListener
             cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
             nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         }
- 
+    
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
 
@@ -113,8 +113,12 @@ public class Movement : MonoBehaviour, ICellDeathListener
 
     public void Notify()
     {
+        var deathParticleMain = deathParticle.main;
+        deathParticleMain.simulationSpeed = model.GetTimeScaleFactor();
         Instantiate(deathParticle, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 1,
             gameObject.transform.position.z), gameObject.transform.rotation);
+        
+        
         Destroy(gameObject);
     }
 }
