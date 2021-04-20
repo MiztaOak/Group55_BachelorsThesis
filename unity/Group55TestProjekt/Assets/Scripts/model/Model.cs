@@ -53,6 +53,8 @@ public class Model
         for (int i = 0; i < numCells; i++)
         {
             float x = Random.Range(-12f, 12f);
+            float z = Random.Range(-12f, 12f);
+            /* use this incase you want to prevent cells from spawning in the center
             float z;
             if (x < 3 && x > -3) //if x close to the center make sure that the cell does not spawn in the center
             {
@@ -62,6 +64,7 @@ public class Model
             {
                 z = Random.Range(-12f, 12f);
             }
+            */
 
             Cell cell = BacteriaFactory.CreateNewCell(x, z, Random.Range(0, 2 * Mathf.PI), false);
             cells[0].Add(cell);
