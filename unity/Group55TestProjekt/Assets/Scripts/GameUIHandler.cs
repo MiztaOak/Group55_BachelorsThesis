@@ -79,6 +79,8 @@ public class GameUIHandler : MonoBehaviour, ICellDoneListener
         if (CellInfo.focusedCell != null)
         {
             largeCellInfoCanvas.gameObject.SetActive(true);
+        } else {
+            largeCellInfoCanvas.gameObject.SetActive(false);
         }
     }
 
