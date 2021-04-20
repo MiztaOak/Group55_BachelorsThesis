@@ -17,6 +17,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI sourcesText;
     [SerializeField] private TextMeshProUGUI tooltipText;
     [SerializeField] private TextMeshProUGUI nOfCellsText;
+    [SerializeField] private TextMeshProUGUI nOfRunsText;
     // Sliders & InputFields
 
     [SerializeField] private Slider i0Slider;
@@ -53,10 +54,10 @@ public class MainMenu : MonoBehaviour
     private float i0 = 0.1f;
     private float d = 50;
     private int sources = 1;
-    private float k;
-    private float maxT;
     private int n = 1;
     private int iterations = 100;
+    private bool isDynamic = true;
+    private bool isForward = true;
 
     private Model model;
 
@@ -83,6 +84,7 @@ public class MainMenu : MonoBehaviour
 
         createBasicEnv(i0, d);
         EnvValueChanged(); // bug fix for first value change
+        CellValueChanged();
     }
 
     private void Update() {
@@ -107,7 +109,7 @@ public class MainMenu : MonoBehaviour
     private void CellValueChanged() {
         n = (int)nOfCellsSlider.value;
         nOfCellsText.text = n.ToString();
-        if (nOfIterations.isActiveAndEnabled) {
+        if (isForward) {
             try {  
                 iterations = int.Parse(nOfIterations.text);
             } 
@@ -132,7 +134,7 @@ public class MainMenu : MonoBehaviour
     }
 
     void createBasicEnv(float i_0, float d) {
-        EnvironmentFactory.CreateMultiEnvironment(d,i_0,sources);
+        EnvironmentFactory.CreateMultiEnvironment(d,i_0,sources,isDynamic);
     }
     
     public void Updateheatmap() {
@@ -143,6 +145,23 @@ public class MainMenu : MonoBehaviour
     public void SetCellDeathDivision(bool status)
     {
         BacteriaFactory.SetCellDeathAndDivision(status);
+    }
+
+    public void SetIsDynamic(bool status)
+    {
+        isDynamic = status;
+    }
+
+    public void SetIsForward(bool isForward)
+    {
+        this.isForward = isForward;
+    }
+
+    public void SetNumberOfRuns(float runs)
+    {
+        int r = Mathf.RoundToInt(runs);
+        LoadingScreen.SetRuns(r);
+        nOfRunsText.text = r.ToString();
     }
 
     public void HandleDropDownSelection(int index)

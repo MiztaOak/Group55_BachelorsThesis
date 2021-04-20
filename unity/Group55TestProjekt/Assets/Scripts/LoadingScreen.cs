@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class LoadingScreen : MonoBehaviour
-{
+public class LoadingScreen : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
+    [SerializeField] private Slider progressSlider; 
 
     private int n;
+    private static int runs = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -30,13 +31,29 @@ public class LoadingScreen : MonoBehaviour
 
         //Creates the cell objects
         model.CreateCells(numOfCells);
-
         if (iterations > 0)
         {
-            for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
+            for (int k = 0; k < runs; k++) //simulates m different runs only showing the last one but exporting the data for the rest
             {
-                model.SimulateTimeStep(i);
-                progressText.text = "Loading progress: " + ((float) i / iterations * 100) + "%";
+                if (k != 0)
+                { //reset data if not the first run (since that is already setup elsewhere in the code)
+                    model.SetupCells(n, iterations);
+                    model.CreateCells(numOfCells);
+                }
+
+                for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
+                {
+                    float procent = 0;
+                    model.SimulateTimeStep(i);
+                    procent = (float)i / iterations * 100;
+                    progressText.text = procent + "%";
+                    progressSlider.value = procent;
+                    yield return null;
+                }
+
+
+                model.ExportData(numOfCells, BacteriaFactory.GetIterations());
+
                 yield return null;
             }
 
@@ -44,10 +61,9 @@ public class LoadingScreen : MonoBehaviour
         }
         else
         {
-            progressText.text = "Loading progress: 100%"; //if no simulation you are done
-        }
+            progressText.text = "100%"; //if no simulation you are done
 
-        model.ExportData(numOfCells, BacteriaFactory.GetIterations());
+        }
 
         AsyncOperation async = SceneManager.LoadSceneAsync(2);
 
@@ -58,5 +74,10 @@ public class LoadingScreen : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public static void SetRuns(int runs)
+    {
+        LoadingScreen.runs = runs > 0 ? runs : 1;
     }
 }

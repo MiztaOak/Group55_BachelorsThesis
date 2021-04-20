@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IIterationListener
 {
-    void notify();
+    void NotifyIterationChanged(int interation);
 }

@@ -38,7 +38,7 @@ public class Graph : MonoBehaviour
             return;
 
         float graphHeight = graphContainer.sizeDelta.y;
-        float yMax = Model.GetInstance().environment.GetMaxVal();
+        //float yMax = Model.GetInstance().environment.GetMaxVal();
         float xSize = graphContainer.sizeDelta.x / values.Length;
 
         GameObject previousPoint = null;
@@ -50,6 +50,16 @@ public class Graph : MonoBehaviour
         float max = -1;
         float min = Mathf.Infinity;
 
+        for(int i = 0; i < values.Length; i++)
+        {
+            average += values[i];
+            if (values[i] > max)
+                max = values[i];
+            if (values[i] < min)
+                min = values[i];
+        }
+
+        float yMax = Mathf.Round(max+1);
         for (int i = 0; i < values.Length; i++)
         {
             float x = xSize + i * xSize;
@@ -60,13 +70,7 @@ public class Graph : MonoBehaviour
             {
                 DrawLine(previousPoint.GetComponent<RectTransform>().anchoredPosition, currentPoint.GetComponent<RectTransform>().anchoredPosition);
             }
-            previousPoint = currentPoint;
-
-            average += values[i];
-            if (values[i] > max)
-                max = values[i];
-            if (values[i] < min)
-                min = values[i];
+            previousPoint = currentPoint;            
         }
 
         //place the labels on the x-axis
