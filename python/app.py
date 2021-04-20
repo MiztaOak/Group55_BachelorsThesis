@@ -186,6 +186,24 @@ def zoomed_path_plotter():
     plt.clf()
 
 
+def MSD_plotter():
+    cell_data = cell_parser(The_cell)
+    x_data = cell_data[0]
+    z_data = cell_data[1]
+    r = np.column_stack((x_data, z_data))
+    shifts = np.arange(len(r))
+    MSD_list = np.zeros(shifts.size)
+
+    for i, shift in enumerate(shifts):
+        diffs = r[:-shift if shift else None] - r[shift:]
+        square_dist = np.square(diffs).sum(axis=1)
+        MSD_list[i] = square_dist.mean()
+
+    plt.plot(cell_data[7], MSD_list)
+    plt.savefig(directory + '/MSD.png')
+    plt.clf()
+
+
 def protein_concentration_plotter():
     cell_data = cell_parser(The_cell)
 
@@ -450,6 +468,7 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
+        '''
         path_plotter()
         zoomed_path_plotter()
         protein_concentration_plotter()
@@ -457,6 +476,8 @@ def do_the_job():
         life_death_analysis()
         average_ligand_concentration()
         population_change()
+        '''
+        MSD_plotter()
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
 
