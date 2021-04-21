@@ -30,6 +30,7 @@ data_len = 0
 data = {}
 The_cell = {}
 directory = ''
+file_list = []
 
 
 def createFolder(folder_name):
@@ -422,11 +423,21 @@ def pdf_generator():
     pdf.output('test.pdf')
 
 
-def browse_file():
+def populate_data_structures(filename, *args):
     global data_path
     global The_cell
     global directory
 
+    name = os.path.basename(filename)
+    data_path = filename
+    open_file(data_path)
+    The_cell = cell_randomizer(data)
+    directory = 'Simulation_{}'.format(name)
+
+    createFolder(directory)
+
+
+def browse_file():
     filename = filedialog.askopenfilename(initialdir=os.getcwd(),
                                           title="Select a File",
                                           filetypes=(("JSON files",
@@ -437,22 +448,30 @@ def browse_file():
     if not filename:
         return
     else:
+        # print(filename)
+        populate_data_structures(filename)
         name = os.path.basename(filename)
         label_file_explorer.configure(text="File Opened: " + name)
-        data_path = filename
-        open_file(data_path)
-        The_cell = cell_randomizer(data)
-        directory = 'Simulation_{}'.format(name)
-        createFolder(directory)
         visualize_button.configure(state='active')
 
 
 def browse_folder():
+    global data_path
+    global The_cell
+    global directory
+    global file_list
     folder_name = filedialog.askdirectory()
-    for file in os.listdir(folder_name):
-        if file.endswith(".json"):
-            # TODO: add relevant functionality for the batch simulation
-            print(os.path.join(folder_name, file))
+    if not folder_name:
+        return
+    else:
+        label_file_explorer.configure(text="Folder Opened: " + os.path.basename(folder_name))
+        for file in os.listdir(folder_name):
+            if file.endswith(".json"):
+                # TODO: add relevant functionality for the batch simulation
+                filename = os.path.join(folder_name, file)
+                file_list.append(filename)
+                print(len(file_list))
+        visualize_button.configure(state='active')
 
 
 def on_browse_click():
@@ -482,7 +501,9 @@ def do_the_job():
         go_to_dir_button.configure(state='active')
 
     if radio_choice.get() == 2:
-        pass
+        for file in file_list:
+            populate_data_structures(file)
+            path_plotter()
 
 
 # bg = ImageTk.PhotoImage(PIL.Image.open("bg.png"))
