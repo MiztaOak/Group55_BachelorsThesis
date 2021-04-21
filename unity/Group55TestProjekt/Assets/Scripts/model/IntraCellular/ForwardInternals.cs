@@ -128,8 +128,8 @@ public class ForwardInternals : IInternals
         {
             angle = CalculateTumbleAngle();
         }
-        else
-        {
+        //else
+        //{
             float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
 
             while (positions[step].GetX() + dX > 14 || positions[step].GetX() + dX < -14 || positions[step].GetZ() + dZ > 14 || positions[step].GetZ() + dZ < -14)
@@ -139,7 +139,7 @@ public class ForwardInternals : IInternals
                 dZ = v * dT * Mathf.Sin(angle);
             }
             positions[step].Add(dX, dZ);
-        }
+        //}
         AddState(step);
     }
 
