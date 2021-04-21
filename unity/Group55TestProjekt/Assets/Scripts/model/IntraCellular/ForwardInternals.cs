@@ -99,7 +99,7 @@ public class ForwardInternals : IInternals
         if (step < 1 || step > iterations)
             throw new IncorrectSimulationStepException(step);
 
-        if (deathDate <= step)
+        if (deathDate <= step || positions[step] != null)
             return;
        
         float c = model.environment.GetConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ(),step-1);
@@ -127,18 +127,23 @@ public class ForwardInternals : IInternals
         if (!regulator.DecideState(c))
         {
             angle = CalculateTumbleAngle();
+            AddState(step);
+            step++;
+            if (step == positions.Length)
+                return;
+            positions[step] = positions[step-1].Copy();
         }
         //else
         //{
-            float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
+        float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
 
-            while (positions[step].GetX() + dX > 14 || positions[step].GetX() + dX < -14 || positions[step].GetZ() + dZ > 14 || positions[step].GetZ() + dZ < -14)
-            {
-                angle = CalculateTumbleAngle();
-                dX = v * dT * Mathf.Cos(angle);
-                dZ = v * dT * Mathf.Sin(angle);
-            }
-            positions[step].Add(dX, dZ);
+        while (positions[step].GetX() + dX > 14 || positions[step].GetX() + dX < -14 || positions[step].GetZ() + dZ > 14 || positions[step].GetZ() + dZ < -14)
+        {
+            angle = CalculateTumbleAngle();
+            dX = v * dT * Mathf.Cos(angle);
+            dZ = v * dT * Mathf.Sin(angle);
+        }
+        positions[step].Add(dX, dZ);
         //}
         AddState(step);
     }

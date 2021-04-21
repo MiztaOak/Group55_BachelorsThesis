@@ -114,7 +114,7 @@ public class Movement : MonoBehaviour, ICellDeathListener
     public void Notify()
     {
         var deathParticleMain = deathParticle.main;
-        deathParticleMain.simulationSpeed = model.GetTimeScaleFactor();
+        //deathParticleMain.simulationSpeed = model.GetTimeScaleFactor();
         Instantiate(deathParticle, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 1,
             gameObject.transform.position.z), gameObject.transform.rotation);
         
