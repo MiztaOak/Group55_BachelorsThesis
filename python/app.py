@@ -452,7 +452,11 @@ def browse_file():
         populate_data_structures(filename)
         name = os.path.basename(filename)
         label_file_explorer.configure(text="File Opened: " + name)
+        fst_file_label.configure(text="File Opened: " + name)
         visualize_button.configure(state='active')
+
+
+
 
 
 def browse_folder():
@@ -506,6 +510,26 @@ def do_the_job():
             path_plotter()
 
 
+def alter_scene():
+    fst_button_explore.place(x=100, y=175)
+    snd_button_explore.place(x=300, y=175)
+    fst_file_label.place(x=100, y=110)
+    snd_file_label.place(x=300, y=110)
+    button_explore.place_forget()
+    label_file_explorer.place_forget()
+    print('yo bitch')
+
+
+def re_alter_scene():
+    fst_button_explore.place_forget()
+    snd_button_explore.place_forget()
+    fst_file_label.place_forget()
+    snd_file_label.place_forget()
+    button_explore.place(x=195, y=175)
+    label_file_explorer.place(x=202, y=110)
+    print('yo bitch')
+
+
 # bg = ImageTk.PhotoImage(PIL.Image.open("bg.png"))
 # label1 = Label(window, image=bg)
 # label1.place(x=0, y=0)
@@ -513,25 +537,46 @@ def do_the_job():
 welcome_text = Label(window,
                      text='Welcome to our analytical tool \n Please choose a file',
                      bg='white')
-welcome_text.pack(pady=(3, 50))
+welcome_text.place(x=170, y=10)
+# welcome_text.pack(pady=(3, 50))
 
-label_file_explorer = Label(window,
-                            text="No file selected",
-                            width=100, height=4,
-                            fg="blue")
-label_file_explorer.pack(pady=5)
+radio_choice = IntVar(None, 1)
+R1 = ttk.Radiobutton(window, text="Single file analysis", style='Wild.TRadiobutton', variable=radio_choice, value=1,
+                     command=re_alter_scene)
+R1.place(x=13, y=60)
 
-button_explore = Button(window,
-                        text="Browse Files",
-                        command=on_browse_click)
-button_explore.pack(pady=5)
+R2 = ttk.Radiobutton(window, text="Batch analysis", style='Wild.TRadiobutton', variable=radio_choice, value=2,
+                     command=re_alter_scene)
+R2.place(x=200, y=60)
 
-visualize_button = Button(window, text='Visualize the data', command=do_the_job, bg='white')
-visualize_button.pack(pady=20)
+R3 = ttk.Radiobutton(window, text="Double file analysis", style='Wild.TRadiobutton', variable=radio_choice, value=3,
+                     command=alter_scene)
+R3.place(x=363, y=60)
+
+label_file_explorer = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
+label_file_explorer.place(x=202, y=110)
+
+fst_file_label = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
+
+
+snd_file_label = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
+
+
+button_explore = Button(window, text="Browse Files", command=on_browse_click, width=15, height=1)
+button_explore.place(x=195, y=175)
+# button_explore.pack(pady=5)
+
+fst_button_explore = Button(window, text="Browse first file", command=on_browse_click, width=15, height=1)
+
+snd_button_explore = Button(window, text="Browse second file", command=on_browse_click, width=15, height=1)
+
+visualize_button = Button(window, text='Visualize the data', command=do_the_job, bg='white', width=15, height=1)
+visualize_button.place(x=195, y=220)
 visualize_button.configure(state='disabled')
 
-go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white')
-go_to_dir_button.pack(pady=20)
+go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white', width=15, height=1)
+go_to_dir_button.place(x=195, y=270)
+# go_to_dir_button.pack(pady=20)
 go_to_dir_button.configure(state='disabled')
 
 
@@ -559,12 +604,5 @@ window.config(menu=menubar)
 
 s = ttk.Style()
 s.configure('Wild.TRadiobutton', background='white', foreground='black')
-
-radio_choice = IntVar(None, 1)
-R1 = ttk.Radiobutton(window, text="Single file analysis", style='Wild.TRadiobutton', variable=radio_choice, value=1)
-R1.place(x=100, y=60)
-
-R2 = ttk.Radiobutton(window, text="Batch analysis", style='Wild.TRadiobutton', variable=radio_choice, value=2)
-R2.place(x=300, y=60)
 
 window.mainloop()
