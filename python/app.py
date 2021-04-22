@@ -409,7 +409,7 @@ def life_death_analysis():
     plt.clf()
 
 
-def average_ligand_concentration_calc(cell,length):
+def average_ligand_concentration_calc(cell, length):
     cell_data = cell_parser(The_cell)
     iterations = cell_data[7]
     cell_count = data[-1]
@@ -434,13 +434,14 @@ def average_ligand_concentration_calc(cell,length):
 
 
 def average_ligand_concentration_plotter():
-    iterations, l_sum_list = average_ligand_concentration_calc(The_cell,data_len)
+    iterations, l_sum_list = average_ligand_concentration_calc(The_cell, data_len)
 
     plt.plot(iterations[1:], l_sum_list[1:])
     plt.ylabel('Average concentration for the cell population')
     plt.xlabel('Iteration')
     plt.savefig(directory + '/average_ligand_concentration')
     plt.clf()
+
 
 def double_average_ligand_concentration_plotter():
     fst_iterations, fst_l_sum_list = average_ligand_concentration_calc(The_cell, data_len)
@@ -463,6 +464,7 @@ def double_average_ligand_concentration_plotter():
 
     plt.savefig(directory + '/double_average_ligand_concentration')
     plt.clf()
+
 
 # return if cell has died and when
 def cell_obituary_notice(cell):
@@ -523,8 +525,12 @@ def populate_data_structures(filename, *args):
     data_path = filename
     open_file(data_path)
     The_cell = cell_randomizer(data)
-    directory = 'Simulation_{}'.format(name)
-
+    if radio_choice.get() == 1:
+        directory = 'Simulation_{}'.format(name)
+    if radio_choice.get() == 2:
+        directory = 'Batch analysis_{}'.format(name)
+    if radio_choice.get() == 3:
+        directory = 'Double file analysis_{}'.format(name)
     createFolder(directory)
 
 
@@ -644,8 +650,6 @@ def do_the_job():
             path_plotter()
         go_to_dir_button.configure(state='active')
 
-
-
     if radio_choice.get() == 3:
         print('IN PROGRESS')
         double_population_change()
@@ -670,7 +674,7 @@ def re_alter_scene():
     fst_file_label.place_forget()
     snd_file_label.place_forget()
     button_explore.place(x=195, y=175)
-    label_file_explorer.place(x=202, y=110)
+    label_file_explorer.place(x=195, y=110)
     print('yo bitch')
 
 
@@ -698,7 +702,7 @@ R3 = ttk.Radiobutton(window, text="Double file analysis", style='Wild.TRadiobutt
 R3.place(x=363, y=60)
 
 label_file_explorer = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
-label_file_explorer.place(x=202, y=110)
+label_file_explorer.place(x=195, y=110)
 
 fst_file_label = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
 
