@@ -32,6 +32,12 @@ The_cell = {}
 directory = ''
 file_list = []
 
+#####
+secondary_data_path = ''
+secondary_data_len = 0
+secondary_data = {}
+secondary_cell = {}
+
 
 def createFolder(folder_name):
     try:
@@ -49,6 +55,16 @@ def open_file(path):
     data_len = len(the_data) - 1
     global data
     data = the_data
+
+
+def open_secondary_file(path):
+    f = open(path, )
+
+    the_data = json.load(f)
+    global secondary_data_len
+    secondary_data_len = len(the_data) - 1
+    global secondary_data
+    secondary_data = the_data
 
 
 # Generate a new random cell for the visualization
@@ -437,6 +453,15 @@ def populate_data_structures(filename, *args):
     createFolder(directory)
 
 
+def populate_secondary_data_structures(filename, *args):
+    global secondary_data_path
+    global secondary_cell
+
+    secondary_data_path = filename
+    open_file(secondary_data_path)
+    secondary_cell = cell_randomizer(data)
+
+
 def browse_file():
     filename = filedialog.askopenfilename(initialdir=os.getcwd(),
                                           title="Select a File",
@@ -456,7 +481,40 @@ def browse_file():
         visualize_button.configure(state='active')
 
 
+def browse_fst_file():
+    filename = filedialog.askopenfilename(initialdir=os.getcwd(),
+                                          title="Select a File",
+                                          filetypes=(("JSON files",
+                                                      "*.json*"),
+                                                     ("all files",
+                                                      "*.*")))
 
+    if not filename:
+        return
+    else:
+        # print(filename)
+        populate_data_structures(filename)
+        name = os.path.basename(filename)
+        fst_file_label.configure(text="File Opened: " + name)
+        snd_button_explore.configure(state='active')
+
+
+def browse_snd_file():
+    filename = filedialog.askopenfilename(initialdir=os.getcwd(),
+                                          title="Select a File",
+                                          filetypes=(("JSON files",
+                                                      "*.json*"),
+                                                     ("all files",
+                                                      "*.*")))
+
+    if not filename:
+        return
+    else:
+        # print(filename)
+        populate_secondary_data_structures(filename)
+        name = os.path.basename(filename)
+        snd_file_label.configure(text="File Opened: " + name)
+        visualize_button.configure(state='active')
 
 
 def browse_folder():
@@ -509,6 +567,8 @@ def do_the_job():
             populate_data_structures(file)
             path_plotter()
 
+    if radio_choice.get() == 3:
+        print('IN PROGRESS')
 
 def alter_scene():
     fst_button_explore.place(x=100, y=175)
@@ -558,17 +618,16 @@ label_file_explorer.place(x=202, y=110)
 
 fst_file_label = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
 
-
 snd_file_label = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
-
 
 button_explore = Button(window, text="Browse Files", command=on_browse_click, width=15, height=1)
 button_explore.place(x=195, y=175)
 # button_explore.pack(pady=5)
 
-fst_button_explore = Button(window, text="Browse first file", command=on_browse_click, width=15, height=1)
+fst_button_explore = Button(window, text="Browse first file", command=browse_fst_file, width=15, height=1)
 
-snd_button_explore = Button(window, text="Browse second file", command=on_browse_click, width=15, height=1)
+snd_button_explore = Button(window, text="Browse second file", command=browse_snd_file, width=15, height=1)
+snd_button_explore.configure(state='disable')
 
 visualize_button = Button(window, text='Visualize the data', command=do_the_job, bg='white', width=15, height=1)
 visualize_button.place(x=195, y=220)
