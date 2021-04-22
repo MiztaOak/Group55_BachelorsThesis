@@ -642,6 +642,8 @@ def do_the_job():
         for file in file_list:
             populate_data_structures(file)
             path_plotter()
+        go_to_dir_button.configure(state='active')
+
 
 
     if radio_choice.get() == 3:
@@ -649,6 +651,7 @@ def do_the_job():
         double_population_change()
         double_MSD_plotter()
         double_average_ligand_concentration_plotter()
+        go_to_dir_button.configure(state='active')
 
 
 def alter_scene():
