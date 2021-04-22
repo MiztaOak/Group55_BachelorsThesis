@@ -69,7 +69,7 @@ def open_secondary_file(path):
 
 # Generate a new random cell for the visualization
 def cell_randomizer(data):
-    random_index = random.randint(0, data_len - 1)
+    random_index = random.randint(0, len(data) - 1)
     cell = data[random_index]
     return cell
 
@@ -203,8 +203,8 @@ def zoomed_path_plotter():
     plt.clf()
 
 
-def MSD_plotter():
-    cell_data = cell_parser(The_cell)
+def MSD_calc(cell):
+    cell_data = cell_parser(cell)
     x_data = cell_data[0]
     z_data = cell_data[1]
     r = np.column_stack((x_data, z_data))
@@ -216,8 +216,36 @@ def MSD_plotter():
         square_dist = np.square(diffs).sum(axis=1)
         MSD_list[i] = square_dist.mean()
 
-    plt.plot(cell_data[7], MSD_list)
+    return MSD_list, cell_data[7]
+
+
+def MSD_plotter():
+    MSD_list, time = MSD_calc(The_cell)
+    plt.plot(time, MSD_list)
     plt.savefig(directory + '/MSD.png')
+    plt.clf()
+
+
+def double_MSD_plotter():
+    fst_MSD_list, fst_time = MSD_calc(The_cell)
+    snd_MSD_list, snd_time = MSD_calc(secondary_cell)
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    plt.plot(figsize=(16, 12))
+    plt.title('Mean Squared Displacement')
+    fig.tight_layout(pad=3.0)
+
+    ax1.plot(fst_time, fst_MSD_list)
+    ax1.set_ylabel('Mean squared score')
+    ax1.set_xlabel('iteration \n \n \n')
+    ax1.title.set_text('First file')
+
+    ax2.plot(snd_time, snd_MSD_list)
+    ax2.set_ylabel('Mean squared score')
+    ax2.set_xlabel('iteration')
+    ax2.title.set_text('Second file')
+
+    plt.savefig(directory + '/double_MSD')
     plt.clf()
 
 
@@ -341,6 +369,29 @@ def population_change():
     plt.clf()
 
 
+def double_population_change():
+    cell_data = cell_parser(The_cell)
+    secondary_cell_data = cell_parser(secondary_cell)
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    plt.plot(figsize=(16, 12))
+    plt.title('Population change throughout the simulation')
+    fig.tight_layout(pad=3.0)
+
+    ax1.plot(cell_data[7], data[-1])
+    ax1.set_ylabel('Number of cells')
+    ax1.set_xlabel('iteration \n \n \n')
+    ax1.title.set_text('First file')
+
+    ax2.plot(secondary_cell_data[7], secondary_data[-1])
+    ax2.set_ylabel('Number of cells')
+    ax2.set_xlabel('iteration')
+    ax2.title.set_text('Second file')
+
+    plt.savefig(directory + '/double_population_change')
+    plt.clf()
+
+
 def life_death_analysis():
     cell_data = cell_parser(The_cell)
 
@@ -358,18 +409,16 @@ def life_death_analysis():
     plt.clf()
 
 
-def average_ligand_concentration():
+def average_ligand_concentration_calc(cell,length):
     cell_data = cell_parser(The_cell)
     iterations = cell_data[7]
-    birth_date = cell_data[11]
-    death = cell_data[10]
     cell_count = data[-1]
     l_sum_list = []
     l_sum = 0
     cell_index = 0
     for i in iterations:
 
-        while cell_index < data_len:
+        while cell_index < length:
             cell = data[cell_index]['Iterations'][i]
             if cell['birth_date'] > i or cell['death_date'] < i:
                 cell_index += 1
@@ -381,13 +430,39 @@ def average_ligand_concentration():
         l_sum_list.append(l_sum / cell_count[i])
         l_sum = 0
         cell_index = 0
+    return iterations, l_sum_list
 
-    plt.plot(iterations, l_sum_list)
+
+def average_ligand_concentration_plotter():
+    iterations, l_sum_list = average_ligand_concentration_calc(The_cell,data_len)
+
+    plt.plot(iterations[1:], l_sum_list[1:])
     plt.ylabel('Average concentration for the cell population')
     plt.xlabel('Iteration')
     plt.savefig(directory + '/average_ligand_concentration')
     plt.clf()
 
+def double_average_ligand_concentration_plotter():
+    fst_iterations, fst_l_sum_list = average_ligand_concentration_calc(The_cell, data_len)
+    snd_iterations, snd_l_sum_list = average_ligand_concentration_calc(secondary_cell, secondary_data_len)
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    plt.plot(figsize=(16, 12))
+    plt.title('Population change throughout the simulation')
+    fig.tight_layout(pad=3.0)
+
+    ax1.plot(fst_iterations[1:], fst_l_sum_list[1:])
+    ax1.set_ylabel('Average concentration for the cell population')
+    ax1.set_xlabel('iteration')
+    ax1.title.set_text('First file')
+
+    ax2.plot(snd_iterations[1:], snd_l_sum_list[1:])
+    ax2.set_ylabel('Average concentration for the cell population')
+    ax2.set_xlabel('iteration')
+    ax2.title.set_text('Second file')
+
+    plt.savefig(directory + '/double_average_ligand_concentration')
+    plt.clf()
 
 # return if cell has died and when
 def cell_obituary_notice(cell):
@@ -458,8 +533,8 @@ def populate_secondary_data_structures(filename, *args):
     global secondary_cell
 
     secondary_data_path = filename
-    open_file(secondary_data_path)
-    secondary_cell = cell_randomizer(data)
+    open_secondary_file(secondary_data_path)
+    secondary_cell = cell_randomizer(secondary_data)
 
 
 def browse_file():
@@ -559,6 +634,7 @@ def do_the_job():
         population_change()
         '''
         MSD_plotter()
+        average_ligand_concentration_plotter()
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
 
@@ -567,8 +643,13 @@ def do_the_job():
             populate_data_structures(file)
             path_plotter()
 
+
     if radio_choice.get() == 3:
         print('IN PROGRESS')
+        double_population_change()
+        double_MSD_plotter()
+        double_average_ligand_concentration_plotter()
+
 
 def alter_scene():
     fst_button_explore.place(x=100, y=175)
@@ -647,7 +728,10 @@ def to_help():
 
 def to_How_to():
     messagebox.showinfo('info',
-                        "Choose a the exported data file from unity simulation in json format. Afterwards, choose the type of output....")
+                        "Start with choosing the type of analysis you want to preform."
+                        " \n For Single File Analysis choose one exported json file."
+                        "\n For Batch Analysis choose a folder containing json files."
+                        "\n For Double File Analysis choose two files to compare")
 
 
 menubar = Menu(window)
