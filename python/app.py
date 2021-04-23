@@ -7,10 +7,10 @@ from tkinter import filedialog, Button, Label, Tk, Menu, messagebox, IntVar, ttk
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import seaborn as sns
 ## Gui Code
 from fpdf import FPDF
+from matplotlib.lines import Line2D
 
 window = Tk()
 window.title('Chemotaxis analytical tool')
@@ -203,6 +203,9 @@ def zoomed_path_plotter():
     plt.clf()
 
 
+
+
+
 def MSD_calc(cell):
     cell_data = cell_parser(cell)
     x_data = cell_data[0]
@@ -223,6 +226,27 @@ def MSD_plotter():
     MSD_list, time = MSD_calc(The_cell)
     plt.plot(time, MSD_list)
     plt.savefig(directory + '/MSD.png')
+    plt.clf()
+
+
+def MSD_plotter_fitted():
+    MSD_list, time = MSD_calc(The_cell)
+
+    unfitted_line = np.linspace(1, time, 100)
+
+    polynomial_fitter = np.poly1d(np.polyfit(time, MSD_list, 2))
+    fitted_line = polynomial_fitter(unfitted_line)
+    plt.plot(unfitted_line, fitted_line,'b.')
+    plt.scatter(time, MSD_list, c='green', s=6, label='unfitted line')
+
+    colors = ['green', 'blue']
+    lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
+    labels = ['unfitted line', 'fitted line']
+    legend = plt.legend(lines, labels,loc='lower center', shadow=True)
+
+    # Put a nicer background color on the legend.
+    legend.get_frame().set_facecolor('ivory')
+    plt.savefig(directory + '/MSD_fitted.png')
     plt.clf()
 
 
@@ -295,7 +319,7 @@ def protein_concentration_plotter():
 
 # protein_concentration_plotter()
 
-
+'''
 def heatmap_plotter():
     start_xs, start_zs, end_xs, end_zs = start_end_point_parser()
     fig = plt.figure(figsize=(16, 20))
@@ -358,6 +382,7 @@ def heatmap_plotter():
     plt.savefig(directory + '/heat_map_start_end.png')
     plt.clf()
 
+'''
 
 def population_change():
     cell_data = cell_parser(The_cell)
@@ -436,7 +461,7 @@ def average_ligand_concentration_calc(cell, length):
 def average_ligand_concentration_plotter():
     iterations, l_sum_list = average_ligand_concentration_calc(The_cell, data_len)
 
-    plt.plot(iterations[1:], l_sum_list[1:])
+    plt.plot(iterations[3:], l_sum_list[3:])
     plt.ylabel('Average concentration for the cell population')
     plt.xlabel('Iteration')
     plt.savefig(directory + '/average_ligand_concentration')
@@ -452,12 +477,12 @@ def double_average_ligand_concentration_plotter():
     plt.title('Population change throughout the simulation')
     fig.tight_layout(pad=3.0)
 
-    ax1.plot(fst_iterations[1:], fst_l_sum_list[1:])
+    ax1.plot(fst_iterations[3:], fst_l_sum_list[3:])
     ax1.set_ylabel('Average concentration for the cell population')
     ax1.set_xlabel('iteration')
     ax1.title.set_text('First file')
 
-    ax2.plot(snd_iterations[1:], snd_l_sum_list[1:])
+    ax2.plot(snd_iterations[3:], snd_l_sum_list[3:])
     ax2.set_ylabel('Average concentration for the cell population')
     ax2.set_xlabel('iteration')
     ax2.title.set_text('Second file')
@@ -516,7 +541,7 @@ def pdf_generator():
     pdf.output('test.pdf')
 
 
-def populate_data_structures(filename, *args):
+def populate_data_structures(filename):
     global data_path
     global The_cell
     global directory
@@ -534,7 +559,7 @@ def populate_data_structures(filename, *args):
     createFolder(directory)
 
 
-def populate_secondary_data_structures(filename, *args):
+def populate_secondary_data_structures(filename):
     global secondary_data_path
     global secondary_cell
 
@@ -603,6 +628,7 @@ def browse_folder():
     global The_cell
     global directory
     global file_list
+    file_list.clear()
     folder_name = filedialog.askdirectory()
     if not folder_name:
         return
@@ -610,7 +636,6 @@ def browse_folder():
         label_file_explorer.configure(text="Folder Opened: " + os.path.basename(folder_name))
         for file in os.listdir(folder_name):
             if file.endswith(".json"):
-                # TODO: add relevant functionality for the batch simulation
                 filename = os.path.join(folder_name, file)
                 file_list.append(filename)
                 print(len(file_list))
@@ -630,32 +655,40 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
-        '''
+
         path_plotter()
         zoomed_path_plotter()
-        protein_concentration_plotter()
-        heatmap_plotter()
         life_death_analysis()
-        average_ligand_concentration()
-        population_change()
-        '''
+        protein_concentration_plotter()
         MSD_plotter()
+        MSD_plotter_fitted()
         average_ligand_concentration_plotter()
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
+        label_file_explorer.configure(text="No file selected")
 
     if radio_choice.get() == 2:
         for file in file_list:
             populate_data_structures(file)
             path_plotter()
+            zoomed_path_plotter()
+            life_death_analysis()
+            protein_concentration_plotter()
+            MSD_plotter()
+            MSD_plotter_fitted()
+            average_ligand_concentration_plotter()
         go_to_dir_button.configure(state='active')
+        visualize_button.configure(state='disable')
+        label_file_explorer.configure(text="No file selected")
 
     if radio_choice.get() == 3:
-        print('IN PROGRESS')
+        double_average_ligand_concentration_plotter()
         double_population_change()
         double_MSD_plotter()
-        double_average_ligand_concentration_plotter()
+
         go_to_dir_button.configure(state='active')
+        fst_file_label.configure(text="No file selected")
+        snd_file_label.configure(text="No file selected")
 
 
 def alter_scene():
@@ -730,7 +763,8 @@ go_to_dir_button.configure(state='disabled')
 def to_help():
     messagebox.showinfo('info',
                         "This program was programmed by students in Chalmers university of technology."
-                        " It is used to do analysis reports and plots of the data obtained from the Chemotaxis simulation tool")
+                        "It is used to do analysis reports and plots of the data obtained from the Chemotaxis "
+                        "simulation tool")
 
 
 def to_How_to():
