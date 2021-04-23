@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 public class LifeRegulator : ILifeRegulator
 {
@@ -20,7 +20,8 @@ public class LifeRegulator : ILifeRegulator
         if (ULife == 0)
         {
             //Step 1, initialize
-            ULife = Random.Range(0.5f, 1.0f);
+
+            ULife = RandomFloat.Range(0.5f, 1f);
             BLife = 0;
         }
 
@@ -45,7 +46,7 @@ public class LifeRegulator : ILifeRegulator
         if (UDeath == 0)
         {
             //Step 1, initialize
-            UDeath = Random.Range(0.0f, 1.0f);
+            UDeath = RandomFloat.NextFloat();
             BDeath = 0;
         }
 

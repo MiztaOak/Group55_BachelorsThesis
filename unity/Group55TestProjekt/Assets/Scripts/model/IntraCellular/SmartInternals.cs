@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using MathNet.Numerics.Distributions;
 
 public class SmartInternals : IInternals
@@ -28,17 +27,16 @@ public class SmartInternals : IInternals
     private Vector3Adapter CalculateNextPoint(float x, float z, AbstractEnvironment environment)
     {
         //calculates the angle that the cell should move towards based on the ligand gradient
-        float alfa = Mathf.Atan2(environment.GradZ(x, z), environment.GradX(x, z));
+        float alfa = MathFloat.Atan2(environment.GradZ(x, z), environment.GradX(x, z));
         float factor = 1 - smartnessFactor;
 
         //calculates the x and z delta based on the angle and the sampled value
-        float dx = Mathf.Cos(alfa) * dT * v + (float)Normal.Sample(0.0, v * dT * factor);
-        float dz = Mathf.Sin(alfa) * dT * v + (float)Normal.Sample(0.0, v * dT * factor);
-        Debug.Log("dx = " + dx + " dz = " + dz);
+        float dx = MathFloat.Cos(alfa) * dT * v + (float)Normal.Sample(0.0, v * dT * factor);
+        float dz = MathFloat.Sin(alfa) * dT * v + (float)Normal.Sample(0.0, v * dT * factor);
 
         //adds the delta to the x and z cords while making sure that it does not move outside the dish
-        x = Mathf.Clamp(x +dx, -14, 14);
-        z = Mathf.Clamp(z + dz, -14, 14);
+        x = MathFloat.Clamp(x +dx, -14, 14);
+        z = MathFloat.Clamp(z + dz, -14, 14);
 
         //create the new point
         return new Vector3Adapter(x, z);

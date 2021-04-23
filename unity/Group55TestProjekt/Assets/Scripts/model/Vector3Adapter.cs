@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Vector3Adapter : IPointAdapter
 {
@@ -8,7 +6,7 @@ public class Vector3Adapter : IPointAdapter
 
     public Vector3Adapter(float x, float z)
     {
-        this.point = new Vector3(x,0,z);
+        point = new Vector3(x,0,z);
     }
 
     public void Add(float x, float z)

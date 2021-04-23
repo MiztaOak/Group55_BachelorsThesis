@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 public class DummyLifeRegulator : ILifeRegulator
 {
     public bool Die(float c)

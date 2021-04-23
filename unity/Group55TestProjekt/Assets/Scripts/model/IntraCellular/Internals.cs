@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 /*Class representing the internals of the cell this is for the non smart version
  * The class handles the calculation of the cells movement and returns the next point when needed 
@@ -31,13 +30,13 @@ public class Internals : IInternals
     {
         if(!GetRunningState(location.GetX(), location.GetZ()))
             angle = CalculateTumbleAngle();
-        float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
+        float dX = v * dT * MathFloat.Cos(angle), dZ = v * dT * MathFloat.Sin(angle);
 
         while (location.GetX() + dX > 14 && location.GetX() - dX < -14 && location.GetZ() + dZ > 14 && location.GetZ() - dZ < -14)
         {
             angle = CalculateTumbleAngle();
-            dX = v * dT * Mathf.Cos(angle);
-            dZ = v * dT * Mathf.Sin(angle);
+            dX = v * dT * MathFloat.Cos(angle);
+            dZ = v * dT * MathFloat.Sin(angle);
         }  
           location.Add(dX, dZ);
     }
@@ -46,11 +45,11 @@ public class Internals : IInternals
     private float CalculateTumbleAngle()
     {
         //Tumble angle based on article (Edgington)
-        float newAngle = Random.Range(18f, 98f);
-        float rand = Random.Range(0.0f, 1.0f);
+        float newAngle = RandomFloat.Range(18f, 98f);
+        float rand = RandomFloat.Range(0.0f, 1.0f);
         if (rand > 0.5)
             newAngle *= -1;
-        newAngle *= Mathf.PI / 180;
+        newAngle *= MathFloat.PI / 180;
         newAngle += this.angle;
         return newAngle;
     }

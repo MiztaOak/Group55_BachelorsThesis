@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class BacteriaFactory
 {
@@ -87,7 +86,7 @@ public class BacteriaFactory
 
     public void SetSmartnessFactor(float smartnessFactor)
     {
-        this.smartnessFactor = Mathf.Clamp(smartnessFactor,0,1);
+        this.smartnessFactor = MathFloat.Clamp(smartnessFactor,0,1);
     }
 
     public void SetRegulatorType(RegulatorType regulatorType)

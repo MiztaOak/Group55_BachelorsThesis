@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using UnityEngine;
 
 public class BernoulliRegulation : ICellRegulation
 {
@@ -30,7 +29,7 @@ public class BernoulliRegulation : ICellRegulation
         int CH3 = 0;
         for( int i = 0; i < 100; i++ )
         {
-            float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+            float rand = RandomFloat.NextFloat();
             if( rand <= pMR )
                 CH3++;
         }
@@ -39,7 +38,7 @@ public class BernoulliRegulation : ICellRegulation
         {
             if( cheB[i] && CH3 > 0 )
             {
-                float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+                float rand = RandomFloat.NextFloat();
                 if( rand <= pMB )
                     CH3--;
             }
@@ -55,7 +54,7 @@ public class BernoulliRegulation : ICellRegulation
         {
             if( !cheA[i] )
             {
-                float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+                float rand = RandomFloat.NextFloat();
                 if(rand <= pA)
                     cheA[i] = !cheA[i];
             }
@@ -72,11 +71,11 @@ public class BernoulliRegulation : ICellRegulation
             {
                 float ratioB = (availB.Length - ib)/cheB.Length;
                 float ratioY = (availY.Length - iy)/cheY.Length;
-                float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+                float rand = RandomFloat.NextFloat();
                 // Determine order in which proteins are tried
-                if( rand > 0.5f )
+                if ( rand > 0.5f )
                 { //Attempt CheB first
-                    rand = UnityEngine.Random.Range(0.0f, 1.0f);
+                    rand = RandomFloat.NextFloat();
                     if( rand < pAB*ratioB && ib < availB.Length )
                     {
                         cheA[i] = !cheA[i];
@@ -92,8 +91,8 @@ public class BernoulliRegulation : ICellRegulation
                 }
                 else
                 { //Attempt CheY first
-                    rand = UnityEngine.Random.Range(0.0f, 1.0f);
-                    if( rand < pAY*ratioY && iy < availY.Length )
+                    rand = RandomFloat.NextFloat();
+                    if ( rand < pAY*ratioY && iy < availY.Length )
                     {
                         cheA[i] = !cheA[i];
                         availY[iy] = !availB[iy];
@@ -122,7 +121,7 @@ public class BernoulliRegulation : ICellRegulation
 
     private bool Flagella()
     {
-        float rand = UnityEngine.Random.Range(0.0f,1.0f);
+        float rand = RandomFloat.NextFloat();
         bool[] cheYP = Array.FindAll(cheY, y => y);
         float ratioYP = (float) cheYP.Length / cheY.Length;
         return rand >= ratioYP; //Running if larger than ratio
@@ -134,8 +133,8 @@ public class BernoulliRegulation : ICellRegulation
         {
             if( cheY[i] )
             {
-                float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-                if(rand <= pY)
+                float rand = RandomFloat.NextFloat();
+                if (rand <= pY)
                     cheY[i] = !cheY[i];
             }
         }
@@ -147,8 +146,8 @@ public class BernoulliRegulation : ICellRegulation
         {
             if( cheY[i] )
             {
-                float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-                if(rand <= pZ)
+                float rand = RandomFloat.NextFloat();
+                if (rand <= pZ)
                     cheY[i] = !cheY[i];
             }
         }
@@ -160,8 +159,8 @@ public class BernoulliRegulation : ICellRegulation
         {
             if( cheB[i] )
             {
-                float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-                if(rand <= pB)
+                float rand = RandomFloat.NextFloat();
+                if (rand <= pB)
                     cheB[i] = !cheB[i];
             }
         }
