@@ -273,6 +273,37 @@ def double_MSD_plotter():
     plt.clf()
 
 
+def double_MSD_plotter_fitted():
+    fst_MSD_list, fst_time = MSD_calc(The_cell)
+    snd_MSD_list, snd_time = MSD_calc(secondary_cell)
+
+    unfitted_line = np.linspace(1, fst_time, 100)
+    polynomial_fitter = np.poly1d(np.polyfit(fst_time, fst_MSD_list, 2))
+    fitted_line = polynomial_fitter(unfitted_line)
+
+    unfitted_line2 = np.linspace(1, fst_time, 100)
+    polynomial_fitter2 = np.poly1d(np.polyfit(fst_time, fst_MSD_list, 2))
+    fitted_line2 = polynomial_fitter(unfitted_line)
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    plt.plot(figsize=(16, 12))
+    plt.title('Mean Squared Displacement')
+    fig.tight_layout(pad=3.0)
+
+    ax1.plot(unfitted_line, fitted_line, 'b.')
+    ax1.scatter(fst_time, fst_MSD_list, c='green', s=6, label='unfitted line')
+    ax1.set_ylabel('Mean squared score')
+    ax1.set_xlabel('iteration')
+    ax1.title.set_text('First file')
+
+    ax2.plot(unfitted_line2, fitted_line2, 'b.')
+    ax2.scatter(snd_time, snd_MSD_list, c='green', s=6, label='unfitted line')
+    ax2.set_xlabel('iteration')
+    ax2.title.set_text('Second file')
+
+    plt.savefig(directory + '/double_MSD2')
+    plt.clf()
+
 def protein_concentration_plotter():
     cell_data = cell_parser(The_cell)
 
@@ -434,17 +465,17 @@ def life_death_analysis():
     plt.clf()
 
 
-def average_ligand_concentration_calc(cell, length):
-    cell_data = cell_parser(The_cell)
+def average_ligand_concentration_calc(cell, Data):
+    cell_data = cell_parser(cell)
     iterations = cell_data[7]
-    cell_count = data[-1]
+    cell_count = Data[-1]
     l_sum_list = []
     l_sum = 0
     cell_index = 0
     for i in iterations:
 
-        while cell_index < length:
-            cell = data[cell_index]['Iterations'][i]
+        while cell_index < len(Data) -1:
+            cell = Data[cell_index]['Iterations'][i]
             if cell['birth_date'] > i or cell['death_date'] < i:
                 cell_index += 1
             else:
@@ -459,7 +490,7 @@ def average_ligand_concentration_calc(cell, length):
 
 
 def average_ligand_concentration_plotter():
-    iterations, l_sum_list = average_ligand_concentration_calc(The_cell, data_len)
+    iterations, l_sum_list = average_ligand_concentration_calc(The_cell, data)
 
     plt.plot(iterations[3:], l_sum_list[3:])
     plt.ylabel('Average concentration for the cell population')
@@ -469,8 +500,8 @@ def average_ligand_concentration_plotter():
 
 
 def double_average_ligand_concentration_plotter():
-    fst_iterations, fst_l_sum_list = average_ligand_concentration_calc(The_cell, data_len)
-    snd_iterations, snd_l_sum_list = average_ligand_concentration_calc(secondary_cell, secondary_data_len)
+    fst_iterations, fst_l_sum_list = average_ligand_concentration_calc(The_cell, data)
+    snd_iterations, snd_l_sum_list = average_ligand_concentration_calc(secondary_cell, secondary_data)
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
@@ -685,10 +716,13 @@ def do_the_job():
         double_average_ligand_concentration_plotter()
         double_population_change()
         double_MSD_plotter()
+        double_MSD_plotter_fitted()
 
         go_to_dir_button.configure(state='active')
         fst_file_label.configure(text="No file selected")
         snd_file_label.configure(text="No file selected")
+        snd_button_explore.configure(state='disable')
+        visualize_button.configure(state='disable')
 
 
 def alter_scene():
