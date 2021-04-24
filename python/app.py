@@ -1,10 +1,10 @@
 import json as json
 import os
 import random
+import threading
 from itertools import chain
 from tkinter import filedialog, Button, Label, Tk, Menu, messagebox, IntVar, ttk
 
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -31,6 +31,7 @@ data = {}
 The_cell = {}
 directory = ''
 file_list = []
+
 
 #####
 secondary_data_path = ''
@@ -203,9 +204,6 @@ def zoomed_path_plotter():
     plt.clf()
 
 
-
-
-
 def MSD_calc(cell):
     cell_data = cell_parser(cell)
     x_data = cell_data[0]
@@ -236,13 +234,13 @@ def MSD_plotter_fitted():
 
     polynomial_fitter = np.poly1d(np.polyfit(time, MSD_list, 2))
     fitted_line = polynomial_fitter(unfitted_line)
-    plt.plot(unfitted_line, fitted_line,'b.')
+    plt.plot(unfitted_line, fitted_line, 'b.')
     plt.scatter(time, MSD_list, c='green', s=6, label='unfitted line')
 
     colors = ['green', 'blue']
     lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
     labels = ['unfitted line', 'fitted line']
-    legend = plt.legend(lines, labels,loc='lower center', shadow=True)
+    legend = plt.legend(lines, labels, loc='lower center', shadow=True)
 
     # Put a nicer background color on the legend.
     legend.get_frame().set_facecolor('ivory')
@@ -303,6 +301,7 @@ def double_MSD_plotter_fitted():
 
     plt.savefig(directory + '/double_MSD2')
     plt.clf()
+
 
 def protein_concentration_plotter():
     cell_data = cell_parser(The_cell)
@@ -415,6 +414,7 @@ def heatmap_plotter():
 
 '''
 
+
 def population_change():
     cell_data = cell_parser(The_cell)
     plt.plot(cell_data[7], data[-1])
@@ -474,7 +474,7 @@ def average_ligand_concentration_calc(cell, Data):
     cell_index = 0
     for i in iterations:
 
-        while cell_index < len(Data) -1:
+        while cell_index < len(Data) - 1:
             cell = Data[cell_index]['Iterations'][i]
             if cell['birth_date'] > i or cell['death_date'] < i:
                 cell_index += 1
@@ -619,6 +619,7 @@ def browse_file():
 
 
 def browse_fst_file():
+    done_label.configure(text='')
     filename = filedialog.askopenfilename(initialdir=os.getcwd(),
                                           title="Select a File",
                                           filetypes=(("JSON files",
@@ -674,6 +675,7 @@ def browse_folder():
 
 
 def on_browse_click():
+    done_label.configure(text='')
     if radio_choice.get() == 1:
         browse_file()
     if radio_choice.get() == 2:
@@ -686,14 +688,8 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
-
-        path_plotter()
-        zoomed_path_plotter()
-        life_death_analysis()
-        protein_concentration_plotter()
-        MSD_plotter()
         MSD_plotter_fitted()
-        average_ligand_concentration_plotter()
+
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
         label_file_explorer.configure(text="No file selected")
@@ -723,6 +719,16 @@ def do_the_job():
         snd_file_label.configure(text="No file selected")
         snd_button_explore.configure(state='disable')
         visualize_button.configure(state='disable')
+    pb.stop()
+    done_label.config(text='DONE !')
+
+
+
+
+def thread_starter():
+    pb.step(15)
+    done_label.configure(text='Working...')
+    threading.Thread(target=do_the_job).start()
 
 
 def alter_scene():
@@ -732,7 +738,6 @@ def alter_scene():
     snd_file_label.place(x=300, y=110)
     button_explore.place_forget()
     label_file_explorer.place_forget()
-    print('yo bitch')
 
 
 def re_alter_scene():
@@ -742,7 +747,6 @@ def re_alter_scene():
     snd_file_label.place_forget()
     button_explore.place(x=195, y=175)
     label_file_explorer.place(x=195, y=110)
-    print('yo bitch')
 
 
 # bg = ImageTk.PhotoImage(PIL.Image.open("bg.png"))
@@ -784,7 +788,7 @@ fst_button_explore = Button(window, text="Browse first file", command=browse_fst
 snd_button_explore = Button(window, text="Browse second file", command=browse_snd_file, width=15, height=1)
 snd_button_explore.configure(state='disable')
 
-visualize_button = Button(window, text='Visualize the data', command=do_the_job, bg='white', width=15, height=1)
+visualize_button = Button(window, text='Visualize the data', command=thread_starter, bg='white', width=15, height=1)
 visualize_button.place(x=195, y=220)
 visualize_button.configure(state='disabled')
 
@@ -823,4 +827,16 @@ window.config(menu=menubar)
 s = ttk.Style()
 s.configure('Wild.TRadiobutton', background='white', foreground='black')
 
+pb = ttk.Progressbar(
+    window,
+    orient='horizontal',
+    mode='indeterminate',
+
+    length=120
+)
+pb.place(x=190, y=320)
+
+done_label = Label(window, text="", fg="green", height=2, anchor="e", background='white')
+done_label.config(font=("Arial", 14, 'bold'))
+done_label.place(x=215, y=345)
 window.mainloop()
