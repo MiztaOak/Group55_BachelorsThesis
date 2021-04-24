@@ -236,9 +236,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 627309763748310666, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_text
+      value: 'Average ligand concentration: 0'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5350053737038127670, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_text
+      value: 'Maximum average concentration: 0'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961968912179403531, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_text
+      value: 'Minimum average concentration: 0'
+      objectReference: {fileID: 0}
     - target: {fileID: 8290617568292787188, guid: 0b38133b87d136a48beb1e16e6109115,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290617568329182708, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8290617568590986650, guid: 0b38133b87d136a48beb1e16e6109115,
@@ -250,6 +270,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290617568753023488, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_enableVertexGradient
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290617568753023488, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_fontColorGradient.topLeft.b
+      value: 0.9716981
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290617568753023488, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_fontColorGradient.topLeft.g
+      value: 0.9716981
+      objectReference: {fileID: 0}
+    - target: {fileID: 8290617568753023488, guid: 0b38133b87d136a48beb1e16e6109115,
+        type: 3}
+      propertyPath: m_fontColorGradient.topLeft.r
+      value: 0.9716981
       objectReference: {fileID: 0}
     - target: {fileID: 8290617568904857452, guid: 0b38133b87d136a48beb1e16e6109115,
         type: 3}
@@ -419,7 +459,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4062cb09cc7484a4dbea9a20745c021a, type: 2}
+  - {fileID: 2100000, guid: 5597422d101713b428711827569259ed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
