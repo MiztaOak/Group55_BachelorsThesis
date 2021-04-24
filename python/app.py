@@ -214,7 +214,7 @@ def MSD_calc(cell):
 
     for i, shift in enumerate(shifts):
         diffs = r[:-shift if shift else None] - r[shift:]
-        square_dist = np.square(diffs).sum(axis=1)
+        square_dist += np.square(diffs).sum(axis=1)
         MSD_list[i] = square_dist.mean()
 
     return MSD_list, cell_data[7]
