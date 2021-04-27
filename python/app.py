@@ -229,9 +229,10 @@ def MSD_calc(cell):
     MSD_list = np.zeros(shifts.size)
 
     for i, shift in enumerate(shifts):
-        diffs = r[:-shift if shift else None] - r[shift:]
-        square_dist = np.square(diffs).sum(axis=1)
-        MSD_list[i] = square_dist.mean()
+        square_dist = np.linalg.norm(r[i])
+        MSD_list[i] = square_dist + MSD_list[i - 1]
+
+    MSD_list = [i / len(MSD_list) for i in MSD_list]
 
     return MSD_list, cell_data[7]
 
