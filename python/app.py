@@ -2,6 +2,7 @@ import json as json
 import os
 import random
 import threading
+from idlelib.tooltip import Hovertip
 from itertools import chain
 from tkinter import filedialog, Button, Label, Tk, Menu, messagebox, IntVar, ttk
 
@@ -9,7 +10,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 ## Gui Code
-from fpdf import FPDF
 from matplotlib.lines import Line2D
 
 window = Tk()
@@ -18,8 +18,8 @@ window.geometry('500x400')
 window.resizable(width=False, height=False)
 window.configure(bg='white')
 
-sns.set(rc={'figure.figsize': (12, 10)})
-sns.set_context("notebook", font_scale=1.4)
+sns.set(rc={'figure.figsize': (14, 10)})
+#sns.set_context(font_scale=0.5)
 
 # Data setup
 
@@ -175,7 +175,7 @@ def path_plotter():
     birth_date = cell_data[11][0]
     has_died, death_date, cell_id = cell_obituary_notice(The_cell)
     print('BIRTH : ', birth_date)
-    plt.plot(fst_list[birth_date:death_date + 1], snd_list[birth_date:death_date + 1], linewidth=2)
+    plt.plot(fst_list, snd_list, linewidth=2)
     plt.plot(0, 0, 'r*', markersize=9, label='Ligand source')
     plt.plot(fst_list[birth_date], snd_list[birth_date], 'go', markersize=9, label='Start point')
     plt.plot(fst_list[-1], snd_list[-1], 'ro', markersize=9, label='End point')
@@ -203,7 +203,7 @@ def zoomed_path_plotter():
     birth_date = cell_data[11][0]
     has_died, death_date, cell_id = cell_obituary_notice(The_cell)
     print('BIRTH : ', birth_date)
-    plt.plot(fst_list[birth_date:death_date + 1], snd_list[birth_date:death_date + 1], linewidth=2)
+    plt.plot(fst_list, snd_list, linewidth=2)
     plt.plot(0, 0, 'r*', markersize=9, label='Ligand source')
     plt.plot(fst_list[birth_date], snd_list[birth_date], 'go', markersize=9, label='Start point')
     plt.plot(fst_list[-1], snd_list[-1], 'ro', markersize=9, label='End point')
@@ -211,10 +211,10 @@ def zoomed_path_plotter():
     if has_died:
         caption = 'The cell was born at iteration {} and died at iteration {}'.format(birth_date, death_date)
         plt.plot(fst_list[death_date], snd_list[death_date])
-        plt.title('Path of a single cell (world view) \n{}'.format(caption))
+        plt.title('Path of a single cell (Zoomed in view) \n{}'.format(caption))
 
     else:
-        plt.title('Path of a single cell (world view)')
+        plt.title('Path of a single cell (Zoomed in view)')
     plt.axis('off')
     plt.savefig(directory + '/zoomed_cell_path.png')
     plt.clf()
@@ -240,6 +240,9 @@ def MSD_calc(cell):
 def MSD_plotter():
     MSD_list, time = MSD_calc(The_cell)
     plt.plot(time, MSD_list)
+    plt.title('Mean square displacement (MSD) for a random cell')
+    plt.xlabel('iterations')
+    plt.ylabel('MSD score')
     plt.savefig(directory + '/MSD.png')
     plt.clf()
 
@@ -251,8 +254,8 @@ def MSD_plotter_fitted():
 
     polynomial_fitter = np.poly1d(np.polyfit(time, MSD_list, 2))
     fitted_line = polynomial_fitter(unfitted_line)
-    plt.plot(unfitted_line, fitted_line, 'b.')
-    plt.scatter(time, MSD_list, c='green', s=6, label='unfitted line')
+    plt.plot(unfitted_line, fitted_line,'b')
+    plt.plot(time, MSD_list, 'r')
 
     colors = ['green', 'blue']
     lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
@@ -261,6 +264,9 @@ def MSD_plotter_fitted():
 
     # Put a nicer background color on the legend.
     legend.get_frame().set_facecolor('ivory')
+    plt.title('Polynomial fitted mean square displacement for a random cell')
+    plt.xlabel('iterations')
+    plt.ylabel('MSD score')
     plt.savefig(directory + '/MSD_fitted.png')
     plt.clf()
 
@@ -271,16 +277,16 @@ def double_MSD_plotter():
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
-    plt.title('Mean Squared Displacement')
+    plt.title('Mean Squared Displacement (MSD)')
     fig.tight_layout(pad=3.0)
 
     ax1.plot(fst_time, fst_MSD_list)
-    ax1.set_ylabel('Mean squared score')
+    ax1.set_ylabel('MSD score')
     ax1.set_xlabel('iteration \n \n \n')
     ax1.title.set_text('First file')
 
     ax2.plot(snd_time, snd_MSD_list)
-    ax2.set_ylabel('Mean squared score')
+    ax2.set_ylabel('MSD score')
     ax2.set_xlabel('iteration')
     ax2.title.set_text('Second file')
 
@@ -296,24 +302,25 @@ def double_MSD_plotter_fitted():
     polynomial_fitter = np.poly1d(np.polyfit(fst_time, fst_MSD_list, 2))
     fitted_line = polynomial_fitter(unfitted_line)
 
-    unfitted_line2 = np.linspace(1, fst_time, 100)
-    polynomial_fitter2 = np.poly1d(np.polyfit(fst_time, fst_MSD_list, 2))
-    fitted_line2 = polynomial_fitter(unfitted_line)
+    unfitted_line2 = np.linspace(1, snd_time, 100)
+    polynomial_fitter2 = np.poly1d(np.polyfit(snd_time, snd_MSD_list, 2))
+    fitted_line2 = polynomial_fitter2(unfitted_line2)
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
-    plt.title('Mean Squared Displacement')
+    plt.title('polynomial fitted Mean Squared Displacement (MSD)')
     fig.tight_layout(pad=3.0)
 
     ax1.plot(unfitted_line, fitted_line, 'b.')
-    ax1.scatter(fst_time, fst_MSD_list, c='green', s=6, label='unfitted line')
-    ax1.set_ylabel('Mean squared score')
+    ax1.plot(fst_time, fst_MSD_list, 'r-')
+    ax1.set_ylabel('MSD score')
     ax1.set_xlabel('iteration')
     ax1.title.set_text('First file')
 
     ax2.plot(unfitted_line2, fitted_line2, 'b.')
-    ax2.scatter(snd_time, snd_MSD_list, c='green', s=6, label='unfitted line')
+    ax2.plot(snd_time, snd_MSD_list,'r-')
     ax2.set_xlabel('iteration')
+    ax2.set_ylabel('MSD score')
     ax2.title.set_text('Second file')
 
     plt.savefig(directory + '/double_MSD2')
@@ -512,8 +519,9 @@ def average_ligand_concentration_plotter():
     iterations, l_sum_list = average_ligand_concentration_calc(The_cell, data)
 
     plt.plot(iterations[3:], l_sum_list[3:])
-    plt.ylabel('Average concentration for the cell population')
+    plt.ylabel('Average concentration')
     plt.xlabel('Iteration')
+    plt.title('Cell population average ligand concentration')
     plt.savefig(directory + '/average_ligand_concentration')
     plt.clf()
 
@@ -571,7 +579,7 @@ def cell_population_information():
 
     return new_born_cells, dead_cells, survived_cells
 
-
+'''
 def pdf_generator():
     a, b, c = cell_population_information()
     pdf = FPDF(orientation='P', unit='pt', format='A4')
@@ -589,7 +597,7 @@ def pdf_generator():
     pdf.set_font("Times", "", 12)
     pdf.cell(0, 25, "${}".format(b), 0, 1)
     pdf.output('test.pdf')
-
+'''
 
 def populate_data_structures(filename):
     global data_path
@@ -786,14 +794,17 @@ welcome_text.place(x=170, y=10)
 radio_choice = IntVar(None, 1)
 R1 = ttk.Radiobutton(window, text="Single file analysis", style='Wild.TRadiobutton', variable=radio_choice, value=1,
                      command=re_alter_scene)
+R1Tip = Hovertip(R1, 'Perform analysis on a single json file')
 R1.place(x=13, y=60)
 
 R2 = ttk.Radiobutton(window, text="Batch analysis", style='Wild.TRadiobutton', variable=radio_choice, value=2,
                      command=re_alter_scene)
+R2Tip = Hovertip(R2, 'perform analysis on a batch with multiple json file')
 R2.place(x=200, y=60)
 
 R3 = ttk.Radiobutton(window, text="Double file analysis", style='Wild.TRadiobutton', variable=radio_choice, value=3,
                      command=alter_scene)
+R3Tip = Hovertip(R3, 'perform analysis on two json files')
 R3.place(x=363, y=60)
 
 label_file_explorer = Label(window, text="No file selected", fg="blue", height=2, anchor="e")
@@ -816,7 +827,8 @@ visualize_button = Button(window, text='Visualize the data', command=thread_star
 visualize_button.place(x=195, y=220)
 visualize_button.configure(state='disabled')
 
-go_to_dir_button = Button(window, text='Go to target folder', command=go_to_dir, bg='white', width=15, height=1)
+
+go_to_dir_button = Button(window, text='Go to Output folder', command=go_to_dir, bg='white', width=15, height=1)
 go_to_dir_button.place(x=195, y=270)
 # go_to_dir_button.pack(pady=20)
 go_to_dir_button.configure(state='disabled')
@@ -859,6 +871,7 @@ pb = ttk.Progressbar(
     length=120
 )
 pb.place(x=190, y=320)
+pbTip = Hovertip(pb, 'Please be kind and restart the program \nif the progress bar runs for a long time')
 
 done_label = Label(window, text="", fg="green", height=2, anchor="e", background='white')
 done_label.config(font=("Arial", 14, 'bold'))
