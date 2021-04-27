@@ -32,7 +32,6 @@ The_cell = {}
 directory = ''
 file_list = []
 
-
 #####
 secondary_data_path = ''
 secondary_data_len = 0
@@ -173,15 +172,24 @@ def path_plotter():
     cell_data = cell_parser(The_cell)
     fst_list = cell_data[0]
     snd_list = cell_data[1]
-
-    plt.plot(fst_list, snd_list, linewidth=2)
+    birth_date = cell_data[11][0]
+    has_died, death_date, cell_id = cell_obituary_notice(The_cell)
+    print('BIRTH : ', birth_date)
+    plt.plot(fst_list[birth_date:death_date + 1], snd_list[birth_date:death_date + 1], linewidth=2)
     plt.plot(0, 0, 'r*', markersize=9, label='Ligand source')
-    plt.plot(fst_list[0], snd_list[0], 'go', markersize=9, label='Start point')
+    plt.plot(fst_list[birth_date], snd_list[birth_date], 'go', markersize=9, label='Start point')
     plt.plot(fst_list[-1], snd_list[-1], 'ro', markersize=9, label='End point')
-    rectangle = plt.Rectangle((-world_width / 2, -world_height / 2), world_width, world_height, fc='white', ec='black')
+    rectangle = plt.Rectangle((-world_width / 2, -world_height / 2), world_width, world_height, fc='white',
+                              ec='black')
     plt.gca().add_patch(rectangle)
     plt.legend()
-    plt.title('Path of a single cell (world view)')
+    if has_died:
+        caption = 'The cell was born at iteration {} and died at iteration {}'.format(birth_date, death_date)
+        plt.plot(fst_list[death_date], snd_list[death_date])
+        plt.title('Path of a single cell (world view) \n{}'.format(caption))
+
+    else:
+        plt.title('Path of a single cell (world view)')
     plt.axis('off')
     # plt.show()
     plt.savefig(directory + '/cell_path.png')
@@ -192,13 +200,21 @@ def zoomed_path_plotter():
     cell_data = cell_parser(The_cell)
     fst_list = cell_data[0]
     snd_list = cell_data[1]
-
-    plt.plot(fst_list, snd_list, linewidth=3)
-    plt.plot(0, 0, 'r*', markersize=15, label='Ligand source')
-    plt.plot(fst_list[0], snd_list[0], 'go', markersize=12, label='Start point')
-    plt.plot(fst_list[-1], snd_list[-1], 'ro', markersize=12, label='End point')
+    birth_date = cell_data[11][0]
+    has_died, death_date, cell_id = cell_obituary_notice(The_cell)
+    print('BIRTH : ', birth_date)
+    plt.plot(fst_list[birth_date:death_date + 1], snd_list[birth_date:death_date + 1], linewidth=2)
+    plt.plot(0, 0, 'r*', markersize=9, label='Ligand source')
+    plt.plot(fst_list[birth_date], snd_list[birth_date], 'go', markersize=9, label='Start point')
+    plt.plot(fst_list[-1], snd_list[-1], 'ro', markersize=9, label='End point')
     plt.legend()
-    plt.title('Path of a single cell (Zoomed in view) ')
+    if has_died:
+        caption = 'The cell was born at iteration {} and died at iteration {}'.format(birth_date, death_date)
+        plt.plot(fst_list[death_date], snd_list[death_date])
+        plt.title('Path of a single cell (world view) \n{}'.format(caption))
+
+    else:
+        plt.title('Path of a single cell (world view)')
     plt.axis('off')
     plt.savefig(directory + '/zoomed_cell_path.png')
     plt.clf()
@@ -305,6 +321,7 @@ def double_MSD_plotter_fitted():
 
 def protein_concentration_plotter():
     cell_data = cell_parser(The_cell)
+    has_died, death_date, cell_id = cell_obituary_notice(The_cell)
 
     ap_list = cell_data[2]
     bp_list = cell_data[3]
@@ -321,7 +338,8 @@ def protein_concentration_plotter():
 
     fig, ax = plt.subplots(nrows=3, ncols=3)
     plt.plot(figsize=(20, 9))
-    plt.title('Protein and Ligand converntration for a given cell')
+
+    plt.title('Protein and Ligand concentration for a given cell')
 
     ax[0, 0].plot(time_list[15:-1], ap_list[15:-1], 'r')
     ax[0, 0].title.set_text('CheA_P')
@@ -531,7 +549,7 @@ def cell_obituary_notice(cell):
         return True, death_date_list[0], cell['id']
     else:
         print('The cell is buzzin')
-        return False
+        return False, cell_data[8], 0
 
 
 def cell_population_information():
@@ -688,7 +706,14 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
+        path_plotter()
+        zoomed_path_plotter()
+        life_death_analysis()
+        protein_concentration_plotter()
+        MSD_plotter()
         MSD_plotter_fitted()
+        average_ligand_concentration_plotter()
+        population_change()
 
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
@@ -723,10 +748,8 @@ def do_the_job():
     done_label.config(text='DONE !')
 
 
-
-
 def thread_starter():
-    pb.step(15)
+    pb.start()
     done_label.configure(text='Working...')
     threading.Thread(target=do_the_job).start()
 
@@ -840,3 +863,20 @@ done_label = Label(window, text="", fg="green", height=2, anchor="e", background
 done_label.config(font=("Arial", 14, 'bold'))
 done_label.place(x=215, y=345)
 window.mainloop()
+
+'''
+def cell_family_tree(cell):
+    global relatives
+    family = []
+    cell_data = cell_parser(cell)
+    birth_date = cell_data[11]
+
+    for next_cell in data[:-1]:
+        next_cell_data = cell_parser(next_cell)
+        if birth_date != 0:
+            if (cell_data[0][birth_date] == next_cell_data[0][birth_date]) and (
+                    cell_data[1][birth_date] == next_cell_data[1][birth_date]):
+                family.append(list(data).index(next_cell))
+    relatives = list(dict.fromkeys(relatives))
+    return relatives
+'''
