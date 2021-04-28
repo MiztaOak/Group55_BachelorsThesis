@@ -29,7 +29,7 @@ public abstract class AbstractInternals : IInternals
     {
         float dX = v * dT * MathFloat.Cos(angle), dZ = v * dT * MathFloat.Sin(angle);
 
-        while (location.GetX() + dX > 14 && location.GetX() - dX < -14 && location.GetZ() + dZ > 14 && location.GetZ() - dZ < -14)
+        while (location.GetX() + dX > 14 || location.GetX() + dX < -14 || location.GetZ() + dZ > 14 || location.GetZ() + dZ < -14)
         {
             angle = CalculateTumbleAngle();
             dX = v * dT * MathFloat.Cos(angle);
