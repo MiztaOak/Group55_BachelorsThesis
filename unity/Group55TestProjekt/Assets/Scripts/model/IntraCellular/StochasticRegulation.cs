@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
 
 public class StochasticRegulation : ICellRegulation
@@ -50,9 +49,9 @@ public class StochasticRegulation : ICellRegulation
             float[] p = {cAY, cAB, cA, cMR, cMB, cZ, cB};
             float[] v = h.Zip(p, (x1,x2) => x1*x2).ToArray(); //ai = hi*ci
             float a0 = v.Sum();
-            float r1 = Random.Range(0.0f,1.0f);
-            float r2 = Random.Range(0.0f,1.0f);
-            float tau = (1/a0)*Mathf.Log(1/r1);
+            float r1 = RandomFloat.Range(0.0f,1.0f);
+            float r2 = RandomFloat.Range(0.0f,1.0f);
+            float tau = (1/a0)*MathFloat.Log(1/r1);
             int mu = 0;
             float v1 = 0;
             float v2 = 0;
@@ -78,9 +77,8 @@ public class StochasticRegulation : ICellRegulation
                 default : break;
             }
             t += tau;
-            Debug.Log("YP: " + yp);
         }
-        float rand = Random.Range(0.0f,1.0f);
+        float rand = RandomFloat.Range(0.0f,1.0f);
         float bias = yp/(y+yp);
         if(bias > rand)
             return false; //tumble

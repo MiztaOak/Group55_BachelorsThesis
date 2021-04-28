@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-
+using System;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Random;
 
@@ -51,11 +50,11 @@ public class DistRegulation : ICellRegulation
 
         int nB = cheB-cheBP;
         int nY = cheY-cheYP;
-        int n = Mathf.Min(cheAP, nB); //Available particles
+        int n = Math.Min(cheAP, nB); //Available particles
         int nP = Binomial.Sample(pAB,n); //transfers to B
         cheBP += nP;
         cheAP -= nP; //Subtract from A
-        n = Mathf.Min(cheAP, nY); //Available particles
+        n = Math.Min(cheAP, nY); //Available particles
         nP = Binomial.Sample(pAY,n); //transfers to B
         cheYP += nP; //portion to Y
         cheAP -= nP; //Subtract from A

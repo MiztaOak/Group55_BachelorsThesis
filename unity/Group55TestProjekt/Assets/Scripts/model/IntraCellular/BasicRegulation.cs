@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 
 public class BasicRegulation : ICellRegulation
 {
@@ -15,7 +13,7 @@ public class BasicRegulation : ICellRegulation
             x += 2;
         else
             x -= 2;
-        float rand = Random.Range(0.0f, 1.0f);
+        float rand = RandomFloat.NextFloat();
         this.dc = c;
         if (rand * 10 > x)
             return true; //running

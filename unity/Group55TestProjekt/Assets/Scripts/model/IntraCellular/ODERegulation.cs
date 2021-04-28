@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
 using System.Linq;
 using Microsoft.Research.Oslo;
@@ -40,8 +39,6 @@ public class ODERegulation : ICellRegulation
     //How far we solve the ODEs for each time step
     private static double tSpan = 1;
 
-    private static System.Random rand = new System.Random();
-
     public double GetYP() { return this.Yp; }
     public double GetAP() { return this.Ap; }
     public double GetBP() { return this.Bp; }
@@ -80,11 +77,11 @@ public class ODERegulation : ICellRegulation
     public bool DecideState(float c)
     {
         SolveStiff(c);
-        double r = rand.NextDouble();
+        double r = RandomFloat.NextFloat();
         if( S > U )
         {
             S = 0.0f;
-            U = UnityEngine.Random.Range(0.0f,0.8f);
+            U = RandomFloat.Range(0f, 0.8f);
             return false; //Tumbling
         }
         else

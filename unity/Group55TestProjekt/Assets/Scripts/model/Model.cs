@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Collections;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 //Class that will manage the overarching data and operations that are needed by all of the program, sort of like the hub of the program
 public class Model
@@ -52,8 +49,8 @@ public class Model
         cells[0] = new List<Cell>();
         for (int i = 0; i < numCells; i++)
         {
-            float x = Random.Range(-12f, 12f);
-            float z = Random.Range(-12f, 12f);
+            float x = RandomFloat.Range(-12f, 12f);
+            float z = RandomFloat.Range(-12f, 12f);
             /* use this incase you want to prevent cells from spawning in the center
             float z;
             if (x < 3 && x > -3) //if x close to the center make sure that the cell does not spawn in the center
@@ -66,7 +63,7 @@ public class Model
             }
             */
 
-            Cell cell = BacteriaFactory.CreateNewCell(x, z, Random.Range(0, 2 * Mathf.PI), false);
+            Cell cell = BacteriaFactory.CreateNewCell(x, z, RandomFloat.Range(0, (float)(2 * Math.PI)), false);
             cells[0].Add(cell);
             allCells.Add(cell);
         }
@@ -297,7 +294,7 @@ public class Model
             if (!(cell.GetInternals() is ForwardInternals))
                 continue;
             IPointAdapter cellLocation = ((ForwardInternals)cell.GetInternals()).GetPosition(iteration);
-            if (Mathf.Pow(cellLocation.GetX() - location.GetX(), 2) + Mathf.Pow(cellLocation.GetZ() - location.GetZ(), 2) <= distance)
+            if (MathFloat.Pow(cellLocation.GetX() - location.GetX(), 2) + MathFloat.Pow(cellLocation.GetZ() - location.GetZ(), 2) <= distance)
                 num++;
         }
 

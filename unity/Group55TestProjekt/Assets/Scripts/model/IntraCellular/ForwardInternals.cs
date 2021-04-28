@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
-using UnityEngine;
 
 public class ForwardInternals : IInternals
 {
@@ -135,13 +134,13 @@ public class ForwardInternals : IInternals
         }
         //else
         //{
-        float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
+        float dX = v * dT * MathFloat.Cos(angle), dZ = v * dT * MathFloat.Sin(angle);
 
         while (positions[step].GetX() + dX > 14 || positions[step].GetX() + dX < -14 || positions[step].GetZ() + dZ > 14 || positions[step].GetZ() + dZ < -14)
         {
             angle = CalculateTumbleAngle();
-            dX = v * dT * Mathf.Cos(angle);
-            dZ = v * dT * Mathf.Sin(angle);
+            dX = v * dT * MathFloat.Cos(angle);
+            dZ = v * dT * MathFloat.Sin(angle);
         }
         positions[step].Add(dX, dZ);
         //}
@@ -152,11 +151,11 @@ public class ForwardInternals : IInternals
     private float CalculateTumbleAngle()
     {
         //Tumble angle based on article (Edgington)
-        float newAngle = UnityEngine.Random.Range(18f, 98f);
-        float rand = UnityEngine.Random.Range(0.0f, 1.0f);
+        float newAngle = RandomFloat.Range(18f, 98f);
+        float rand = RandomFloat.NextFloat();
         if (rand > 0.5)
             newAngle *= -1;
-        newAngle *= Mathf.PI / 180;
+        newAngle *= MathFloat.PI / 180;
         newAngle += this.angle;
         return newAngle;
     }
@@ -227,8 +226,6 @@ public class ForwardInternals : IInternals
         }
         currentIteration = currentIteration+1 > iterations ? iterations : currentIteration+1;
 
-        if (point == null)
-            Debug.Log("Fucked");
         return point;
     }
 

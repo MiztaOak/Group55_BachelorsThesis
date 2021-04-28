@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class HazardRegulation : ICellRegulation
 {
@@ -15,18 +14,22 @@ public class HazardRegulation : ICellRegulation
 
     private float h(float c)
     { //Basic logistic function with x0 = 0.5, L = 1, k = 1.
-        return (1 / (1 + Mathf.Exp(-(c-0.5f))));
+        //return (0.1f / (1 + MathFloat.Exp((c-1))));
+        //return (1/ (2 + MathFloat.Exp(-(c - 3))));
+        //return 1 / (1 + MathFloat.Exp(-8 * (c - 0.8f)));
+        return c < 0 ? 0.21f : 0.09f;
     }
 
     public bool DecideState(float c)
     {
+        float dC = c-l;
         l = c;
         if ( U == 0 )
         { //Step 1, initialize
-            U = Random.Range(0.0f,1.0f);
+            U = RandomFloat.NextFloat();
             B = 0;
         }
-        float BNext = B + h(c/Model.GetInstance().environment.GetMaxVal())*(1-B); //Step 2
+        float BNext = B + h(dC)*(1-B); //Step 2
         if( BNext > U )
         { //Tumble and return to step 1
             U = 0;
