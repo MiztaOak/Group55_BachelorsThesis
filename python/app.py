@@ -1,4 +1,5 @@
 import json as json
+import math
 import os
 import random
 import threading
@@ -19,7 +20,7 @@ window.resizable(width=False, height=False)
 window.configure(bg='white')
 
 sns.set(rc={'figure.figsize': (14, 10)})
-#sns.set_context(font_scale=0.5)
+# sns.set_context(font_scale=0.5)
 
 # Data setup
 
@@ -254,7 +255,7 @@ def MSD_plotter_fitted():
 
     polynomial_fitter = np.poly1d(np.polyfit(time, MSD_list, 2))
     fitted_line = polynomial_fitter(unfitted_line)
-    plt.plot(unfitted_line, fitted_line,'b')
+    plt.plot(unfitted_line, fitted_line, 'b')
     plt.plot(time, MSD_list, 'r')
 
     colors = ['green', 'blue']
@@ -277,7 +278,7 @@ def double_MSD_plotter():
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
-    plt.title('Mean Squared Displacement (MSD)')
+    fig.suptitle('Mean Squared Displacement (MSD)', fontsize=15)
     fig.tight_layout(pad=3.0)
 
     ax1.plot(fst_time, fst_MSD_list)
@@ -308,7 +309,7 @@ def double_MSD_plotter_fitted():
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
-    plt.title('polynomial fitted Mean Squared Displacement (MSD)')
+    fig.suptitle('polynomial fitted Mean Squared Displacement (MSD)', fontsize=15)
     fig.tight_layout(pad=3.0)
 
     ax1.plot(unfitted_line, fitted_line, 'b.')
@@ -318,7 +319,7 @@ def double_MSD_plotter_fitted():
     ax1.title.set_text('First file')
 
     ax2.plot(unfitted_line2, fitted_line2, 'b.')
-    ax2.plot(snd_time, snd_MSD_list,'r-')
+    ax2.plot(snd_time, snd_MSD_list, 'r-')
     ax2.set_xlabel('iteration')
     ax2.set_ylabel('MSD score')
     ax2.title.set_text('Second file')
@@ -457,7 +458,7 @@ def double_population_change():
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
-    plt.title('Population change throughout the simulation')
+    fig.suptitle('Population change throughout the simulation', fontsize=15)
     fig.tight_layout(pad=3.0)
 
     ax1.plot(cell_data[7], data[-1])
@@ -532,7 +533,7 @@ def double_average_ligand_concentration_plotter():
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
-    plt.title('Population change throughout the simulation')
+    fig.suptitle('Population change throughout the simulation', fontsize=15)
     fig.tight_layout(pad=3.0)
 
     ax1.plot(fst_iterations[3:], fst_l_sum_list[3:])
@@ -579,6 +580,63 @@ def cell_population_information():
 
     return new_born_cells, dead_cells, survived_cells
 
+
+def average_distance_calc(d, cell):
+    init_data = cell_parser(cell)
+    iterations = init_data[7]
+    avg_distance_iteration = []
+    avg_distance_list = []
+    cell_index = 0
+
+    for i in iterations:
+        while cell_index < len(d) - 1:
+            x = d[cell_index]['Iterations'][i]['x']
+            z = d[cell_index]['Iterations'][i]['z']
+            dist = math.hypot(x - 0, z - 0)
+            avg_distance_iteration.append(dist)
+            cell_index += 1
+
+        avg_dist = np.mean(avg_distance_iteration)
+        avg_distance_list.append(avg_dist)
+        cell_index = 0
+        avg_distance_iteration.clear()
+
+    return avg_distance_list, init_data[7]
+
+
+def average_distance_plotter():
+    average_distance, time = average_distance_calc(data, The_cell)
+    plt.plot(time, average_distance)
+    plt.xlabel('iteration')
+    plt.ylabel('distance in unity distance unit')
+    plt.title('Average distance for the cell population from origin')
+    plt.savefig(directory + '/average_distance')
+    plt.clf()
+
+
+def double_average_distance_plotter():
+    fst_average_distance, fst_time = average_distance_calc(data, The_cell)
+    snd_average_distance, snd_time = average_distance_calc(secondary_data, secondary_cell)
+
+    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    plt.plot(figsize=(16, 12))
+    fig.suptitle('Averga distance for the cell population from origin', fontsize=15)
+    fig.tight_layout(pad=3.0)
+
+    ax1.plot(fst_time, fst_average_distance)
+    ax1.set_ylabel('Average distance for the cell population from origin')
+    ax1.set_xlabel('iteration')
+    ax1.title.set_text('First file')
+
+    ax2.plot(snd_time, snd_average_distance)
+    ax2.set_ylabel('Average distance for the cell population from origin')
+    ax2.set_xlabel('iteration')
+    ax2.title.set_text('Second file')
+
+    plt.savefig(directory + '/double_average_distance')
+    plt.clf()
+
+
 '''
 def pdf_generator():
     a, b, c = cell_population_information()
@@ -598,6 +656,7 @@ def pdf_generator():
     pdf.cell(0, 25, "${}".format(b), 0, 1)
     pdf.output('test.pdf')
 '''
+
 
 def populate_data_structures(filename):
     global data_path
@@ -641,7 +700,6 @@ def browse_file():
         populate_data_structures(filename)
         name = os.path.basename(filename)
         label_file_explorer.configure(text="File Opened: " + name)
-        fst_file_label.configure(text="File Opened: " + name)
         visualize_button.configure(state='active')
 
 
@@ -715,6 +773,7 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
+
         path_plotter()
         zoomed_path_plotter()
         life_death_analysis()
@@ -723,6 +782,8 @@ def do_the_job():
         MSD_plotter_fitted()
         average_ligand_concentration_plotter()
         population_change()
+
+        average_distance_plotter()
 
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
@@ -738,6 +799,7 @@ def do_the_job():
             MSD_plotter()
             MSD_plotter_fitted()
             average_ligand_concentration_plotter()
+            average_distance_plotter()
         go_to_dir_button.configure(state='active')
         visualize_button.configure(state='disable')
         label_file_explorer.configure(text="No file selected")
@@ -747,6 +809,7 @@ def do_the_job():
         double_population_change()
         double_MSD_plotter()
         double_MSD_plotter_fitted()
+        double_average_distance_plotter()
 
         go_to_dir_button.configure(state='active')
         fst_file_label.configure(text="No file selected")
@@ -826,7 +889,6 @@ snd_button_explore.configure(state='disable')
 visualize_button = Button(window, text='Visualize the data', command=thread_starter, bg='white', width=15, height=1)
 visualize_button.place(x=195, y=220)
 visualize_button.configure(state='disabled')
-
 
 go_to_dir_button = Button(window, text='Go to Output folder', command=go_to_dir, bg='white', width=15, height=1)
 go_to_dir_button.place(x=195, y=270)
