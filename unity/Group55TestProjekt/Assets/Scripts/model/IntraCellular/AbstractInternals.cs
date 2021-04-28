@@ -6,7 +6,7 @@ public abstract class AbstractInternals : IInternals
     protected readonly float dT; //time step
     protected float angle; //current angle
 
-    private Model model;
+    protected Model model;
     protected ICellRegulation regulator;
 
     public abstract IInternals Copy();

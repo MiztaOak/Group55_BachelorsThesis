@@ -10,7 +10,6 @@ public class Model
     private DataToExport cellData;
     private Iteration oneIteration;
 
-
     public AbstractEnvironment
         environment { get; set; } //allows for the environment to be changed by the program if needed
 
@@ -20,7 +19,7 @@ public class Model
     private List<Cell> allCells; //all cells that where ever present in the simulation
     private List<Cell>[] cells; //matrix where each list contains the cells that existed in that time step
 
-    private int[] numCells;
+    private int initalNumOfCells;
 
     private float[] averageLigandC;
 
@@ -51,19 +50,8 @@ public class Model
         {
             float x = RandomFloat.Range(-12f, 12f);
             float z = RandomFloat.Range(-12f, 12f);
-            /* use this incase you want to prevent cells from spawning in the center
-            float z;
-            if (x < 3 && x > -3) //if x close to the center make sure that the cell does not spawn in the center
-            {
-                z = Random.Range(3f, 12f) * (Random.value <= 0.5 ? -1 : 1);
-            }
-            else
-            {
-                z = Random.Range(-12f, 12f);
-            }
-            */
 
-            Cell cell = BacteriaFactory.CreateNewCell(x, z, RandomFloat.Range(0, (float)(2 * Math.PI)), false);
+            Cell cell = BacteriaFactory.CreateNewCell(x, z, RandomFloat.Range(0, 2 * MathFloat.PI), false);
             cells[0].Add(cell);
             allCells.Add(cell);
         }
@@ -71,8 +59,6 @@ public class Model
 
     public void SimulateTimeStep(int timeStep)
     {
-        if (timeStep != 0)
-            numCells[timeStep] = numCells[timeStep - 1];
 
         cells[timeStep - 1].ForEach(c => cells[timeStep].Add(c)); //Copy all the cells from the previous time step
         //add code for updating the environment or something i guess
@@ -92,10 +78,8 @@ public class Model
         cells = new List<Cell>[iterations + 1];
         for (int i = 0; i < cells.Length; i++)
             cells[i] = new List<Cell>();
-
+        initalNumOfCells = numCells;
         BacteriaFactory.SetCellIterations(iterations);
-        this.numCells = new int[iterations + 1];
-        this.numCells[0] = numCells;
         timeScaleFactor = 1;
         cellBirthListeners = new List<ICellBirthListener>();
         allCells = new List<Cell>();
@@ -107,8 +91,7 @@ public class Model
     public void AddCell(Cell cell, int iteration)
     {
         cells[iteration].Add(cell);
-        allCells.Add(cell);
-        numCells[iteration]++;
+        allCells.Add(cell);      
     }
 
     public void GiveBirthToCell(Cell cell)
@@ -121,7 +104,6 @@ public class Model
     //Method that removes a cell that has died
     public void KillCell(int iteration, Cell cell)
     {
-        numCells[iteration]--;
         cells[iteration].Remove(cell);
     }
 
@@ -218,7 +200,7 @@ public class Model
                 averageC += (float) ((ForwardInternals) cells[i + 1][j].GetInternals()).GetInternalStates()[i + 1].l;
             }
 
-            averageLigandC[i] = (numCells[i + 1] != 0 ? averageC / numCells[i + 1] : 0);
+            averageLigandC[i] = (cells[i + 1].Count != 0 ? averageC / cells[i + 1].Count : 0);
         }
 
         return averageLigandC;
@@ -278,7 +260,7 @@ public class Model
 
     public int GetNumCells(int iteration)
     {
-        return numCells[iteration]; //might cause problems later
+        return iteration == 0 ? initalNumOfCells : (cells.Length > iteration ? cells[iteration].Count : 0);
     }
 
     //Method that returns the number of cells that are within a given distance of the given location

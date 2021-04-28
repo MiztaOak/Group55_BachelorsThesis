@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
+﻿
+//Adapter for the System.Random class that converts it from double to float
 public class RandomFloat
 {
     private static System.Random random;

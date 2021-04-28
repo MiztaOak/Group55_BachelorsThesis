@@ -50,7 +50,6 @@ public class SetupScene : MonoBehaviour, ICellBirthListener
         {
             Instantiate(food, new Vector3(environment.GetX(), 1.88f, environment.GetX()), Quaternion.identity);
         }
-
-        
+    
     }  
 }

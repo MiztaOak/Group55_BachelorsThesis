@@ -55,7 +55,6 @@ public class ForwardInternals : AbstractInternals
         //Fix the states so that there are no null pointers this should maybe 
         for(int i = 0; i <= iteration; i++)
         {
-           // Debug.Log("i = " + i);
             positions[i] = locations[i].Copy();
             this.states[i] = states[i];
         }
