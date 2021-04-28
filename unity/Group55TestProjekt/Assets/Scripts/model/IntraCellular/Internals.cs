@@ -1,73 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
+﻿
 /*Class representing the internals of the cell this is for the non smart version
  * The class handles the calculation of the cells movement and returns the next point when needed 
 */
-public class Internals : IInternals
+public class Internals : AbstractInternals
 {
-    private Model model;
-    private ICellRegulation regulator;
     private IPointAdapter location;
 
-    private readonly float v; //velocity
-    private readonly float dT; //time step
-    private float angle; //current angle
 
-    public Internals(float x, float z, float v, float dT, float angle, ICellRegulation regulator)
+    public Internals(float x, float z, float v, float dT, float angle, ICellRegulation regulator): base(v,dT,angle,regulator)
     {
-        this.model = Model.GetInstance();
-        this.regulator = regulator;
-
         location = new Vector3Adapter(x, z);
-
-        this.v = v;
-        this.dT = dT;
-        this.angle = angle;
     }
 
-    private void CalculateNextLocation()
+    public override IPointAdapter GetNextLocation()
     {
-        if(!GetRunningState(location.GetX(), location.GetZ()))
+        if (!GetRunningState(location.GetX(), location.GetZ())) //check if tumble
             angle = CalculateTumbleAngle();
-        float dX = v * dT * MathFloat.Cos(angle), dZ = v * dT * MathFloat.Sin(angle);
-
-        while (location.GetX() + dX > 14 && location.GetX() - dX < -14 && location.GetZ() + dZ > 14 && location.GetZ() - dZ < -14)
-        {
-            angle = CalculateTumbleAngle();
-            dX = v * dT * MathFloat.Cos(angle);
-            dZ = v * dT * MathFloat.Sin(angle);
-        }  
-          location.Add(dX, dZ);
-    }
-
-    //Returns absolute tumble angle in radians
-    private float CalculateTumbleAngle()
-    {
-        //Tumble angle based on article (Edgington)
-        float newAngle = RandomFloat.Range(18f, 98f);
-        float rand = RandomFloat.Range(0.0f, 1.0f);
-        if (rand > 0.5)
-            newAngle *= -1;
-        newAngle *= MathFloat.PI / 180;
-        newAngle += this.angle;
-        return newAngle;
-    }
-
-    private bool GetRunningState(float x, float z)
-    {
-        float c = model.environment.getConcentration(x, z);
-        bool run = regulator.DecideState(c);
-        return run;
-    }
-
-    public IPointAdapter GetNextLocation()
-    {
-        CalculateNextLocation();
+        CalculateNextLocation(location); //calculate next position
         return location;
     }
 
-    public State GetInternalState()
+    public override State GetInternalState()
     {
         State state = new State();
         if (this.regulator is ODERegulation)
@@ -82,22 +35,17 @@ public class Internals : IInternals
         return state;
     }
 
-    public float GetAngle()
-    {
-        return angle;
-    }
-
-    public IInternals Copy()
+    public override IInternals Copy()
     {
         return new Internals(location.GetX(), location.GetZ(), v, dT, angle, regulator.Copy());
     }
 
-    public bool IsDead()
+    public override bool IsDead()
     {
         return false;
     }
 
-    public bool IsSplit()
+    public override bool IsSplit()
     {
         return false;
     }
