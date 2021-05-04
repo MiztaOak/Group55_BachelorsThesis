@@ -17,7 +17,7 @@ public class HazardRegulation : ICellRegulation
         //return (0.1f / (1 + MathFloat.Exp((c-1))));
         //return (1/ (2 + MathFloat.Exp(-(c - 3))));
         //return 1 / (1 + MathFloat.Exp(-8 * (c - 0.8f)));
-        return c < 0 ? 0.21f : 0.09f;
+        return c < 0 ? 0.5f : 0.09f;
     }
 
     public bool DecideState(float c)
