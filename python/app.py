@@ -238,13 +238,45 @@ def MSD_calc(cell):
     return MSD_list, cell_data[7]
 
 
+def MSD_calc_dynamic():
+    msd_score_list = np.zeros(data_len)
+    for i in range(data_len):
+        start_x = data[i]['Iterations'][0]['x']
+        start_z = data[i]['Iterations'][0]['z']
+        end_x = data[i]['Iterations'][-1]['x']
+        end_z = data[i]['Iterations'][-1]['z']
+        life_span = data[i]['Iterations'][0]['death_date'] - data[i]['Iterations'][0]['birth_date']
+        if life_span == 0:
+            life_span = 1
+        msd_score_list[i] = math.hypot(end_x - start_x, end_z - start_z) / life_span + msd_score_list[i - 1]
+        # msd_score_list.append(dist)
+
+    MSD_score = np.mean(msd_score_list)
+    msd_score_list = [i / len(msd_score_list) for i in msd_score_list]
+
+    return MSD_score, msd_score_list
+
+
 def MSD_plotter():
+    score, MSD_list = MSD_calc_dynamic()
+    length = len(MSD_calc(The_cell)[1])  # TODO: PLS CHANGE
+    time = np.linspace(0, length, len(MSD_list))
+
+    plt.plot(time, MSD_list)
+    plt.title('Mean square displacement (MSD) for the cell population')
+    plt.xlabel('iterations \nMSD score for the population: {}'.format(score))
+    plt.ylabel('MSD')
+    plt.savefig(directory + '/MSD.png')
+    plt.clf()
+
+
+def MSD_plotter2():
     MSD_list, time = MSD_calc(The_cell)
     plt.plot(time, MSD_list)
     plt.title('Mean square displacement (MSD) for a random cell')
     plt.xlabel('iterations')
     plt.ylabel('MSD score')
-    plt.savefig(directory + '/MSD.png')
+    plt.savefig(directory + '/MSD2.png')
     plt.clf()
 
 
@@ -773,12 +805,14 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
+        print('THis is the output {}'.format(MSD_calc_dynamic()))
+        MSD_plotter()
 
         path_plotter()
         zoomed_path_plotter()
         life_death_analysis()
         protein_concentration_plotter()
-        MSD_plotter()
+
         MSD_plotter_fitted()
         average_ligand_concentration_plotter()
         population_change()
