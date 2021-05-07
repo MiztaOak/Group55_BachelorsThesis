@@ -33,6 +33,7 @@ public class CameraController : MonoBehaviour {
 
         // For camera view
         if (Input.GetMouseButtonDown(1)) {
+            Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked; // Hide & lock the cursor
         }
         if (Input.GetMouseButtonUp(1)) {
