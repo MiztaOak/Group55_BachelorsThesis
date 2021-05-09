@@ -9,6 +9,7 @@ from tkinter import filedialog, Button, Label, Tk, Menu, messagebox, IntVar, ttk
 
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.optimize as opt
 import seaborn as sns
 ## Gui Code
 from matplotlib.lines import Line2D
@@ -38,6 +39,11 @@ secondary_data_path = ''
 secondary_data_len = 0
 secondary_data = {}
 secondary_cell = {}
+
+population_count_list = []
+average_distances_list = []
+list_of_MSDs = []
+list_of_avg_l_conc = []
 
 
 def createFolder(folder_name):
@@ -257,8 +263,49 @@ def MSD_calc_dynamic():
     return MSD_score, msd_score_list
 
 
+def growth_calc():
+    t = cell_parser(The_cell)[8]  # time
+    k = 180  # population_max_capacity
+    P = data[-1]  # population_size_at_iteration
+    Po = data[-1][0]  # initial population size
+    r_list = []
+
+    for i in range(t):
+        r = np.log((P[i] * k - P[i] * Po) / (Po * k - P[i] * Po)) / t
+        r_list.append(r)
+
+    return np.mean(r_list)
+
+
+def curve_equation_calc(t, K, r):
+    P0 = data[-1][0]
+    output = (P0 * K * math.exp(r * t)) / (K + P0 * (math.exp(r * t) - 1))
+
+    return output
+
+
+'''
+def curve_optimizer():
+    init_data = cell_parser(The_cell)
+    x_data = np.linspace(0, init_data[8], init_data[8])
+    y_data = average_of_summed_lists(population_count_list)
+    optimized_data = opt.curve_fit(np.vectorize(curve_equation_calc), x_data, y_data, np.array([180, 0.01]))
+    print('OPTIMIZED: ', optimized_data)
+    for i in range(len(population_count_list)):
+        plt.plot(x_data, population_count_list[i], label='Simulation {}'.format(i + 1))
+    y_pred = [curve_equation_calc(i, optimized_data[0][0], optimized_data[0][1]) for i in x_data]
+    plt.plot(x_data, y_pred, label='fitted curve')
+    plt.xlabel('time in iterations')
+    plt.ylabel('')
+    plt.savefig(directory + '/optimized_curve.png')
+    plt.clf()
+'''
+
+
 def MSD_plotter():
+    global list_of_MSDs
     score, MSD_list = MSD_calc_dynamic()
+    list_of_MSDs.append(MSD_list)
     length = len(MSD_calc(The_cell)[1])  # TODO: PLS CHANGE
     time = np.linspace(0, length, len(MSD_list))
 
@@ -267,16 +314,6 @@ def MSD_plotter():
     plt.xlabel('iterations \nMSD score for the population: {}'.format(score))
     plt.ylabel('MSD')
     plt.savefig(directory + '/MSD.png')
-    plt.clf()
-
-
-def MSD_plotter2():
-    MSD_list, time = MSD_calc(The_cell)
-    plt.plot(time, MSD_list)
-    plt.title('Mean square displacement (MSD) for a random cell')
-    plt.xlabel('iterations')
-    plt.ylabel('MSD score')
-    plt.savefig(directory + '/MSD2.png')
     plt.clf()
 
 
@@ -474,7 +511,12 @@ def heatmap_plotter():
 '''
 
 
+def average_of_summed_lists(list_of_lists):
+    return np.array([sum(x) for x in zip(*list_of_lists)]) / len(list_of_lists)
+
+
 def population_change():
+    global population_count_list
     cell_data = cell_parser(The_cell)
     plt.plot(cell_data[7], data[-1])
     plt.title('Population change throughout the simulation')
@@ -482,6 +524,7 @@ def population_change():
     plt.xlabel('iteration')
     plt.savefig(directory + '/population_change')
     plt.clf()
+    population_count_list.append(data[-1])
 
 
 def double_population_change():
@@ -549,7 +592,9 @@ def average_ligand_concentration_calc(cell, Data):
 
 
 def average_ligand_concentration_plotter():
+    global list_of_avg_l_conc
     iterations, l_sum_list = average_ligand_concentration_calc(The_cell, data)
+    list_of_avg_l_conc.append(l_sum_list)
 
     plt.plot(iterations[3:], l_sum_list[3:])
     plt.ylabel('Average concentration')
@@ -614,6 +659,7 @@ def cell_population_information():
 
 
 def average_distance_calc(d, cell):
+    global average_distances_list
     init_data = cell_parser(cell)
     iterations = init_data[7]
     avg_distance_iteration = []
@@ -633,11 +679,13 @@ def average_distance_calc(d, cell):
         cell_index = 0
         avg_distance_iteration.clear()
 
-    return avg_distance_list, init_data[7]
+    average_distances_list.append(avg_distance_list)
+
+    return avg_distance_list, init_data[7], average_distances_list
 
 
 def average_distance_plotter():
-    average_distance, time = average_distance_calc(data, The_cell)
+    average_distance, time, _ = average_distance_calc(data, The_cell)
     plt.plot(time, average_distance)
     plt.xlabel('iteration')
     plt.ylabel('distance in unity distance unit')
@@ -647,8 +695,8 @@ def average_distance_plotter():
 
 
 def double_average_distance_plotter():
-    fst_average_distance, fst_time = average_distance_calc(data, The_cell)
-    snd_average_distance, snd_time = average_distance_calc(secondary_data, secondary_cell)
+    fst_average_distance, fst_time, _ = average_distance_calc(data, The_cell)
+    snd_average_distance, snd_time, _ = average_distance_calc(secondary_data, secondary_cell)
 
     fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
     plt.plot(figsize=(16, 12))
@@ -666,6 +714,51 @@ def double_average_distance_plotter():
     ax2.title.set_text('Second file')
 
     plt.savefig(directory + '/double_average_distance')
+    plt.clf()
+
+
+def means_plotter():
+    means_dir = directory + 'means'
+    createFolder(means_dir)
+    init_data = cell_parser(The_cell)
+    time = init_data[7]
+
+    MSD_mean = average_of_summed_lists(list_of_MSDs)
+    distance_mean = average_of_summed_lists(average_distances_list)
+    ligand_c_mean = average_of_summed_lists(list_of_avg_l_conc)
+
+    plt.plot(np.linspace(0, len(time), len(MSD_mean)), MSD_mean)
+    plt.xlabel('time')
+    plt.ylabel('MSD score')
+    plt.title('Average Mean Square Displacement (MSD) for a simulation batch with size {}'.format(len(MSD_mean)))
+    plt.savefig(means_dir + '/MSD_mean')
+    plt.clf()
+
+    plt.plot(time[3:], distance_mean[3:])
+    plt.xlabel('time')
+    plt.ylabel('distance in unity unit')
+    plt.title('Average distance from center for a simulation batch with size {}'.format(len(MSD_mean)))
+    plt.savefig(means_dir + '/distance_mean')
+    plt.clf()
+
+    plt.plot(time[3:], ligand_c_mean[3:])
+    plt.xlabel('time')
+    plt.ylabel('concentration')
+    plt.title('Average ligand concentration for a simulation batch with size {}'.format(len(MSD_mean)))
+    plt.savefig(means_dir + '/ligand_c_mean')
+    plt.clf()
+
+    x_data = np.linspace(0, init_data[8], init_data[8])
+    y_data = average_of_summed_lists(population_count_list)
+    optimized_data = opt.curve_fit(np.vectorize(curve_equation_calc), x_data, y_data, np.array([180, 0.01]))
+    print('OPTIMIZED: ', optimized_data)
+    for i in range(len(population_count_list)):
+        plt.plot(x_data, population_count_list[i], label='Simulation {}'.format(i + 1))
+    y_pred = [curve_equation_calc(i, optimized_data[0][0], optimized_data[0][1]) for i in x_data]
+    plt.plot(x_data, y_pred, label='fitted curve')
+    plt.xlabel('time in iterations.\nr={} , k={} .'.format(optimized_data[0][1], optimized_data[0][0]))
+    plt.ylabel('population')
+    plt.savefig(means_dir + '/optimized_curve.png')
     plt.clf()
 
 
@@ -792,6 +885,7 @@ def browse_folder():
 
 
 def on_browse_click():
+    plt.clf()
     done_label.configure(text='')
     if radio_choice.get() == 1:
         browse_file()
@@ -805,20 +899,6 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
-        print('THis is the output {}'.format(MSD_calc_dynamic()))
-        MSD_plotter()
-
-        path_plotter()
-        zoomed_path_plotter()
-        life_death_analysis()
-        protein_concentration_plotter()
-
-        MSD_plotter_fitted()
-        average_ligand_concentration_plotter()
-        population_change()
-
-        average_distance_plotter()
-
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
         label_file_explorer.configure(text="No file selected")
@@ -827,6 +907,7 @@ def do_the_job():
         for file in file_list:
             populate_data_structures(file)
             path_plotter()
+
             zoomed_path_plotter()
             life_death_analysis()
             protein_concentration_plotter()
@@ -834,6 +915,10 @@ def do_the_job():
             MSD_plotter_fitted()
             average_ligand_concentration_plotter()
             average_distance_plotter()
+
+            population_change()
+
+        means_plotter()
         go_to_dir_button.configure(state='active')
         visualize_button.configure(state='disable')
         label_file_explorer.configure(text="No file selected")
