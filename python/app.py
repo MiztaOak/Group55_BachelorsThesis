@@ -718,7 +718,7 @@ def double_average_distance_plotter():
 
 
 def means_plotter():
-    means_dir = directory + 'means'
+    means_dir = 'Average plots batch simulation'
     createFolder(means_dir)
     init_data = cell_parser(The_cell)
     time = init_data[7]
@@ -730,21 +730,21 @@ def means_plotter():
     plt.plot(np.linspace(0, len(time), len(MSD_mean)), MSD_mean)
     plt.xlabel('time')
     plt.ylabel('MSD score')
-    plt.title('Average Mean Square Displacement (MSD) for a simulation batch with size {}'.format(len(MSD_mean)))
+    plt.title('Average Mean Square Displacement (MSD) for a simulation batch with size {}'.format(len(list_of_MSDs)))
     plt.savefig(means_dir + '/MSD_mean')
     plt.clf()
 
     plt.plot(time[3:], distance_mean[3:])
     plt.xlabel('time')
     plt.ylabel('distance in unity unit')
-    plt.title('Average distance from center for a simulation batch with size {}'.format(len(MSD_mean)))
+    plt.title('Average distance from center for a simulation batch with size {}'.format(len(list_of_MSDs)))
     plt.savefig(means_dir + '/distance_mean')
     plt.clf()
 
     plt.plot(time[3:], ligand_c_mean[3:])
     plt.xlabel('time')
     plt.ylabel('concentration')
-    plt.title('Average ligand concentration for a simulation batch with size {}'.format(len(MSD_mean)))
+    plt.title('Average ligand concentration for a simulation batch with size {}'.format(len(list_of_MSDs)))
     plt.savefig(means_dir + '/ligand_c_mean')
     plt.clf()
 
@@ -755,10 +755,43 @@ def means_plotter():
     for i in range(len(population_count_list)):
         plt.plot(x_data, population_count_list[i], label='Simulation {}'.format(i + 1))
     y_pred = [curve_equation_calc(i, optimized_data[0][0], optimized_data[0][1]) for i in x_data]
-    plt.plot(x_data, y_pred, label='fitted curve')
-    plt.xlabel('time in iterations.\nr={} , k={} .'.format(optimized_data[0][1], optimized_data[0][0]))
+    plt.plot(x_data, y_pred, label='fitted curve',linewidth=2.5)
+    plt.xlabel('time in iterations.\nr={} , k={} .'.format(optimized_data[0][1], int(optimized_data[0][0])))
     plt.ylabel('population')
+    plt.legend()
     plt.savefig(means_dir + '/optimized_curve.png')
+    plt.clf()
+
+    for i in range(len(list_of_MSDs)):
+        plt.plot(np.linspace(0, len(time), len(list_of_MSDs[i])), list_of_MSDs[i], label='Simulation {}'.format(i + 1))
+    plt.plot(np.linspace(0, len(time), len(MSD_mean)), MSD_mean, label='Average curve',linewidth=2.5)
+    plt.xlabel('time')
+    plt.ylabel('MSD score')
+    plt.legend()
+    plt.title('Average Mean Square Displacement (MSD) for a simulation batch with size {}'.format(len(list_of_MSDs)))
+    plt.savefig(means_dir + '/MSD_mean_multiple')
+    plt.clf()
+
+    for i in range(len(average_distances_list)):
+        plt.plot(time[3:], average_distances_list[i][3:],
+                 label='Simulation {}'.format(i + 1))
+    plt.plot(time[3:], distance_mean[3:], label='Average curve',linewidth=2.5)
+    plt.xlabel('time')
+    plt.legend()
+    plt.ylabel('distance in unity unit')
+    plt.title('Average distance from center for a simulation batch with size {}'.format(len(list_of_MSDs)))
+    plt.savefig(means_dir + '/distance_mean_multiple')
+    plt.clf()
+
+    for i in range(len(list_of_avg_l_conc)):
+        plt.plot(time[3:], list_of_avg_l_conc[i][3:],
+                 label='Simulation {}'.format(i + 1))
+    plt.plot(time[3:], ligand_c_mean[3:], label='Average curve',linewidth=2.5)
+    plt.xlabel('time')
+    plt.ylabel('concentration')
+    plt.legend()
+    plt.title('Average ligand concentration for a simulation batch with size {}'.format(len(list_of_MSDs)))
+    plt.savefig(means_dir + '/ligand_c_mean_multiple')
     plt.clf()
 
 
