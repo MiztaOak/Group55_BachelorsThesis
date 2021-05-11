@@ -26,7 +26,6 @@ public static class EnvironmentFactory
             CreateBasicEnvionment(d, i_0,0,0,isDynamic);
             return;
         }
-        float x = 10, y = 10;
 
         if (n > 5)
             n = 5;
@@ -39,10 +38,10 @@ public static class EnvironmentFactory
 
     public static void CreateMultiEnvironment(float d, float i_0)
     {
-        Model.GetInstance().environment = new MultiLigandEnvironment(new float[] { d, d }, new float[] { i_0, i_0 }, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 49f, 49f }, 2);
+        Model.GetInstance().environment = new MultiLigandEnvironment(new float[] { d, d }, i_0, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 49f, 49f }, 2);
     }
 
-    public static void CreateMultiEnvironment(float[] d, float[] i_0)
+    public static void CreateMultiEnvironment(float[] d, float i_0)
     {
         Model.GetInstance().environment = new MultiLigandEnvironment(d, i_0, new float[] { 10, -10 }, new float[] { 10, -10 }, new float[] { 49f, 49f }, 2);
     }

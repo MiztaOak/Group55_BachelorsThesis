@@ -41,17 +41,11 @@ public class BacteriaFactory
             case RegulatorType.ODE:
                 regulator = new ODERegulation();
                 break;
-            case RegulatorType.Hazard:
-                regulator = new HazardRegulation();
-                break;
-            case RegulatorType.Distance:
-                regulator = new DistRegulation();
-                break;
-            case RegulatorType.Bernoulli:
-                regulator = new BernoulliRegulation();
+            case RegulatorType.Delta:
+                regulator = new DeltaRegulation();
                 break;
             default:
-                regulator = new BasicRegulation();
+                regulator = new DeltaRegulation();
                 break;
         }
         

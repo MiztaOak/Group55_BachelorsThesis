@@ -3,16 +3,17 @@ public class MultiLigandEnvironment : AbstractEnvironment
 {
     private AbstractEnvironment[] environments;
     private float max = 0;
+    private float i_0;
 
-    public MultiLigandEnvironment(float[] d, float[] i_0, float[] x, float[] z, float[] max, int n)
+    public MultiLigandEnvironment(float[] d, float i_0, float[] x, float[] z, float[] max, int n)
     {
         environments = new AbstractEnvironment[n];
         for(int i = 0; i < n; i++)
         {
             this.max += max[i];
-            environments[i] = new Environment(d[i], i_0[i], x[i], z[i], max[i]);
+            environments[i] = new Environment(d[i], 0, x[i], z[i], max[i]);
         }
-        
+        this.i_0 = i_0;
     }
 
     public MultiLigandEnvironment(float d, float i_0, float[] x, float[] z, float max, int n, bool isDynamic)
@@ -28,7 +29,7 @@ public class MultiLigandEnvironment : AbstractEnvironment
 
     public override float getConcentration(float x, float z)
     {
-        float c = 0;
+        float c = i_0;
         foreach(AbstractEnvironment environment in environments)
         {
             c += environment.getConcentration(x, z);
@@ -39,7 +40,7 @@ public class MultiLigandEnvironment : AbstractEnvironment
 
     public new float GetConcentration(float x, float z, int timeStep)
     {
-        float c = 0;
+        float c = i_0;
         foreach(AbstractEnvironment environment in environments)
         {
             c += environment.GetConcentration(x, z, timeStep);
@@ -49,7 +50,7 @@ public class MultiLigandEnvironment : AbstractEnvironment
 
     public override float GetMaxVal()
     {
-        return max;
+        return max+i_0;
     }
 
     public override float GradX(float x, float z)

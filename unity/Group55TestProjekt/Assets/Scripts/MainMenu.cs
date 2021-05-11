@@ -172,7 +172,7 @@ public class MainMenu : MonoBehaviour
                 BacteriaFactory.SetCellRegulatorType(RegulatorType.ODE);
                 break;
             case 1:
-                BacteriaFactory.SetCellRegulatorType(RegulatorType.Hazard);
+                BacteriaFactory.SetCellRegulatorType(RegulatorType.Delta);
                 break;
         }
     }

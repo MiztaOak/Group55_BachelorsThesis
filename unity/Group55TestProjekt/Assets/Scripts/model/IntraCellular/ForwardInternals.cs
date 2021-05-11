@@ -137,7 +137,7 @@ public class ForwardInternals : AbstractInternals
             state.death = lifeRegulator.GetDeath();
             state.life = lifeRegulator.GetLife();
         }
-        else if (this.regulator is HazardRegulation h)
+        else if (this.regulator is DeltaRegulation h)
         {
             state.l = h.GetL();
         }
