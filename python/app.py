@@ -21,7 +21,7 @@ window.resizable(width=False, height=False)
 window.configure(bg='white')
 
 sns.set(rc={'figure.figsize': (14, 10)})
-# sns.set_context(font_scale=0.5)
+sns.set_context(font_scale=4)
 
 # Data setup
 
@@ -44,6 +44,14 @@ population_count_list = []
 average_distances_list = []
 list_of_MSDs = []
 list_of_avg_l_conc = []
+isDynamic = False
+
+
+def dynamic_sim():
+    global isDynamic
+    if 'Dynamic' in file_list[0]:
+        isDynamic = True
+
 
 
 def createFolder(folder_name):
@@ -54,7 +62,7 @@ def createFolder(folder_name):
         print('Error: Creating directory. ' + folder_name)
 
 
-def open_file(path):
+def read_file(path):
     f = open(path, )
 
     the_data = json.load(f)
@@ -64,7 +72,7 @@ def open_file(path):
     data = the_data
 
 
-def open_secondary_file(path):
+def read_secondary_file(path):
     f = open(path, )
 
     the_data = json.load(f)
@@ -755,7 +763,7 @@ def means_plotter():
     for i in range(len(population_count_list)):
         plt.plot(x_data, population_count_list[i], label='Simulation {}'.format(i + 1))
     y_pred = [curve_equation_calc(i, optimized_data[0][0], optimized_data[0][1]) for i in x_data]
-    plt.plot(x_data, y_pred, label='fitted curve',linewidth=2.5)
+    plt.plot(x_data, y_pred, label='fitted curve', linewidth=2.5)
     plt.xlabel('time in iterations.\nr={} , k={} .'.format(optimized_data[0][1], int(optimized_data[0][0])))
     plt.ylabel('population')
     plt.legend()
@@ -764,7 +772,7 @@ def means_plotter():
 
     for i in range(len(list_of_MSDs)):
         plt.plot(np.linspace(0, len(time), len(list_of_MSDs[i])), list_of_MSDs[i], label='Simulation {}'.format(i + 1))
-    plt.plot(np.linspace(0, len(time), len(MSD_mean)), MSD_mean, label='Average curve',linewidth=2.5)
+    plt.plot(np.linspace(0, len(time), len(MSD_mean)), MSD_mean, label='Average curve', linewidth=2.5)
     plt.xlabel('time')
     plt.ylabel('MSD score')
     plt.legend()
@@ -775,7 +783,7 @@ def means_plotter():
     for i in range(len(average_distances_list)):
         plt.plot(time[3:], average_distances_list[i][3:],
                  label='Simulation {}'.format(i + 1))
-    plt.plot(time[3:], distance_mean[3:], label='Average curve',linewidth=2.5)
+    plt.plot(time[3:], distance_mean[3:], label='Average curve', linewidth=2.5)
     plt.xlabel('time')
     plt.legend()
     plt.ylabel('distance in unity unit')
@@ -786,7 +794,7 @@ def means_plotter():
     for i in range(len(list_of_avg_l_conc)):
         plt.plot(time[3:], list_of_avg_l_conc[i][3:],
                  label='Simulation {}'.format(i + 1))
-    plt.plot(time[3:], ligand_c_mean[3:], label='Average curve',linewidth=2.5)
+    plt.plot(time[3:], ligand_c_mean[3:], label='Average curve', linewidth=2.5)
     plt.xlabel('time')
     plt.ylabel('concentration')
     plt.legend()
@@ -823,7 +831,7 @@ def populate_data_structures(filename):
 
     name = os.path.basename(filename)
     data_path = filename
-    open_file(data_path)
+    read_file(data_path)
     The_cell = cell_randomizer(data)
     if radio_choice.get() == 1:
         directory = 'Simulation_{}'.format(name)
@@ -839,7 +847,7 @@ def populate_secondary_data_structures(filename):
     global secondary_cell
 
     secondary_data_path = filename
-    open_secondary_file(secondary_data_path)
+    read_secondary_file(secondary_data_path)
     secondary_cell = cell_randomizer(secondary_data)
 
 
@@ -932,11 +940,23 @@ def go_to_dir():
 
 def do_the_job():
     if radio_choice.get() == 1:
+        path_plotter()
+
+        zoomed_path_plotter()
+        life_death_analysis()
+        protein_concentration_plotter()
+        MSD_plotter()
+        MSD_plotter_fitted()
+        average_ligand_concentration_plotter()
+        average_distance_plotter()
+
+        population_change()
         visualize_button.configure(state='disable')
         go_to_dir_button.configure(state='active')
         label_file_explorer.configure(text="No file selected")
 
     if radio_choice.get() == 2:
+        dynamic_sim()
         for file in file_list:
             populate_data_structures(file)
             path_plotter()
