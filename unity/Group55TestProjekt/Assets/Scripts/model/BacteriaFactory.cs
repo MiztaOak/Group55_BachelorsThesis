@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class BacteriaFactory
 {
@@ -16,8 +15,8 @@ public class BacteriaFactory
 
     private BacteriaFactory() //sets the default values
     {
-        v = 3.0f;
-        dT = 0.15f;
+        v = 1.4f;
+        dT = 0.1f;
         smartnessFactor = .75f;
         iterations = 0;
         deathAndDivision = true;
@@ -42,17 +41,11 @@ public class BacteriaFactory
             case RegulatorType.ODE:
                 regulator = new ODERegulation();
                 break;
-            case RegulatorType.Hazard:
-                regulator = new HazardRegulation();
-                break;
-            case RegulatorType.Distance:
-                regulator = new DistRegulation();
-                break;
-            case RegulatorType.Bernoulli:
-                regulator = new BernoulliRegulation();
+            case RegulatorType.Delta:
+                regulator = new DeltaRegulation();
                 break;
             default:
-                regulator = new BasicRegulation();
+                regulator = new DeltaRegulation();
                 break;
         }
         
@@ -87,7 +80,7 @@ public class BacteriaFactory
 
     public void SetSmartnessFactor(float smartnessFactor)
     {
-        this.smartnessFactor = Mathf.Clamp(smartnessFactor,0,1);
+        this.smartnessFactor = MathFloat.Clamp(smartnessFactor,0,1);
     }
 
     public void SetRegulatorType(RegulatorType regulatorType)
@@ -103,6 +96,11 @@ public class BacteriaFactory
     public void SetDeathAndDivision(bool deathAndDivision)
     {
         this.deathAndDivision = deathAndDivision;
+    }
+
+    public RegulatorType GetRegulatorType()
+    {
+        return regulatorType;
     }
 
     //static versions of the setters

@@ -5,56 +5,90 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System.Threading;
 
-public class LoadingScreen : MonoBehaviour
-{
+public class LoadingScreen : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI loadingText;
     [SerializeField] private TextMeshProUGUI progressText;
+    [SerializeField] private Slider progressSlider; 
 
     private int n;
+    private static int runs = 1;
+    private int iterations;
+
+    private int simulatedStep;
+
+
     // Start is called before the first frame update
     void Start()
     {
         n = Model.GetInstance().GetNumCells(0);
+        iterations = BacteriaFactory.GetIterations();
         CellDoneHandler.Setup(n);
-        StartCoroutine(Load(n));
+        StartCoroutine(Load());
+        ExportHandler.init();
     }
 
-    IEnumerator Load(int numOfCells)
+    IEnumerator Load()
     {
         yield return null;
-        int iterations = BacteriaFactory.GetIterations();
-        Model model = Model.GetInstance();
-        ExportHandler.init();
-
+       
         //Creates the cell objects
-        model.CreateCells(numOfCells);
-
-        if(iterations > 0)
+        Model.GetInstance().CreateCells(n);
+        if (iterations > 0)
         {
-            for (int i = 1; i <= iterations; i++) //Simulate the cells one timestep at a time
-            {
-                model.SimulateTimeStep(i);
-                progressText.text = "Loading progress: " + ((float) i / iterations * 100) + "%";
+            Thread thread = new Thread(Run);
+            thread.Start();
+            while (thread.IsAlive){
+                float procent = (float)(simulatedStep-1) / iterations * 100;
+                progressText.text = procent + "%";
+                progressSlider.value = procent;
                 yield return null;
             }
-            model.GetAverageLigandC();
+            
         }
         else
         {
-            progressText.text = "Loading progress: 100%"; //if no simulation you are done
-            
-        }
-        
-       // model.ExportData(numOfCells, BacteriaFactory.GetIterations());
+            progressText.text = "100%"; //if no simulation you are done
 
-        AsyncOperation async = SceneManager.LoadSceneAsync(2); 
+        }
+
+        AsyncOperation async = SceneManager.LoadSceneAsync(2);
 
         while (!async.isDone)
         {
-            loadingText.color = new Color(loadingText.color.r, loadingText.color.g, loadingText.color.b, Mathf.PingPong(Time.time, 1));          
-
+            loadingText.color = new Color(loadingText.color.r, loadingText.color.g, loadingText.color.b,
+                Mathf.PingPong(Time.time, 1));
+            
             yield return null;
         }
+    }
+
+    public void Run()
+    {
+        Model model = Model.GetInstance();
+        for (int k = 0; k < runs; k++) //simulates m different runs only showing the last one but exporting the data for the rest
+        {
+            if (k != 0)
+            { //reset data if not the first run (since that is already setup elsewhere in the code)
+                model.SetupCells(n, iterations);
+                model.CreateCells(n);
+            }
+
+            for (simulatedStep = 1; simulatedStep <= iterations; simulatedStep++) //Simulate the cells one timestep at a time
+            {
+                model.SimulateTimeStep(simulatedStep);
+            }
+
+
+            model.ExportData(n, BacteriaFactory.GetIterations());
+        }
+
+        model.GetAverageLigandC();
+    }
+
+    public static void SetRuns(int runs)
+    {
+        LoadingScreen.runs = runs > 0 ? runs : 1;
     }
 }

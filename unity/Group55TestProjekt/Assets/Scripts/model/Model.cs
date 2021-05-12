@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
-using UnityEngine;
-using Random = UnityEngine.Random;
+using System.Linq;
 
 //Class that will manage the overarching data and operations that are needed by all of the program, sort of like the hub of the program
 public class Model
@@ -21,7 +19,7 @@ public class Model
     private List<Cell> allCells; //all cells that where ever present in the simulation
     private List<Cell>[] cells; //matrix where each list contains the cells that existed in that time step
 
-    private int[] numCells;
+    private int initalNumOfCells;
 
     private float[] averageLigandC;
 
@@ -50,8 +48,10 @@ public class Model
         cells[0] = new List<Cell>();
         for (int i = 0; i < numCells; i++)
         {
-            Cell cell = BacteriaFactory.CreateNewCell(Random.Range(-10.0F, 10.0F), Random.Range(-10.0F, 10.0F),
-                Random.Range(0, 2 * Mathf.PI), false);
+            float x = RandomFloat.Range(-12f, 12f);
+            float z = RandomFloat.Range(-12f, 12f);
+
+            Cell cell = BacteriaFactory.CreateNewCell(x, z, RandomFloat.Range(0, 2 * MathFloat.PI), false);
             cells[0].Add(cell);
             allCells.Add(cell);
         }
@@ -59,15 +59,13 @@ public class Model
 
     public void SimulateTimeStep(int timeStep)
     {
-        if (timeStep != 0)
-            numCells[timeStep] = numCells[timeStep - 1];
 
         cells[timeStep - 1].ForEach(c => cells[timeStep].Add(c)); //Copy all the cells from the previous time step
         //add code for updating the environment or something i guess
         for (int i = 0; i < cells[timeStep].Count; i++)
         {
             int tmp = cells[timeStep].Count;
-            ((ForwardInternals)cells[timeStep][i].GetInternals()).SimulateMovementStep(timeStep);
+            ((ForwardInternals) cells[timeStep][i].GetInternals()).SimulateMovementStep(timeStep);
 
             if (tmp > cells[timeStep].Count) //if the current cell died and was removed the index has to be updated
                 i--;
@@ -77,13 +75,11 @@ public class Model
     //Sets up the model and factory to simulate numCells many cells with iterations many steps 
     public void SetupCells(int numCells, int iterations)
     {
-        cells = new List<Cell>[iterations+1];
-        for(int i = 0; i < cells.Length; i++)
+        cells = new List<Cell>[iterations + 1];
+        for (int i = 0; i < cells.Length; i++)
             cells[i] = new List<Cell>();
-
+        initalNumOfCells = numCells;
         BacteriaFactory.SetCellIterations(iterations);
-        this.numCells = new int[iterations + 1];
-        this.numCells[0] = numCells;
         timeScaleFactor = 1;
         cellBirthListeners = new List<ICellBirthListener>();
         allCells = new List<Cell>();
@@ -92,11 +88,10 @@ public class Model
     }
 
     //Method that adds a new cell to the simulation
-    public void AddCell(Cell cell,int iteration)
+    public void AddCell(Cell cell, int iteration)
     {
         cells[iteration].Add(cell);
-        allCells.Add(cell);
-        numCells[iteration]++;
+        allCells.Add(cell);      
     }
 
     public void GiveBirthToCell(Cell cell)
@@ -109,7 +104,6 @@ public class Model
     //Method that removes a cell that has died
     public void KillCell(int iteration, Cell cell)
     {
-        numCells[iteration]--;
         cells[iteration].Remove(cell);
     }
 
@@ -128,24 +122,26 @@ public class Model
     // metohd to export to fetch and export the needed data ( used in LoadingScreen )
     public void ExportData(int index, int iterations)
     {
+        int currentCellNum = 0;
+
+
         if (iterations == 0)
             return;
-
+        var data_list = new List<object>();
         List<Iteration> iteration_list = new List<Iteration>();
-        List<DataToExport> data_list = new List<DataToExport>();
-        int Iteration_counter = 0;
+        //List<DataToExport> data_list = new List<DataToExport>();
+        List<int> currentCellNumList = new List<int>();
 
         if (index >= allCells.Count && allCells.Count == 0)
             return;
 
-        for (int i = 0; i < index; i++)
+        for (int i = 0; i < allCells.Count; i++)
         {
-            ForwardInternals cell = ((ForwardInternals)allCells[i].GetInternals());
+            ForwardInternals cell = ((ForwardInternals) allCells[i].GetInternals());
 
 
             for (int j = 0; j < iterations; j++)
             {
-                Debug.Log(cell.GetHashCode());
                 float x = cell.GetPosition(j).GetX();
                 float z = cell.GetPosition(j).GetZ();
                 State interalState = cell.GetInternalStates()[j];
@@ -154,9 +150,13 @@ public class Model
                 float yp = (float) interalState.yp;
                 float m = (float) interalState.m;
                 float l = (float) interalState.l;
-                oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l);
+                float life = (float) interalState.life;
+                float death = (float) interalState.death;
+                int birth_date =  cell.BirthDate;
+                int death_date = cell.DeathDate;
+
+                oneIteration = new Iteration(j, x, z, ap, bp, yp, m, l, life, death,birth_date,death_date);
                 iteration_list.Add(oneIteration);
-                Iteration_counter++;
             }
 
             List<Iteration> copy = new List<Iteration>(iteration_list);
@@ -164,6 +164,15 @@ public class Model
             data_list.Add(cellData);
             iteration_list.Clear();
         }
+
+        for (int i = 0; i < iterations; i++)
+        {
+            currentCellNum = GetNumCells(i);
+            currentCellNumList.Add(currentCellNum);
+        }
+
+        data_list.Add(currentCellNumList);
+
 
         ExportHandler.exportData(data_list);
     }
@@ -186,12 +195,12 @@ public class Model
         for (int i = 0; i < averageLigandC.Length; i++) //for each iteration
         {
             float averageC = 0;
-            for (int j = 0; j < cells[i+1].Count; j++) //for the cells present in that iteration
+            for (int j = 0; j < cells[i + 1].Count; j++) //for the cells present in that iteration
             {
-                averageC += (float) ((ForwardInternals) cells[i+1][j].GetInternals()).GetInternalStates()[i+1].l;
+                averageC += (float) ((ForwardInternals) cells[i + 1][j].GetInternals()).GetInternalStates()[i + 1].l;
             }
 
-            averageLigandC[i] = (numCells[i+1] != 0 ? averageC / numCells[i+1] : 0);
+            averageLigandC[i] = (cells[i + 1].Count != 0 ? averageC / cells[i + 1].Count : 0);
         }
 
         return averageLigandC;
@@ -216,8 +225,13 @@ public class Model
         public float yp;
         public float m;
         public float l;
+        public float life;
+        public float death;
+        public int birth_date;
+        public int death_date;
 
-        public Iteration(int iteration, float x, float z, float ap, float bp, float yp, float m, float l)
+        public Iteration(int iteration, float x, float z, float ap, float bp, float yp, float m, float l, float life,
+            float death,int birth_date,int death_date)
         {
             this.iteration = iteration;
             this.x = x;
@@ -227,6 +241,10 @@ public class Model
             this.yp = yp;
             this.m = m;
             this.l = l;
+            this.life = life;
+            this.death = death;
+            this.birth_date = birth_date;
+            this.death_date = death_date;
         }
     }
 
@@ -239,9 +257,10 @@ public class Model
     {
         return timeScaleFactor;
     }
+
     public int GetNumCells(int iteration)
     {
-        return numCells[iteration]; //might cause problems later
+        return iteration == 0 ? initalNumOfCells : (cells.Length > iteration ? cells[iteration].Count : 0);
     }
 
     //Method that returns the number of cells that are within a given distance of the given location
@@ -252,12 +271,12 @@ public class Model
 
         distance *= distance; //removes the need for sqrt operation
 
-        foreach(Cell cell in cells[iteration])
+        foreach (Cell cell in cells[iteration])
         {
             if (!(cell.GetInternals() is ForwardInternals))
                 continue;
             IPointAdapter cellLocation = ((ForwardInternals)cell.GetInternals()).GetPosition(iteration);
-            if (distance >= Mathf.Pow(cellLocation.GetX() - location.GetX(), 2) + Mathf.Pow(cellLocation.GetZ() - location.GetZ(), 2))
+            if (MathFloat.Pow(cellLocation.GetX() - location.GetX(), 2) + MathFloat.Pow(cellLocation.GetZ() - location.GetZ(), 2) <= distance)
                 num++;
         }
 

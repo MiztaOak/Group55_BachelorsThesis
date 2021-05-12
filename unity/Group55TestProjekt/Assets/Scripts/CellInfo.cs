@@ -43,7 +43,7 @@ public class CellInfo : MonoBehaviour
             UpdateBarGraph(lifeBar, (float)cellState.death);
             UpdateBarGraph(divBar, (float)cellState.life);
             UpdateBarGraph(cBar, (float)cellState.l/model.environment.GetMaxVal());
-        }
+        } 
     }
 
     //code not used atm size you cant disable the hud right now

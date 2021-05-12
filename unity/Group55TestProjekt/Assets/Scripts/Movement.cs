@@ -13,9 +13,13 @@ public class Movement : MonoBehaviour, ICellDeathListener
     public float moveSpeed;
     public float rotSpeed;
     [SerializeField] private bool smart;
+
+
     public float smartnessFactor;
 
     private Animator myAnimator;
+
+    [SerializeField] private ParticleSystem deathParticle;
 
     private Material cellmaterial;
 
@@ -37,8 +41,7 @@ public class Movement : MonoBehaviour, ICellDeathListener
             cell = BacteriaFactory.CreateNewCell(transform.position.x, transform.position.z, transform.rotation.y, smart);
             nextLocation = TranslateToVector3(cell.GetNextLocation()); //calculate the first location
         }
-            
-       
+    
         myAnimator = GetComponent<Animator>();
         cellRigidBody = GetComponent<Rigidbody>();
 
@@ -46,31 +49,17 @@ public class Movement : MonoBehaviour, ICellDeathListener
         run = false; // set run to false so that it begins by rotating towards the first location
     }
 
-    /*
-    private void OnMouseOver() 
-    {
-        // Only allow one cell to be selected at once
-        if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Untagged") && !GameObject.FindGameObjectWithTag("Player")) {
-            gameObject.tag = "Player";
-
-            CellInfo.focusedCell = cell; // send info the info panel
-
-            // Change color
-            cellmaterial = transform.Find("Cell").GetComponent<Renderer>().material;
-            cellmaterial.SetFloat("Boolean_E606F07D", 1); 
-            // Make a bit bigger 
-            transform.localScale += new Vector3(0.05F, 0.05F, 0.05F);
-        } else if ((Input.GetMouseButtonDown(0)) && gameObject.CompareTag("Player")) {
-            gameObject.tag = "Untagged";
-            cellmaterial.SetFloat("Boolean_E606F07D", 0);
-            cellmaterial = null;
-            transform.localScale = originalScale;
-        }
-    }*/
-
     private void OnMouseUp()
     {
+        GameObject oldFocus = GameObject.FindGameObjectWithTag("Player");
+        if(oldFocus != null)
+        {
+            oldFocus.gameObject.tag = "Untagged";
+            oldFocus.transform.Find("Cell").GetComponent<Renderer>().material.SetFloat("Boolean_E606F07D", 0);
+        }
+
         gameObject.tag = "Player";
+        transform.Find("Cell").GetComponent<Renderer>().material.SetFloat("Boolean_E606F07D", 1);
         CellInfo.focusedCell = cell;
     }
 
@@ -110,6 +99,9 @@ public class Movement : MonoBehaviour, ICellDeathListener
         {
             cellRigidBody.MovePosition(Vector3.MoveTowards(currentLocation, nextLocation, moveSpeed * Time.deltaTime * model.GetTimeScaleFactor()));
         }
+        // Set appropriate simulation speed of the death particle
+        var deathParticleMain = deathParticle.main;
+        deathParticleMain.simulationSpeed = model.GetTimeScaleFactor();
 
     }
 
@@ -124,6 +116,8 @@ public class Movement : MonoBehaviour, ICellDeathListener
 
     public void Notify()
     {
+        Instantiate(deathParticle, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 1,
+            gameObject.transform.position.z), gameObject.transform.rotation);
         Destroy(gameObject);
     }
 }

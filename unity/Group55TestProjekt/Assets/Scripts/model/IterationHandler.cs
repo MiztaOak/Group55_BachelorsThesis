@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class IterationHandler
 {
@@ -31,7 +30,7 @@ public class IterationHandler
         if(iteration > currentIteration)
         {
             currentIteration = iteration;
-            iterationListeners.ForEach(n => n.notify());
+            iterationListeners.ForEach(n => n.NotifyIterationChanged(currentIteration));
         }
     }
 

@@ -9,19 +9,30 @@ public class HeatmapVisual : MonoBehaviour, GridListeners
     private Grid grid;
     private Mesh mesh;
     public Button heatMapButton;
-
+    private bool updateMesh;
 
     private void Awake()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+        updateMesh = false;
         heatMapButton.onClick.AddListener(OnHeatMapButtonClick);
     }
 
     public void SetGrid(Grid grid)
     {
         this.grid = grid;
+        //grid.Subscribe(this); //looks bad so turning it off for the moment
         UpdateHeatMapVisual();
+    }
+
+    private void LateUpdate()
+    {
+        if (updateMesh)
+        {
+            updateMesh = false;
+            UpdateHeatMapVisual();
+        }
     }
 
     private void UpdateHeatMapVisual()
@@ -76,6 +87,6 @@ public class HeatmapVisual : MonoBehaviour, GridListeners
 
     public void OnGridUpdate()
     {
-        UpdateHeatMapVisual();
+        updateMesh = true;
     }
 }

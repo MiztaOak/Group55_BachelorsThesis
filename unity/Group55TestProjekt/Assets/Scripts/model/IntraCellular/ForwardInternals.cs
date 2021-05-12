@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
-public class ForwardInternals : IInternals
+public class ForwardInternals : AbstractInternals
 {
-    private Model model;
-    private ICellRegulation regulator;
 
     //Arrays containing the positions that were calculated and the states for these positions
     private IPointAdapter[] positions;
@@ -15,9 +10,6 @@ public class ForwardInternals : IInternals
     private int currentIteration = 0;
     private readonly int iterations;
 
-    private readonly float v; //velocity
-    private readonly float dT; //time step
-    private float angle; //current angle
     private float initalAngel;
 
     private bool isDone = false;
@@ -31,13 +23,8 @@ public class ForwardInternals : IInternals
 
     private Cell parentObject; //TODO replce this with something smarter
 
-    private ForwardInternals(float v, float dT, float angle, ICellRegulation regulation, int iterations)
-    {
-        model = Model.GetInstance();
-        regulator = regulation;
-        this.v = v;
-        this.dT = dT;
-        this.angle = angle;
+    private ForwardInternals(float v, float dT, float angle, ICellRegulation regulation, int iterations): base(v,dT,angle,regulation)
+    {      
         initalAngel = angle;
         this.iterations = iterations;
         deathDate = iterations + 1;
@@ -68,7 +55,6 @@ public class ForwardInternals : IInternals
         //Fix the states so that there are no null pointers this should maybe 
         for(int i = 0; i <= iteration; i++)
         {
-            Debug.Log("i = " + i);
             positions[i] = locations[i].Copy();
             this.states[i] = states[i];
         }
@@ -99,13 +85,12 @@ public class ForwardInternals : IInternals
         if (step < 1 || step > iterations)
             throw new IncorrectSimulationStepException(step);
 
-        if (deathDate <= step)
+        if (deathDate <= step || positions[step] != null) //check if cell is dead or already handled in a previous timestep
             return;
-        
-        float factor = model.GetNumOfCloseCells(step - 1, 2, positions[step - 1])*2;
-        float c = model.environment.getConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ()) - factor;
+       
+        float c = model.environment.GetConcentration(positions[step - 1].GetX(), positions[step - 1].GetZ(),step-1);
 
-        if (lifeRegulator.Die(c)) //kill the cell
+        if (lifeRegulator.Die(c)) //check if the cell should die and kill it if that is the case
         {
             deathDate = step;
             model.KillCell(step,parentObject);
@@ -114,61 +99,36 @@ public class ForwardInternals : IInternals
             {
                 positions[i] = positions[step-1];
                 states[i] = deathState;
+                states[i].death = 1;
             }
 
             return;
         }
-        else if (lifeRegulator.Split(c)) //split the cell
+        else if (lifeRegulator.Split(c)) //check if the cell should split and split the cell if that is the case
         {
             Split(step);
         }
 
         positions[step] = new Vector3Adapter(positions[step - 1].GetX(), positions[step - 1].GetZ());
-        if (!regulator.DecideState(c))
+        if (!regulator.DecideState(c)) //tumble
         {
             angle = CalculateTumbleAngle();
+            AddState(step);
+            step++;
+            if (step == positions.Length)
+                return;
+            positions[step] = positions[step-1].Copy();
         }
-        else
-        {
-            float dX = v * dT * Mathf.Cos(angle), dZ = v * dT * Mathf.Sin(angle);
 
-            while (positions[step].GetX() + dX > 14 && positions[step].GetX() - dX < -14 && positions[step].GetZ() + dZ > 14 && positions[step].GetZ() - dZ < -14)
-            {
-                angle = CalculateTumbleAngle();
-                dX = v * dT * Mathf.Cos(angle);
-                dZ = v * dT * Mathf.Sin(angle);
-            }
-            positions[step].Add(dX, dZ);
-        }
+        CalculateNextLocation(positions[step]);
         AddState(step);
-    }
-
-    //Returns absolute tumble angle in radians
-    private float CalculateTumbleAngle()
-    {
-        //Tumble angle based on article (Edgington)
-        float newAngle = UnityEngine.Random.Range(18f, 98f);
-        float rand = UnityEngine.Random.Range(0.0f, 1.0f);
-        if (rand > 0.5)
-            newAngle *= -1;
-        newAngle *= Mathf.PI / 180;
-        newAngle += this.angle;
-        return newAngle;
-    }
-
-    private bool GetRunningState(float x, float z)
-    {
-        float c = model.environment.getConcentration(x, z);
-        bool run = regulator.DecideState(c);
-        return run;
     }
 
     private void AddState(int i)
     {
         State state = new State();
-        if (this.regulator is ODERegulation)
+        if (this.regulator is ODERegulation r)
         {
-            ODERegulation r = (ODERegulation)this.regulator;
             state.yp = r.GetYP();
             state.ap = r.GetAP();
             state.bp = r.GetBP();
@@ -177,9 +137,9 @@ public class ForwardInternals : IInternals
             state.death = lifeRegulator.GetDeath();
             state.life = lifeRegulator.GetLife();
         }
-        else if(regulator is HazardRegulation)
+        else if (this.regulator is DeltaRegulation h)
         {
-            state.l = ((HazardRegulation)regulator).GetL();
+            state.l = h.GetL();
         }
         states[i] = state;
     }
@@ -189,17 +149,18 @@ public class ForwardInternals : IInternals
         IInternals copy = Copy(iteration-1);
         Cell child = new Cell(Copy(iteration-1));
         ((ForwardInternals)copy).SetPartentObject(child);
+        //birthDate = iteration - 1;
 
         model.AddCell(child,iteration);
         children.Add(iteration, child);
     }
 
-    public State GetInternalState()
+    public override State GetInternalState()
     {
         return states[currentIteration];
     }
 
-    public IPointAdapter GetNextLocation()
+    public override IPointAdapter GetNextLocation()
     {
         IPointAdapter point = positions[currentIteration];
         IterationHandler.GetInstance().UpdateIteration(currentIteration);
@@ -222,12 +183,10 @@ public class ForwardInternals : IInternals
         }
         currentIteration = currentIteration+1 > iterations ? iterations : currentIteration+1;
 
-        if (point == null)
-            Debug.Log("Fucked");
         return point;
     }
 
-    public float GetAngle()
+    public override float GetAngle()
     {
         return initalAngel;
     }
@@ -244,7 +203,7 @@ public class ForwardInternals : IInternals
         return positions[i];
     }
 
-    public IInternals Copy()
+    public override IInternals Copy()
     {
         return new ForwardInternals(positions,states, v, dT, angle, regulator.Copy(), iterations, currentIteration);
     }
@@ -254,12 +213,12 @@ public class ForwardInternals : IInternals
         return new ForwardInternals(positions, states, v, dT, angle, regulator.Copy(), iterations, iteration);
     }
 
-    public bool IsDead()
+    public override bool IsDead()
     {
         return currentIteration == deathDate;
     }
 
-    public bool IsSplit()
+    public override bool IsSplit()
     {
         return children.ContainsKey(currentIteration);
     }
@@ -272,5 +231,17 @@ public class ForwardInternals : IInternals
     public void AddListener(ICellDeathListener listener)
     {
         cellDeathListeners.Add(listener);
+    }
+
+    public int BirthDate
+    {
+        get => birthDate;
+        set => birthDate = value;
+    }
+
+    public int DeathDate
+    {
+        get => deathDate;
+        set => deathDate = value;
     }
 }
